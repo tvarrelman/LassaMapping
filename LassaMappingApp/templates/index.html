@@ -1,0 +1,111 @@
+<!-- templates/index.html -->
+<html>
+	<head>
+		<link rel="stylesheet" href="/static/bootstrap.css" />
+		<title>Lassa Virus Dashboard</title>
+		<link rel="stylesheet" href="/static/leaflet.css" />
+		<link rel="stylesheet" href="/static/MarkerCluster.css" />
+		<link rel="stylesheet" href="/static/MarkerCluster.Default.css" />
+		<script src="/static/leaflet.js"></script>
+		<script src='/static/leaflet-heat.js'></script>
+		<script src='/static/leaflet.markercluster.js'></script>
+		<script src='/static/jquery-3.5.1.js'></script>
+		<script src='/static/bootstrap-tab.js'></script>
+	</head>
+	<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  		<a class="navbar-brand" href="">Lassa Virus Dashboard</a>
+  		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+    			<span class="navbar-toggler-icon"></span>
+  		</button>
+
+		<div class="collapse navbar-collapse" id="navbarColor01">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item">
+        				<a class="nav-link" href="Download">Download</a>
+			</ul>
+  
+		</div>
+	</nav>
+
+	<body>
+		<div class="jumbotron">
+		<h2 style="text-align: center">{{message}}</h2>
+		<p style="text-align: center" class="text-danger">The purpose of this dashboard is to provide a comprehensive visualization of Lassa virus across West Africa.</p>
+		</div>
+
+		<!--<div style="display: flex; flex-direction: column; height: 100%">-->
+		<div class="container-fluid">
+			<div class="row justify-content-center">
+				<div class="card-group">
+					<div class="card border-secondary w-75">
+						<div class="card-header">Mapping</div>
+  						<div class="card-body">
+                                                        <ul class="nav nav-tabs" id="myTabs">
+                                                                <li class="nav-item">
+                                                                        <a class="nav-link active" id="HumanTab" role="tab" data-toggle="tab" href="#LassaHumans">Lassa virus in humans</a>
+                                                                </li>
+                                                                <li class="nav-item">
+                                                                        <a class="nav-link disabled" id="RodentTab" role="tab" data-toggle="tab" href="#LassaRodents">Lassa virus in rodents</a>
+                                                                </li>
+                                                        </ul>
+
+							<div class="tab-content" id="myTabContent">
+  								<div class="tab-pane fade show active" id="LassaHumans">
+									<div id="map" style="width:790px; height:590px; margin: auto"></div>
+								
+                                                                <!--<div class="tab-pane fade" id="LassaRodents">-->
+                                                                       <!-- <div id="rodentMap" style="width:790px; height:590px; margin: auto"></div>-->
+								<!--</div>-->
+									<script>
+         									var mapOptions = {
+           		 							center: [13.531665, -2.460415],
+           		 							zoom: 4};
+         									var map = new L.map("map", mapOptions);
+										//var rodentMap = new L.map('LassaRodents', mapOptions);
+         									var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+         									map.addLayer(layer);
+										//rodentMap.addLayer(layer);
+										var coords = {{ human_data|tojson}};
+										//var rodentCoords = {{ rodent_data|tojson}};
+										var markers = L.markerClusterGroup();
+										//var rodentMarkers = L.markerClusterGroup();
+										for (var i in coords){
+											var coordPair = coords[i];
+											var Abpos = coordPair.NumPosAb;
+											var label = 'Number Antibody Positive: ';
+											title = label + Abpos;
+											var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
+											marker.bindPopup(title);
+											markers.addLayer(marker);	
+											}
+										map.addLayer(markers);
+										//for (var j in rodentCoords){
+										//	var rodentCoordPair = rodentCoords[j];
+										//	var rodentAbpos = rodentCoordPair.NumPosAb;
+										//	var rodentLabel = 'Number Antibody Positive: ';
+										//	rodentTitle = rodentLabel + rodentAbpos;
+                                                                                //       var rodentMarker = L.marker(new L.LatLng(rodentCoordPair.Latitude, rodentCoordPair.Longitude, { title: rodentTitle}));
+                                                                                //        rodentMarker.bindPopup(rodentTitle);
+                                                                                //        rodentMarkers.addLayer(rodentMarker);
+										//rodentMap.addLayer(rodentMarkers);  			
+      									</script>
+								</div>	
+							<script>
+								$(function (){
+									$('#myTabs a:last').tab('show');
+									})
+							</script>
+							</div>
+						</div>
+						</div>
+					</div>
+					<div class="card border-secondary w-25">
+						<div class="card-header">Summary Statistics</div>
+					</div>	
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+
