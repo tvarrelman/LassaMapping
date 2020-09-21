@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% block RodentMapper %}
+<script>
+        var mapOptions = {center: [13.531665, -2.460415], zoom: 4};
+        var map = new L.map("map", mapOptions);
+        var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+        map.addLayer(layer);
+        var coords = {{ rodent_data|tojson}};
+        var markers = L.markerClusterGroup();
+        for (var i in coords){
+                var coordPair = coords[i];
+                var Abpos = coordPair.NumPosAb;
+                var label = 'Number Antibody Positive: ';
+                title = label + Abpos;
+                var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
+                marker.bindPopup(title);
+                markers.addLayer(marker);
+                }
+        map.addLayer(markers);
+</script>
+{% endblock %}
