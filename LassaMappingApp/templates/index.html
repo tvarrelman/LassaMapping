@@ -13,7 +13,7 @@
 		<script src='/static/bootstrap-tab.js'></script>
 	</head>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  		<a class="navbar-brand" href="">Lassa Virus Dashboard</a>
+  		<a class="navbar-brand" href="/">Lassa Virus Dashboard</a>
   		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
     			<span class="navbar-toggler-icon"></span>
   		</button>
@@ -32,11 +32,9 @@
 		<h2 style="text-align: center">{{message}}</h2>
 		<p style="text-align: center" class="text-danger">The purpose of this dashboard is to provide a comprehensive visualization of Lassa virus across West Africa.</p>
 		</div>
-
-		<!--<div style="display: flex; flex-direction: column; height: 100%">-->
 		<div class="container-fluid">
 			<div class="row justify-content-center">
-				<div class="card-group">
+				<div class="card-group" id="myCard">
 					<div class="card border-secondary w-75">
 						<div class="card-header">Mapping</div>
   						<div class="card-body">
@@ -60,11 +58,6 @@
                                                                                 {% block RodentMapper %}{% endblock %}
                                                                         </div>
 								</div>	
-							<!--<script>
-								$(function (){
-									$('#myTabs a:last').tab('show');
-									})
-							</script>-->
 							</div>
 						</div>
 						</div>
