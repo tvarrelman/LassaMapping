@@ -25,11 +25,18 @@ def create_app():
     def main_page():
         # The title of the page (will be inserted in the .html)
         message = "Lassa Virus Data Dashboard"
-        human_data = human_mapper()
-        rodent_data = rodent_mapper()
+        #human_data = human_mapper()
+        #rodent_data = rodent_mapper()
         # Returns the rendered .html for the index webpage
-        return render_template('index.html', message=message, human_data=human_data, rodent_data=rodent_data)
-
+        return render_template('index.html', message=message)
+    @app.route('/LassaHumans')
+    def mapping():
+        human_data = human_mapper()
+        return render_template('human_mapper.html', human_data=human_data)
+    @app.route('/LassaRodents')
+    def rodent_mapping():
+        rodent_data = rodent_mapper()
+        return render_template('rodent_mapper.html', rodent_data=rodent_data)
     @app.route('/Download')
     def download_page():
         message = "Download Data!"
