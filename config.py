@@ -4,17 +4,17 @@ Configuration settings for our flask application
 
 import os
 from os import environ, path
-
+from dotenv import load_dotenv
 
 # finds the absolute path of this file
 basedir = path.abspath(path.dirname(__file__))
 # reads the key value from .env, and adds it to the environment variable
-#load_dotenv(path.join(basedir, '.env'))
+load_dotenv(path.join(basedir, '.env'))
 
 # create the Config class, which will contain general configuration info.
 class Config:
     """Base config."""
-    #SECRET_KEY = os.environ.get('SECRET_KEY')
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
