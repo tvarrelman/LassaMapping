@@ -6,11 +6,11 @@ import routes, and register blueprints.
 """
 
 import mysql.connector
-from flask import Flask, url_for, render_template, jsonify
+from flask import Flask, url_for, render_template, request
 import os
 from werkzeug.utils import import_string
 from db_query import human_mapper, rodent_mapper
-
+from LassaMappingApp.forms import LoginForm
 # Creates an app object
 
 def create_app():
@@ -43,4 +43,13 @@ def create_app():
         # Returns the rendered .html for the data download page
         return render_template('download.html', message=message)
     # The app is returned to the wsgi.py script located in the root directory
+    @app.route('/login', methods=['Get', 'POST'])
+    def login():
+        form = LoginForm(csrf_enabled=False)
+        if request.method == 'POST':
+            user = request.form['username']
+            passW = request.form['password']
+            if form.validate_on_submit():
+            	return '<h1>' + user + ' ' + passW + '</h1>'
+        return render_template('login.html', form=form)
     return app
