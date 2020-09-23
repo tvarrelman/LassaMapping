@@ -15,10 +15,11 @@ load_dotenv(path.join(basedir, '.env'))
 class Config:
     """Base config."""
     SECRET_KEY = os.environ.get('SECRET_KEY')
-    SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME')
+    #SESSION_COOKIE_NAME = os.environ.get('SESSION_COOKIE_NAME')
     STATIC_FOLDER = 'static'
     TEMPLATES_FOLDER = 'templates'
-    
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
+print(Config)
 # create the production configuration settings, which will be added to the general config.    
 class ProdConfig(Config):
     FLASK_ENV = 'production'
