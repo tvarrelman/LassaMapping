@@ -23,7 +23,7 @@ def main_page():
     # Returns the rendered .html for the index webpage
     return render_template('index.html', message=message)
 @app.route('/LassaHumans')
-def mapping():
+def human_mapping():
     human_data = human_mapper()
     return render_template('human_mapper.html', human_data=human_data)    
 @app.route('/LassaRodents')

@@ -2,7 +2,7 @@
 <html>
 <link rel="stylesheet" href="/static/bootstrap.css">
         <head>
-                <title>Admin</title>
+                <title>Admin Login</title>
         </head>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="{{ url_for('main_page') }}">Lassa Virus Dashboard</a>
@@ -13,31 +13,37 @@
                 <div class="collapse navbar-collapse" id="navbarColor01">
                         <ul class="navbar-nav mr-auto">
                                 <li class="nav-item">
-                                        <a class="nav-link" href="Download">Download</a>
+                                        <a class="nav-link" href="{{ url_for('download_page') }}">Download</a>
 				<li class="nav-item">
-					<a class="nav-link" href="login">Login</a>
+					<a class="nav-link" href="{{ url_for('login') }}">Login</a>
                         </ul>
 
                 </div>
         </nav>
 
         <body>
-		<form action="" method="POST" role="form">
-		<div class="form-group">
-			<!--{{ form.hidden_tag() }}-->
-			<fieldset>
-				<label for="username" class="control-label">Username</label>
-				<input class="form-control" type="text" name="username">
-				<!--{{ form.username }}-->
-  			</fieldset>
-			<fieldset>
-				<label for "password" class="control-label">Password</label>
-				<input class="form-control" type="password" name="password">
-				<!--{{ form.password }}-->
-			</fieldset>
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+			<div class="card border-success mb-3" style="max-width: 20rem;">
+  				<div class="card-header">Admin Login</div>
+  				<div class="card-body">
+					<form action="" method="POST" role="form">
+						<div class="form-group">
+							<!--{{ form.hidden_tag() }}-->
+							<fieldset>
+								<label for="username" class="control-label">Username</label>
+								<input class="form-control" type="text" name="username">
+  							</fieldset>
+							<fieldset>
+								<label for "password" class="control-label">Password</label>
+								<input class="form-control" type="password" name="password">
+							</fieldset>
+						</div>
+						<button type="submit" class="btn btn-success">Submit</button>
+					</form>
+				</div>
+			</div>
 		</div>
-		<button type="submit" class="btn btn-primary">Submit</button>
-		</form>
-
+	</div>
 	</body>
 </html>
