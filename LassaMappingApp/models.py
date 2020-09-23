@@ -9,3 +9,5 @@ class User(UserMixin,db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(15), unique=True)
     password = db.Column(db.String(80), unique=False)
+    def get_id(self):
+           return (self.user_id)

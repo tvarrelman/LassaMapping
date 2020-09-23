@@ -1,5 +1,5 @@
 
-from flask import Flask, url_for, render_template, request
+from flask import Flask, url_for, render_template, request, redirect
 import os
 from db_query import human_mapper, rodent_mapper
 from LassaMappingApp.forms import LoginForm
@@ -8,6 +8,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from LassaMappingApp.models import db, User
 from flask import current_app as app
+from . import login_manager
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
 @app.route('/')
 def main_page():
@@ -31,12 +36,21 @@ def download_page():
     # Returns the rendered .html for the data download page
     return render_template('download.html', message=message)
 # The app is returned to the wsgi.py script located in the root directory
-@app.route('/login', methods=['Get', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login(): 
     form = LoginForm(csrf_enabled=False) 
     if request.method == 'POST': 
-        user = request.form['username'] 
+        test_user = request.form['username'] 
         passW = request.form['password'] 
         if form.validate_on_submit(): 
-            return '<h1>' + user + ' ' + passW + '</h1>' 
-    return render_template('login.html', form=form) 
+            user = User.query.filter_by(username=test_user).first()
+            if user:
+                if check_password_hash(user.password, passW):
+                    login_user(user, remember=False)
+                    return redirect(url_for('admin'))
+            return '<h1> Invalid username or password </h1>'
+    return render_template('login.html', form=form)
+@app.route('/Admin', methods=['GET', 'POST'])
+@login_required
+def admin(): 
+    return '<h1> Success! </h1>'
