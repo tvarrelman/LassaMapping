@@ -53,4 +53,4 @@ def login():
 @app.route('/Admin', methods=['GET', 'POST'])
 @login_required
 def admin(): 
-    return '<h1> Success! </h1>'
+    return render_template('admin.html')
