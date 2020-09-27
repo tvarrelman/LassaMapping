@@ -1,10 +1,6 @@
 {% extends "index.html" %} 
 {% block mapper %}
 <script> 
-	var mapOptions = {center: [13.531665, -2.460415], zoom: 4};
-	var map = new L.map("map", mapOptions);
-	var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-	map.addLayer(layer);
 	var coords = {{ human_data|tojson}};
 	var markers = L.markerClusterGroup();
 	for (var i in coords){

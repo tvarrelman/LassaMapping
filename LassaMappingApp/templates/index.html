@@ -52,15 +52,20 @@
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade show active" id="LassaHumans">
 									<div id="map" style="width:790px; height:590px; margin: auto">
+                                                                		<script>
+                                                                        		var mapOptions = {center: [13.531665, -2.460415], zoom:4};
+                                                                        		var map = new L.map("map", mapOptions);
+                                                                        		var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+                                                                        		map.addLayer(layer);
+                                                               			</script>
 										{% block mapper %}{% endblock %}
 									</div>
 								</div>
 								<div class="tab-content fade active" id="LassaRodents">
 									<div id="map" style="width:790px; height:590px; margin: auto">
-                                                                                {% block RodentMapper %}
-                                                                                {% endblock %}
+                                                                                {% block RodentMapper %}{% endblock %}
                                                                         </div>
-								</div>	
+								</div>
 							</div>
 						</div>
 					</div>	
