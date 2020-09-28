@@ -34,44 +34,36 @@
 		<h2 style="text-align: center">{{message}}</h2>
 		<p style="text-align: center" class="text-danger">The purpose of this dashboard is to provide a comprehensive visualization of Lassa virus across West Africa.</p>
 		</div>
-		<div class="container-fluid">
+		<div class="container">
 			<div class="row justify-content-center">
-				<div class="card-group" id="myCard">
-					<div class="card border-secondary w-75">
-						<div class="card-header">Mapping</div>
-  						<div class="card-body">
-                                                        <ul class="nav nav-tabs" id="myTabs">
-                                                                <li class="nav-item">
-                                                                        <a class="nav-link" id="HumanTab" href="LassaHumans">Lassa virus in humans</a>
-                                                                </li>
-                                                                <li class="nav-item">
-                                                                        <a class="nav-link" id="RodentTab" href="LassaRodents">Lassa virus in rodents</a>
-                                                                </li>
-                                                        </ul>
-
-							<div class="tab-content" id="myTabContent">
-  								<div class="tab-pane fade show active" id="LassaHumans">
-									<div id="map" style="width:790px; height:590px; margin: auto">
-                                                                		<script>
-                                                                        		var mapOptions = {center: [13.531665, -2.460415], zoom:4};
-                                                                        		var map = new L.map("map", mapOptions);
-                                                                        		var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-                                                                        		map.addLayer(layer);
-                                                               			</script>
-										{% block mapper %}{% endblock %}
-									</div>
-								</div>
-								<div class="tab-content fade active" id="LassaRodents">
-									<div id="map" style="width:790px; height:590px; margin: auto">
-                                                                                {% block RodentMapper %}{% endblock %}
-                                                                        </div>
-								</div>
-							</div>
+				<ul class="nav nav-tabs" id="myTabs">
+					<li class="nav-item">
+						<a class="nav-link" id="HumanTab" role="tab" aria-controls="LassaHumans" aria-selected="true" href="LassaHumans">Lassa virus in humans</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" id="RodentTab" role="tab" aria-controls="LassaRodents" aria-selected="false" href="LassaRodents">Lassa virus in rodents</a>
+					</li>
+				</ul>
+				<div class="tab-content" id="myTabContent">
+  					<div class="tab-pane fade show active" id="LassaHumans" role="tabpanel" aria-labelledby="HumanTab">
+						<div id="map" style="width:790px; height:590px; margin: auto">
+							<script>
+								var mapOptions = {center: [13.531665, -2.460415], zoom:4};
+								var map = new L.map("map", mapOptions);
+								var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+								map.addLayer(layer);
+							</script>
+							{% block mapper %}{% endblock %}
 						</div>
-					</div>	
+					</div>
+					<div class="tab-pane fade active" id="LassaRodents" role="tabpanel" aria-labelledby="RodentTab">
+						<div id="map" style="width:790px; height:590px; margin: auto">
+							{% block RodentMapper %}{% endblock %}
+						</div>
+					</div>
 				</div>
 			</div>
-		</div>
+		</div>	
 	</body>
 </html>
 
