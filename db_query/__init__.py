@@ -33,3 +33,26 @@ def rodent_mapper():
     cursor.close()
     return json_rodent_data
 
+def db_summary():
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cursor = cnx.cursor()
+    #Get the number of countries represented in our dataset
+    country_cmd = "SELECT COUNT(*) FROM countries;"
+    #Get the number of studies that our project documents
+    source_cmd = "SELECT COUNT(*) FROM data_source;"
+    #Number of point samples from rodents
+    rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus!='Homo';"
+    #Number of point samples from humans
+    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo';"    
+    cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd]
+    summary_list = []
+    for cmd in cmd_list:
+        cursor.execute(cmd)
+        summary = cursor.fetchall()
+        summary_list.append(str(summary[0][0]))
+    cursor.close()
+    return summary_list
+
+# This bit is only used for testing the functions before implementation 
+#if __name__ == '__main__':
+#    db_summary()
