@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect
 import os
-from db_query import human_mapper, rodent_mapper
+from db_query import human_mapper, rodent_mapper, db_summary
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -18,10 +18,11 @@ def load_user(user_id):
 def main_page():
     # The title of the page (will be inserted in the .html)
     message = "Lassa Virus Data Dashboard"
+    data_summary = db_summary()
     #human_data = human_mapper()
     #rodent_data = rodent_mapper()
     # Returns the rendered .html for the index webpage
-    return render_template('index.html', message=message)
+    return render_template('index.html', message=message, data_summary=data_summary)
 @app.route('/LassaHumans')
 def human_mapping():
     human_data = human_mapper()
