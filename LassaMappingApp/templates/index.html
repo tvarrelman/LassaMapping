@@ -31,12 +31,15 @@
 
 	<body>
 		<div class="jumbotron">
-		<h2 style="text-align: center">{{message}}</h2>
-		<p style="text-align: center" class="text-danger">The purpose of this dashboard is to provide a comprehensive visualization of Lassa virus across West Africa.</p>
+		<!--<h2 style="text-align: center">{{message}}</h2>-->
+		<p style="text-align: center">
+			The purpose of this dashboard is to provide a comprehensive visualization of Lassa virus across West Africa. To do so, we have compiled and processed Lassa virus infection data from published studies, dating back to the 1970's. Below, we present maps of Lassa virus infection in both rodents and humans, as well as a basic summary of our data set.   
+		</p>
 		</div>
 		<div class="container" id="MainContain">
 			<div class="row justify-content-center">
 				<div class="col">
+					<h2 style="text-align: center">Select a tab below</h2>
 					<ul class="nav nav-tabs" id="myTabs">
 						<li class="nav-item">
 							<a class="nav-link" id="HumanTab" role="tab" aria-controls="LassaHumans" aria-selected="true" href="LassaHumans">Lassa virus in humans</a>
@@ -65,20 +68,35 @@
 					</div>
 				</div>
 				<div class="col">
-					<ul>
-						<li style="font-size: 25px; list-style-image: url(/static/images/language-black-18dp.svg);">
-							Countries represented: {{data_summary[0]}}
-						</li>
-						<li style="font-size: 25px; list-style-image: url(/static/images/article-black-18dp.svg);">
-							Source studies: {{data_summary[1]}}
-						</li>
-						<li style="font-size: 25px; list-style-image: url(/static/images/pest_control_rodent-black-18dp.svg);">
-							Rodent point samples: {{data_summary[2]}}
-						</li>
-						<li style="font-size: 25px; list-style-image: url(/static/images/person-black-18dp.svg);">
-							Human point samples: {{data_summary[3]}}
-						</li>
-					</ul>
+					<h2 style="text-align: center">Summary Data</h2>
+					<table class="table table-hover", style="text-align: left;">
+						<tbody>
+						<tr class="table-danger">
+							<th scope="row">
+								<img src="/static/images/language-black-18dp.svg"></img>
+								Countries represented: {{data_summary[0]}}
+							</th>
+						</tr>
+						<tr class="table-danger">
+							<th scope="row">
+								<img src="/static/images/article-black-18dp.svg"></img>
+								Source studies: {{data_summary[1]}}
+							</th>
+						</tr>
+						<tr class="table-danger">
+							<th scope="row">
+								<img src="/static/images/pest_control_rodent-black-18dp.svg"></img>
+								Rodent point samples: {{data_summary[2]}}
+							</th>
+						</tr>
+						<tr class="table-danger">
+							<th scope="row">
+								<img src="/static/images/person-black-18dp.svg"></img>
+								Human point samples: {{data_summary[3]}}
+							</th>
+						</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
 		</div>	
