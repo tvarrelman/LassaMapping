@@ -1,8 +1,19 @@
-
+"""script for returning db queries """
 import mysql.connector
+import os
+from os import environ, path
+from dotenv import load_dotenv
 
+# finds the absolute path of this file
+basedir = path.abspath(path.dirname(__file__))
+# reads the key value from .env, and adds it to the environment variable
+load_dotenv(path.join(basedir, '.env'))
+db_user = os.environ.get('user')
+db_pw = os.environ.get('password')
+db_host = os.environ.get('host')
+db_name = os.environ.get('database')
 def human_mapper():
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute("SELECT Latitude, Longitude, NumPosAb FROM lassa_data WHERE Genus='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
     human_data  = cursor.fetchall()
@@ -18,7 +29,7 @@ def human_mapper():
     return json_human_data
 
 def rodent_mapper():
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute("SELECT Latitude, Longitude, NumPosAb FROM lassa_data WHERE Genus!='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
     rodent_data  = cursor.fetchall()
@@ -34,7 +45,7 @@ def rodent_mapper():
     return json_rodent_data
 
 def db_summary():
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     #Get the number of countries represented in our dataset
     country_cmd = "SELECT COUNT(*) FROM countries;"
