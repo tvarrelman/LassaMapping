@@ -36,40 +36,50 @@
 		</div>
 		<div class="container" id="MainContain">
 			<div class="row justify-content-center">
-				<ul class="nav nav-tabs" id="myTabs">
-					<li class="nav-item">
-						<a class="nav-link" id="HumanTab" role="tab" aria-controls="LassaHumans" aria-selected="true" href="LassaHumans">Lassa virus in humans</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" id="RodentTab" role="tab" aria-controls="LassaRodents" aria-selected="false" href="LassaRodents">Lassa virus in rodents</a>
-					</li>
-				</ul>
-				<div class="tab-content" id="myTabContent">
-  					<div class="tab-pane fade show active" id="LassaHumans" role="tabpanel" aria-labelledby="HumanTab">
-						<div id="map" style="width:790px; height:590px; margin: auto">
-							<script>
-								var mapOptions = {center: [13.531665, -2.460415], zoom:4};
-								var map = new L.map("map", mapOptions);
-								var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-								map.addLayer(layer);
-							</script>
-							{% block mapper %}{% endblock %}
+				<div class="col">
+					<ul class="nav nav-tabs" id="myTabs">
+						<li class="nav-item">
+							<a class="nav-link" id="HumanTab" role="tab" aria-controls="LassaHumans" aria-selected="true" href="LassaHumans">Lassa virus in humans</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="RodentTab" role="tab" aria-controls="LassaRodents" aria-selected="false" href="LassaRodents">Lassa virus in rodents</a>
+						</li>
+					</ul>
+					<div class="tab-content" id="myTabContent">
+  						<div class="tab-pane fade show active" id="LassaHumans" role="tabpanel" aria-labelledby="HumanTab">
+							<div id="map" style="width:690px; height:590px; margin: auto">
+								<script>
+									var mapOptions = {center: [13.531665, -2.460415], zoom:4};
+									var map = new L.map("map", mapOptions);
+									var layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+									map.addLayer(layer);
+								</script>
+								{% block mapper %}{% endblock %}
+							</div>
 						</div>
-					</div>
-					<div class="tab-pane fade active" id="LassaRodents" role="tabpanel" aria-labelledby="RodentTab">
-						<div id="map" style="width:790px; height:590px; margin: auto">
-							{% block RodentMapper %}{% endblock %}
+						<div class="tab-pane fade active" id="LassaRodents" role="tabpanel" aria-labelledby="RodentTab">
+							<div id="map" style="width:690px; height:590px; margin: auto">
+								{% block RodentMapper %}{% endblock %}
+							</div>
 						</div>
 					</div>
 				</div>
-				<ul>
-					<li>Countries represented: {{data_summary[0]}}</li>
-					<li>Source studies: {{data_summary[1]}}</li>
-					<li style="list-style-image: url(/static/images/pest_control_rodent-black-18dp.svg);">
-						Rodent point samples: {{data_summary[2]}}
-					</li>
-					<li>Human point samples: {{data_summary[3]}}</li>
-				</ul>
+				<div class="col">
+					<ul>
+						<li style="font-size: 25px; list-style-image: url(/static/images/language-black-18dp.svg);">
+							Countries represented: {{data_summary[0]}}
+						</li>
+						<li style="font-size: 25px; list-style-image: url(/static/images/article-black-18dp.svg);">
+							Source studies: {{data_summary[1]}}
+						</li>
+						<li style="font-size: 25px; list-style-image: url(/static/images/pest_control_rodent-black-18dp.svg);">
+							Rodent point samples: {{data_summary[2]}}
+						</li>
+						<li style="font-size: 25px; list-style-image: url(/static/images/person-black-18dp.svg);">
+							Human point samples: {{data_summary[3]}}
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>	
 	</body>

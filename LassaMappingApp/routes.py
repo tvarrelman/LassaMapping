@@ -25,12 +25,14 @@ def main_page():
     return render_template('index.html', message=message, data_summary=data_summary)
 @app.route('/LassaHumans')
 def human_mapping():
+    data_summary = db_summary()
     human_data = human_mapper()
-    return render_template('human_mapper.html', human_data=human_data)    
+    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary)    
 @app.route('/LassaRodents')
 def rodent_mapping():
+    data_summary = db_summary()
     rodent_data = rodent_mapper()
-    return render_template('rodent_mapper.html', rodent_data=rodent_data)
+    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
