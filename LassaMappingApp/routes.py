@@ -10,6 +10,7 @@ from LassaMappingApp.models import db, User
 from flask import current_app as app
 from . import login_manager
 
+# This is a callback function that relaods the user object from the User ID stored in the session
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -18,9 +19,8 @@ def load_user(user_id):
 def main_page():
     # The title of the page (will be inserted in the .html)
     message = "Lassa Virus Data Dashboard"
+    # Function returns summary of the data in the db
     data_summary = db_summary()
-    #human_data = human_mapper()
-    #rodent_data = rodent_mapper()
     # Returns the rendered .html for the index webpage
     return render_template('index.html', message=message, data_summary=data_summary)
 @app.route('/LassaHumans')
@@ -38,16 +38,19 @@ def download_page():
     message = "Download Data!"
     # Returns the rendered .html for the data download page
     return render_template('download.html', message=message)
-# The app is returned to the wsgi.py script located in the root directory
 @app.route('/login', methods=['GET', 'POST'])
 def login(): 
     form = LoginForm(csrf_enabled=False) 
-    if request.method == 'POST': 
+    if request.method == 'POST':
+        # Get the username and pass from the form 
         test_user = request.form['username'] 
         passW = request.form['password'] 
+        # If this is an active request continue on
         if form.validate_on_submit(): 
+            # Retrieve the user from the database
             user = User.query.filter_by(username=test_user).first()
             if user:
+                # Check the user password
                 if check_password_hash(user.password, passW):
                     login_user(user, remember=False)
                     return redirect(url_for('admin'))
