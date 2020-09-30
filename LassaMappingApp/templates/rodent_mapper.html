@@ -1,6 +1,10 @@
 {% extends "index.html" %}
 {% block RodentMapper %}
 <script>
+	var myIcon = L.icon({
+		iconUrl: '/static/images/baseline_pest_control_rodent_black_18dp.png',
+		iconSize: [35,35]
+	}); 
         var coords = {{ rodent_data|tojson}};
         var markers = L.markerClusterGroup();
         for (var i in coords){
@@ -10,6 +14,7 @@
                 title = label + Abpos;
                 var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
                 marker.bindPopup(title);
+		marker.setIcon(myIcon);
                 markers.addLayer(marker);
                 }
         map.addLayer(markers);
