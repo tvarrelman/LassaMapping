@@ -63,7 +63,57 @@ def db_summary():
         summary_list.append(str(summary[0][0]))
     cursor.close()
     return summary_list
-
+def human_year_data():
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
+    cursor.execute(cmd)
+    human_year_data = cursor.fetchall()
+    cursor.close()
+    year_list = []
+    totalAbPos = []
+    for entry in human_year_data:
+        year_list.append(entry[0])
+        if entry[1]!= None:
+            tot = int(entry[1])
+        else:
+            tot='None'
+        totalAbPos.append(tot)
+    return year_list, totalAbPos
+def rodent_year_data():
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    cursor.execute(cmd)
+    rodent_year_data = cursor.fetchall()
+    cursor.close()
+    year_list = []
+    totalAbPos = []
+    for entry in rodent_year_data:
+        year_list.append(entry[0])
+        if entry[1]!= None:
+            tot = int(entry[1])
+        else:
+            tot='None'
+        totalAbPos.append(tot)
+    return year_list, totalAbPos
+def total_year_data():
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data GROUP BY (start_year);"
+    cursor.execute(cmd)
+    year_data = cursor.fetchall()
+    cursor.close()
+    year_list = []
+    totalAbPos = []
+    for entry in year_data:
+        year_list.append(entry[0])
+        if entry[1]!= None:
+            tot = int(entry[1])
+        else:
+            tot='None'
+        totalAbPos.append(tot)
+    return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-#    db_summary()
+#    print(db_user)
