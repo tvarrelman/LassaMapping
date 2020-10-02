@@ -98,18 +98,19 @@
 						</tr>
 						</tbody>
 					</table>
-					<!--<div id='myDiv'>
+					<div id='myDiv'>
 						<script>
+							var layout = {
+								title:'{{bar_title}}'
+							};
 							var data = [{
 								x: {{year_list}},
 								y: {{totalAbPos}},
 								type: 'bar'
 							}];
-							Plotly.newPlot('myDiv', data)
+							Plotly.newPlot('myDiv', data, layout)
 						</script>
-					</div>-->
-					<p> {{year_list}} </p>
-					<p> {{totalAbPos}} </p>
+					</div>
 				</div>
 			</div>
 		</div>	

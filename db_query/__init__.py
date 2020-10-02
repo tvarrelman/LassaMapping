@@ -1,6 +1,7 @@
 """script for returning db queries """
 import mysql.connector
 import os
+import numpy as np
 from os import environ, path
 from dotenv import load_dotenv
 
@@ -73,12 +74,9 @@ def human_year_data():
     year_list = []
     totalAbPos = []
     for entry in human_year_data:
-        year_list.append(entry[0])
-        if entry[1]!= None:
-            tot = int(entry[1])
-        else:
-            tot='None'
-        totalAbPos.append(tot)
+        if entry[0]!= None and entry[1]!= None:
+            year_list.append(entry[0])
+            totalAbPos.append(int(entry[1]))            
     return year_list, totalAbPos
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
@@ -90,12 +88,9 @@ def rodent_year_data():
     year_list = []
     totalAbPos = []
     for entry in rodent_year_data:
-        year_list.append(entry[0])
-        if entry[1]!= None:
-            tot = int(entry[1])
-        else:
-            tot='None'
-        totalAbPos.append(tot)
+        if entry[0]!= None and entry[1]!= None:
+            year_list.append(entry[0])
+            totalAbPos.append(int(entry[1]))
     return year_list, totalAbPos
 def total_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
@@ -107,12 +102,9 @@ def total_year_data():
     year_list = []
     totalAbPos = []
     for entry in year_data:
-        year_list.append(entry[0])
-        if entry[1]!= None:
-            tot = int(entry[1])
-        else:
-            tot='None'
-        totalAbPos.append(tot)
+        if entry[0]!= None and entry[1]!= None:
+            year_list.append(entry[0])
+            totalAbPos.append(int(entry[1]))
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
