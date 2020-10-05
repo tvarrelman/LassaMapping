@@ -39,7 +39,7 @@
 		</div>
 		<div class="container" id="MainContain">
 			<div class="row justify-content-center">
-				<div class="col">
+				<div class="col col-sm-8">
 					<div class="card">
 						<div class="card-body">
 							<h3 style="text-align: center">Select a tab below</h3>
@@ -72,7 +72,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col">
+				<div class="col col-sm-4">
 					<div class="card">
 						<div class="card-body">
 							<h3 style="text-align: center">Summary Data</h3>
@@ -111,7 +111,15 @@
 							<div id='myDiv'>
 								<script>
 									var layout = {
-										title:'{{bar_title}}'
+										autosize: true,
+										automargin: false,
+										margin: {
+											l: 50,
+											r: 10,
+											b: 50,
+											t: 10,
+											pad: 4
+											}
 									};
 									var data = [{
 										x: {{year_list}},
