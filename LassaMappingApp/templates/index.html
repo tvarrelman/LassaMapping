@@ -40,76 +40,95 @@
 		<div class="container" id="MainContain">
 			<div class="row justify-content-center">
 				<div class="col">
-					<h3 style="text-align: center">Select a tab below</h3>
-					<ul class="nav nav-tabs" id="myTabs">
-						<li class="nav-item">
-							<a class="nav-link" id="HumanTab" role="tab" aria-controls="LassaHumans" aria-selected="true" href="LassaHumans">Lassa virus in humans</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="RodentTab" role="tab" aria-controls="LassaRodents" aria-selected="false" href="LassaRodents">Lassa virus in rodents</a>
-						</li>
-					</ul>
-					<div class="tab-content" id="myTabContent">
-  						<div class="tab-pane fade show active" id="LassaHumans" role="tabpanel" aria-labelledby="HumanTab">
-							<div id="map" style="width:690px; height:590px; margin: auto">
+					<div class="card">
+						<div class="card-body">
+							<h3 style="text-align: center">Select a tab below</h3>
+							<ul class="nav nav-tabs" id="myTabs">
+								<li class="nav-item">
+									<a class="nav-link" id="HumanTab" href="LassaHumans">Lassa virus in humans</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="RodentTab" href="LassaRodents">Lassa virus in rodents</a>
+								</li>
+							</ul>
+							<div class="tab-content" id="myTabContent">
+  								<div class="tab-pane fade in show active" id="LassaHumans">
+									<div id="map" style="width:690px; height:590px; margin: auto">
+										<script>
+											var mapOptions = {center: [13.531665, -2.460415], zoom:4};
+											var map = new L.map("map", mapOptions);
+											var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+											map.addLayer(layer);
+										</script>
+										{% block mapper %}{% endblock %}
+									</div>
+								</div>
+								<div class="tab-pane fade in" id="LassaRodents">
+									<div id="map" style="width:690px; height:590px; margin: auto">
+										{% block RodentMapper %}{% endblock %}
+									</div>
+								</div>
 								<script>
-									var mapOptions = {center: [13.531665, -2.460415], zoom:4};
-									var map = new L.map("map", mapOptions);
-									var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-									map.addLayer(layer);
+									$(document).ready(function(){
+										$("#LassaRodents").click(function(){
+											$("#RodentTab").tab('show');
+											});
+										});
 								</script>
-								{% block mapper %}{% endblock %}
-							</div>
-						</div>
-						<div class="tab-pane fade active" id="LassaRodents" role="tabpanel" aria-labelledby="RodentTab">
-							<div id="map" style="width:690px; height:590px; margin: auto">
-								{% block RodentMapper %}{% endblock %}
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col">
-					<h3 style="text-align: center">Summary Data</h3>
-					<table class="table table-hover", style="text-align: left;">
-						<tbody>
-						<tr class="table-active">
-							<th scope="row">
-								<img src="/static/images/language-black-18dp.svg"></img>
-								Countries represented: {{data_summary[0]}}
-							</th>
-						</tr>
-						<tr class="table-active">
-							<th scope="row">
-								<img src="/static/images/article-black-18dp.svg"></img>
-								Source studies: {{data_summary[1]}}
-							</th>
-						</tr>
-						<tr class="table-active">
-							<th scope="row">
-								<img src="/static/images/pest_control_rodent-black-18dp.svg"></img>
-								Rodent point samples: {{data_summary[2]}}
-							</th>
-						</tr>
-						<tr class="table-active">
-							<th scope="row">
-								<img src="/static/images/person-black-18dp.svg"></img>
-								Human point samples: {{data_summary[3]}}
-							</th>
-						</tr>
-						</tbody>
-					</table>
-					<div id='myDiv'>
-						<script>
-							var layout = {
-								title:'{{bar_title}}'
-							};
-							var data = [{
-								x: {{year_list}},
-								y: {{totalAbPos}},
-								type: 'bar'
-							}];
-							Plotly.newPlot('myDiv', data, layout)
-						</script>
+					<div class="card">
+						<div class="card-body">
+							<h3 style="text-align: center">Summary Data</h3>
+							<table class="table table-hover", style="text-align: left;">
+								<tbody>
+								<tr class="table-active">
+									<th scope="row">
+										<img src="/static/images/language-black-18dp.svg"></img>
+										Countries represented: {{data_summary[0]}}
+									</th>
+								</tr>
+								<tr class="table-active">
+									<th scope="row">
+										<img src="/static/images/article-black-18dp.svg"></img>
+										Source studies: {{data_summary[1]}}
+									</th>
+								</tr>
+								<tr class="table-active">
+									<th scope="row">
+										<img src="/static/images/pest_control_rodent-black-18dp.svg"></img>
+										Rodent point samples: {{data_summary[2]}}
+									</th>
+								</tr>
+								<tr class="table-active">
+									<th scope="row">
+										<img src="/static/images/person-black-18dp.svg"></img>
+										Human point samples: {{data_summary[3]}}
+									</th>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="card">
+						<div class="card-body">
+							<div id='myDiv'>
+								<script>
+									var layout = {
+										title:'{{bar_title}}'
+									};
+									var data = [{
+										x: {{year_list}},
+										y: {{totalAbPos}},
+										type: 'bar'
+									}];
+									Plotly.newPlot('myDiv', data, layout)
+								</script>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>
