@@ -10,6 +10,8 @@ from LassaMappingApp.models import db, User
 from flask import current_app as app
 from . import login_manager
 from werkzeug.utils import secure_filename
+import pandas as pd
+from io import StringIO
 
 # This is a callback function that relaods the user object from the User ID stored in the session
 @login_manager.user_loader
@@ -72,7 +74,11 @@ def admin():
     if request.method == 'POST':
         myfile = request.files['fileupload']
         if myfile:
-            message = "Upload sucessful"
+            #message = "Upload sucessful"
+            str_data = str(myfile.read(), 'utf-8')
+            data = StringIO(str_data)
+            data_df = pd.read_csv(data, sep='\t')
+            message = data_df.columns[1]
             return render_template('admin.html', message=message)
         else:
             error = "No file selected"
