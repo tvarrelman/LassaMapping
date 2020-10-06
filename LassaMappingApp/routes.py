@@ -65,6 +65,7 @@ def login():
             error = "Invalid username or password"
             return render_template('login.html', form=form, error=error)
     return render_template('login.html', form=form)
+ALLOWED_EXTENSIONS = {'csv'}
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -73,14 +74,13 @@ def allowed_file(filename):
 def admin(): 
     if request.method == 'POST':
         myfile = request.files['fileupload']
-        if myfile:
-            #message = "Upload sucessful"
+        if myfile and allowed_file(myfile.filename):
             str_data = str(myfile.read(), 'utf-8')
             data = StringIO(str_data)
             data_df = pd.read_csv(data, sep='\t')
             message = data_df.columns[1]
             return render_template('admin.html', message=message)
         else:
-            error = "No file selected"
+            error = "No file selected/incorrect file type"
             return render_template('admin.html', error=error)
     return render_template('admin.html')
