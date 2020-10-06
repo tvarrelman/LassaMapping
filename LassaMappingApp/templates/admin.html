@@ -27,13 +27,25 @@
                         <div class="card border-secondary mb-3">
                                 <div class="card-header">Database Entry</div>
                                 <div class="card-body">
-                                        <form action="" method="POST" role="form">
+                                        <form action="" method="POST" enctype="multipart/form-data">
 						<div class="form-group">
+							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 							<label for="InputCSV">File input</label>
-							<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp">
+							<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="fileupload">
       							<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa data that should be added to the database. For a successful upload, the input data should be formatted according to the example template. If you do not have data for a particular field, leave the field blank. </small>
-    						</div>                                       	
+    							<input type="submit" value="Upload File" name="submit">
+						</div>
 					</form>
+					{% if message  %}
+						<div class="alert alert-dismissible alert-success">
+							<strong>{{message}}</strong>
+						<div>
+					{% endif  %}
+					{% if error  %}
+						<div class="alert alert-dismissible alert-danger">
+							<strong>{{error}}</strong>
+						</div>
+					{% endif  %}
 				</div>
 			</div>
 		</div>

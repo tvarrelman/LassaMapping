@@ -20,6 +20,7 @@ class Config:
     TEMPLATES_FOLDER = 'templates'
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    ALLOWED_EXTENSIONS = {'csv'}
 # create the production configuration settings, which will be added to the general config.    
 class ProdConfig(Config):
     FLASK_ENV = 'production'

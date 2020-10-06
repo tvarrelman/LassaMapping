@@ -1,5 +1,5 @@
 
-from flask import Flask, url_for, render_template, request, redirect
+from flask import Flask, url_for, render_template, request, redirect, flash
 import os
 from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, total_year_data
 from LassaMappingApp.forms import LoginForm
@@ -9,12 +9,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from LassaMappingApp.models import db, User
 from flask import current_app as app
 from . import login_manager
+from werkzeug.utils import secure_filename
 
 # This is a callback function that relaods the user object from the User ID stored in the session
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
-
 @app.route('/')
 def main_page():
     # The title of the page (will be inserted in the .html)
@@ -63,7 +63,18 @@ def login():
             error = "Invalid username or password"
             return render_template('login.html', form=form, error=error)
     return render_template('login.html', form=form)
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 @app.route('/Admin', methods=['GET', 'POST'])
 @login_required
 def admin(): 
+    if request.method == 'POST':
+        myfile = request.files['fileupload']
+        if myfile:
+            message = "Upload sucessful"
+            return render_template('admin.html', message=message)
+        else:
+            error = "No file selected"
+            return render_template('admin.html', error=error)
     return render_template('admin.html')
