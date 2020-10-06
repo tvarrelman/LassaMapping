@@ -46,7 +46,7 @@ def download_page():
     return render_template('download.html', message=message)
 @app.route('/login', methods=['GET', 'POST'])
 def login(): 
-    form = LoginForm(csrf_enabled=False) 
+    form = LoginForm() 
     if request.method == 'POST':
         # Get the username and pass from the form 
         test_user = request.form['username'] 
