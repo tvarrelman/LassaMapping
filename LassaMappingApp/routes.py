@@ -60,7 +60,8 @@ def login():
                 if check_password_hash(user.password, passW):
                     login_user(user, remember=False)
                     return redirect(url_for('admin'))
-            return '<h1> Invalid username or password </h1>'
+            error = "Invalid username or password"
+            return render_template('login.html', form=form, error=error)
     return render_template('login.html', form=form)
 @app.route('/Admin', methods=['GET', 'POST'])
 @login_required
