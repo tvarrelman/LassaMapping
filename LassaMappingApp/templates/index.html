@@ -42,7 +42,7 @@
 				<div class="col col-sm-8">
 					<div class="card">
 						<div class="card-body">
-							<h3 style="text-align: center">Select a tab below</h3>
+							<!--<h3 style="text-align: center">Select a tab below</h3>-->
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
 									<a class="nav-link" id="HumanTab" href="LassaHumans">Lassa virus in humans</a>
@@ -75,7 +75,7 @@
 				<div class="col col-sm-4">
 					<div class="card">
 						<div class="card-body">
-							<h3 style="text-align: center">Summary Data</h3>
+							<!--<h3 style="text-align: center">Summary Data</h3>-->
 							<table class="table table-hover", style="text-align: left;">
 								<tbody>
 								<tr class="table-active">
@@ -114,12 +114,14 @@
 										autosize: true,
 										automargin: false,
 										margin: {
-											l: 50,
+											l: 55,
 											r: 10,
 											b: 50,
 											t: 10,
 											pad: 4
-											}
+											},
+										xaxis:{title: {text: 'Year'}},
+										yaxis:{title: {text: 'Number of Individuals'}}
 									};
 									var data = [{
 										x: {{year_list}},
