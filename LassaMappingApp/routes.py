@@ -23,7 +23,7 @@ def main_page():
     message = "Lassa Virus Data Dashboard"
     # Function returns summary of the data in the db
     data_summary = db_summary()
-    bar_title = "Total Antibody Positive (Human+Rodents)"
+    bar_title = "(Human+Rodents)"
     total_year_list, AllspeciesTotalPosAb = total_year_data()
     # Returns the rendered .html for the index webpage
     return render_template('index.html', message=message, data_summary=data_summary, year_list=total_year_list, totalAbPos=AllspeciesTotalPosAb, bar_title=bar_title)
@@ -32,14 +32,14 @@ def human_mapping():
     data_summary = db_summary()
     human_data = human_mapper()
     year_list, totalAbPos = human_year_data()
-    bar_title = "Total Antibody Positive (Human)"
+    bar_title = "(Human)"
     return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
     rodent_data = rodent_mapper()
     rodent_year_list, rodentTotalAbPos = rodent_year_data()
-    bar_title = "Total Antibody Positive (Rodent)"
+    bar_title = "(Rodent)"
     return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title)
 @app.route('/Download')
 def download_page():
