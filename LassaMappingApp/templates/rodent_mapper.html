@@ -6,18 +6,37 @@
 		iconSize: [35,35]
 	}); 
         var coords = {{ rodent_data|tojson}};
-        var markers = L.markerClusterGroup();
-        for (var i in coords){
-                var coordPair = coords[i];
-                var Abpos = coordPair.NumPosAb;
-                var label = 'Number Antibody Positive: ';
-                title = label + Abpos;
-                var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
-                marker.bindPopup(title);
-		marker.setIcon(myIcon);
-                markers.addLayer(marker);
-                }
-        map.addLayer(markers);
+	let group = coords.reduce((r, a) => {
+		r[a.country_name] = [...r[a.country_name] || [], a];
+		return r;
+	}, {});
+	for (var i in group){
+		var country = group[i];
+		var markers = L.markerClusterGroup();
+		for (var j in country){
+			var countryData = country[j];
+			var Abpos = countryData.NumPosAb;
+			var label = 'Number Antibody Positive: ';
+			title = label + Abpos;
+			var marker = L.marker(new L.LatLng(countryData.Latitude, countryData.Longitude, { title: title}));marker.bindPopup(title);
+			marker.bindPopup(title);
+			marker.setIcon(myIcon);
+			markers.addLayer(marker);
+		}
+		map.addLayer(markers);
+	};
+	//var markers = L.markerClusterGroup();
+	//for (var i in coords){
+	//	var coordPair = coords[i];
+	//	var Abpos = coordPair.NumPosAb;
+	//	var label = 'Number Antibody Positive: ';
+	//	title = label + Abpos;
+	//	var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));marker.bindPopup(title);
+	//	marker.bindPopup(title);
+	//	marker.setIcon(myIcon);
+	//	markers.addLayer(marker);
+	//	}
+	//map.addLayer(markers);
 </script>
 <script>
 $(document.body).scrollTop($("#MainContain").offset().top);

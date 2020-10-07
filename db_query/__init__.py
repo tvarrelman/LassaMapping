@@ -32,7 +32,7 @@ def human_mapper():
 def rodent_mapper():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cursor.execute("SELECT Latitude, Longitude, NumPosAb FROM lassa_data WHERE Genus!='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
+    cursor.execute("SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.NumPosAb, countries.country_name FROM lassa_data, countries WHERE lassa_data.country_id=countries.country_id AND Genus!='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
     rodent_data  = cursor.fetchall()
     rodent_headers = [x[0] for x in cursor.description]
     json_rodent_data = []
@@ -40,7 +40,8 @@ def rodent_mapper():
         lat = float(row[0])
         lon = float(row[1])
         AbPos = int(row[2])
-        entry = (lat, lon, AbPos)
+        country = str(row[3])
+        entry = (lat, lon, AbPos, country)
         json_rodent_data.append(dict(zip(rodent_headers, entry)))
     cursor.close()
     return json_rodent_data
