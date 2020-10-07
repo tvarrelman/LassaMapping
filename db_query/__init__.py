@@ -4,6 +4,8 @@ import os
 import numpy as np
 from os import environ, path
 from dotenv import load_dotenv
+import json
+#from shapely.geometry import shape, Point
 
 # finds the absolute path of this file
 basedir = path.abspath(path.dirname(__file__))
@@ -36,12 +38,23 @@ def rodent_mapper():
     rodent_data  = cursor.fetchall()
     rodent_headers = [x[0] for x in cursor.description]
     json_rodent_data = []
+    with open("LassaMappingApp/static/Africa.geojson") as JsonFile:
+        strJson = json.load(JsonFile)
     for row in rodent_data:
         lat = float(row[0])
         lon = float(row[1])
+ #       point = Point(lon, lat)
+        # check each polygon to see if it contains the point
+#        for feature in strJson['features']:
+#            polygon = shape(feature['geometry'])
+#            if polygon.contains(point):
+#                center_point = polygon.centroid
+#                center_lon = center_point.coords.xy[0][0]
+#                center_lat = center_point.coords.xy[1][0]
         AbPos = int(row[2])
         country = str(row[3])
         entry = (lat, lon, AbPos, country)
+ #       json_headers.append(['centerLat', 'centerLon'])
         json_rodent_data.append(dict(zip(rodent_headers, entry)))
     cursor.close()
     return json_rodent_data
