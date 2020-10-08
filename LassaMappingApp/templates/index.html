@@ -64,10 +64,11 @@
 			</div>
 		</div>
 		<div class="container-fluid" id="MainContain">
-			<div class="row equal">
-				<div class="col col-sm-8">
-					<div class="card">
+			<div class="row">
+				<div class="col col-sm-8" style="height: 485px">
+					<div class="card" style="height: 100%">
 						<div class="card-body">
+							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<!--<h3 style="text-align: center">Select a tab below</h3>-->
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
@@ -79,7 +80,7 @@
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
-									<div id="map" style="width:900px; height:390px; margin: auto">
+									<div id="map" style="width:890px; height:370px; margin: auto">
 										<script>
 											var mapOptions = {center: [9.531665, 4.460415], zoom:4};
 											var map = new L.map("map", mapOptions);
@@ -90,7 +91,7 @@
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaRodents">
-									<div id="map" style="width:900px; height:390px; margin: auto">
+									<div id="map" style="width:890px; height:370px; margin: auto">
 										{% block RodentMapper %}{% endblock %}
 									</div>
 								</div>
@@ -98,15 +99,16 @@
 						</div>
 					</div>
 				</div>
-				<div class="col col-sm-4">
-					<div class="card">
+				<div class="col col-sm-4" style="height: 485px">
+					<div class="card" style="height: 100%">
 						<div class="card-body">
-							<div id='myDiv'>
+							<div id='myDiv' style="width:100%">
 								<script>
 									var baseTitle = "Total Antibody Positive<br>"
 									var finalTitle = baseTitle.concat("{{bar_title}}")
 									var layout = {
 										title: finalTitle,
+										font: {color:'#1a1a1a'},
 										autosize: true,
 										automargin: false,
 										margin: {
@@ -122,7 +124,8 @@
 									var data = [{
 										x: {{year_list}},
 										y: {{totalAbPos}},
-										type: 'bar'
+										type: 'bar',
+										marker: {color: '#f0ad4e'}
 									}];
 									Plotly.newPlot('myDiv', data, layout)
 								</script>

@@ -78,7 +78,7 @@ def admin():
             str_data = str(myfile.read(), 'utf-8')
             data = StringIO(str_data)
             data_df = pd.read_csv(data, sep='\t')
-            message = data_df.columns[1]
+            message = 'Successfully imported data'
             return render_template('admin.html', message=message)
         else:
             error = "No file selected/incorrect file type"
