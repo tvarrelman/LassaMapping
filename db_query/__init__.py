@@ -81,44 +81,50 @@ def db_summary():
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
+    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     human_year_data = cursor.fetchall()
     cursor.close()
     year_list = []
     totalAbPos = []
     for entry in human_year_data:
-        if entry[0]!= None and entry[1]!= None:
-            year_list.append(entry[0])
-            totalAbPos.append(int(entry[1]))            
+        if entry[0]!= None and entry[1]!= None and entry[2]!=None:
+            if entry[1]!=0 and entry[2]!=0:
+                year_list.append(entry[0])
+                totalAbPos.append(int(entry[1])/int(entry[2]))            
     return year_list, totalAbPos
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     rodent_year_data = cursor.fetchall()
     cursor.close()
     year_list = []
     totalAbPos = []
     for entry in rodent_year_data:
-        if entry[0]!= None and entry[1]!= None:
-            year_list.append(entry[0])
-            totalAbPos.append(int(entry[1]))
+        if entry[0]!= None and entry[1]!= None and entry[2]!=None:
+            if entry[1]!=0 and entry[2]!=0:
+                year_list.append(entry[0])
+                totalAbPos.append(int(entry[1])/int(entry[2]))
     return year_list, totalAbPos
 def total_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data GROUP BY (start_year);"
+    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data GROUP BY (start_year);"
+    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb) FROM lassa_data GROUP BY (start_year);"
     cursor.execute(cmd)
     year_data = cursor.fetchall()
     cursor.close()
     year_list = []
     totalAbPos = []
     for entry in year_data:
-        if entry[0]!= None and entry[1]!= None:
-            year_list.append(entry[0])
-            totalAbPos.append(int(entry[1]))
+        if entry[0]!= None and entry[1]!= None and entry[2]!=None:
+            if entry[1]!=0 and entry[2]!=0:
+                year_list.append(entry[0])
+                totalAbPos.append(int(entry[1])/int(entry[2]))
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
