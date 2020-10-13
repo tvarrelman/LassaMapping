@@ -32,7 +32,7 @@
 							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 							<label for="InputCSV">File input</label>
 							<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="fileupload">
-      							<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa data that should be added to the database. For a successful upload, the input data should be formatted according to the example template. If you do not have data for a particular field, leave the field blank. </small>
+      							<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/LassaDataTemplate.csv">template</a>. For a detailed desciption of the data fields, see <a download href="/static/LassaDataDescription.txt">here</a>.</small>
     							<input type="submit" value="Upload File" name="submit">
 						</div>
 					</form>
