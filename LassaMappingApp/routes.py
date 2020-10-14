@@ -1,5 +1,5 @@
 
-from flask import Flask, url_for, render_template, request, redirect, flash
+from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
 from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, start_year_list
 from LassaMappingApp.forms import LoginForm
@@ -25,17 +25,19 @@ def human_mapping():
     data_summary = db_summary()
     human_data = human_mapper()
     year_list, totalAbPos = human_year_data()
-    StartYearList = start_year_list('human')
+    host = 'human'
+    StartYearList = start_year_list(host)
     bar_title = "(Human)"
-    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList)    
+    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
     rodent_data = rodent_mapper()
     rodent_year_list, rodentTotalAbPos = rodent_year_data()
-    StartYearList = start_year_list('rodent')
+    host = 'rodent'
+    StartYearList = start_year_list(host)
     bar_title = "(Rodent)"
-    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList)
+    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
@@ -79,3 +81,9 @@ def admin():
             error = "No file selected/incorrect file type"
             return render_template('admin.html', error=error)
     return render_template('admin.html')
+@app.route('/_get_end_year', methods=['GET','POST'])
+def get_end_year():
+    start_year = request.args.get('start_year', 'default_if_none')
+    host_mapped = request.args.get('host', 'default_if_none')
+    return jsonify({'Year':start_year, 'host':host_mapped})
+    

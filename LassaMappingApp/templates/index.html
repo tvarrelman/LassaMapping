@@ -80,11 +80,43 @@
 				<div class="col col-md-8" style="height: 485px">
 					<div class="card" style="height: 100%">
 						<div class="card-body">
-							<select name={{StartYearList}} method="GET">
-								{% for year in StartYearList  %}
-								<option value="{{year}}" SELECTED>{{year}}</option>
-								{% endfor %}
-							</select>
+							<div class="form-group" style="width:45%;">
+								<label for="StartYear">Start Year:</label>
+								<select class="form-control" name="StartYear" id="StartYear">
+									{% for year in StartYearList  %}
+									<option value="{{year}}" SELECTED>{{year}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="form-group" style="width:45%;">
+								<label for="EndYear">End Year:</label>
+								<select class="form-control" name="EndYear" id="EndYear"></select>
+							</div>
+							<script>
+								$(function(){
+									var start_year_select = $('#StartYear'),
+									end_year_select = $('#EndYear');
+									start_year_select.on('change', function(){
+										getUpdatedEndYear();
+									});
+									function getUpdatedEndYear() {
+										console.log(start_year_select.val());
+										var send = {
+											start_year: start_year_select.val(),
+											host:"{{host}}"
+										};
+										$.getJSON("/_get_end_year", send, function(response) {
+											console.log(response);
+										//	end_year_select.empty();
+										//	$.each(response.end_year, function (value) {
+										//		end_year_select.append(
+										//			$('<option>',{
+										//				value: value}, '</option>'))
+										//	});
+										});
+									}
+								});
+							</script>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
