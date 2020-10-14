@@ -19,14 +19,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 @app.route('/')
 def main_page():
-    # The title of the page (will be inserted in the .html)
-    message = "Lassa Virus Data Dashboard"
-    # Function returns summary of the data in the db
-    data_summary = db_summary()
-    bar_title = "(Human+Rodents)"
-    total_year_list, AllspeciesTotalPosAb = total_year_data()
-    # Returns the rendered .html for the index webpage
-    return render_template('index.html', message=message, data_summary=data_summary, year_list=total_year_list, totalAbPos=AllspeciesTotalPosAb, bar_title=bar_title)
+    return redirect(url_for('human_mapping'))
 @app.route('/LassaHumans')
 def human_mapping():
     data_summary = db_summary()
