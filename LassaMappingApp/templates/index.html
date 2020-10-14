@@ -138,7 +138,8 @@
 										type: 'bar',
 										marker: {color: '#f0ad4e'}
 									}];
-									Plotly.newPlot('myDiv', data, layout)
+									let modeBarButtons = [["toImage", "lasso2d"]];
+									Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
 								</script>
 							</div>
 						</div>
