@@ -15,6 +15,16 @@ db_user = os.environ.get('user')
 db_pw = os.environ.get('password')
 db_host = os.environ.get('host')
 db_name = os.environ.get('database')
+def start_year_list():
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cursor = cnx.cursor()
+    cursor.execute("SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL ORDER BY start_year;")
+    year_list = cursor.fetchall()
+    start_year_list = []
+    for year in year_list:
+        start_year_list.append(year[0])
+    return start_year_list
 def human_mapper():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -110,22 +120,6 @@ def rodent_year_data():
                 year_list.append(entry[0])
                 totalAbPos.append(int(entry[1])/int(entry[2]))
     return year_list, totalAbPos
-def total_year_data():
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-    cursor = cnx.cursor()
-    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data GROUP BY (start_year);"
-    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb) FROM lassa_data GROUP BY (start_year);"
-    cursor.execute(cmd)
-    year_data = cursor.fetchall()
-    cursor.close()
-    year_list = []
-    totalAbPos = []
-    for entry in year_data:
-        if entry[0]!= None and entry[1]!= None and entry[2]!=None:
-            if entry[1]!=0 and entry[2]!=0:
-                year_list.append(entry[0])
-                totalAbPos.append(int(entry[1])/int(entry[2]))
-    return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
-#if __name__ == '__main__':
-#    print(db_user)
+if __name__ == '__main__':
+    start_year_list()
