@@ -80,6 +80,11 @@
 				<div class="col col-md-8" style="height: 485px">
 					<div class="card" style="height: 100%">
 						<div class="card-body">
+							<select name={{StartYearList}} method="GET">
+								{% for year in StartYearList  %}
+								<option value="{{year}}" SELECTED>{{year}}</option>
+								{% endfor %}
+							</select>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
