@@ -1,0 +1,25 @@
+Description of Lassa Data Fields:
+-Town_Region: The town/region where the sample came from
+-Village: The village of where the sample came from
+-Month: The month of when the sample was taken
+-Day: The day that the sample was taken
+-Year: The year that the sample was taken (needs to be a single year, or a range i.e. 1995, or 1995-1996)
+-Latitude: Latitude of the sample location
+-Longitude: Longitude of the sample location
+-Country: The country where the sample came from
+-Status: Whether the sample was negative or positive for Lassa virus
+-NumPosAg: Number of individuals that tested positive for Lassa virus
+-NumTestAg: Number of individuals that were tested for Lassa virus
+-PropAg: The proportion of individuals that test positive for Lassa virus
+-NumPosAb: The number of individuals that test positive for arenavirus antibodies
+-NumTestAb: The number of individuals that were tested for arenavirus antibodies
+-PropAb: The proportion of individuals that test positive for arenavirus antibodies
+-Genus: The genus of the sampled host
+-Species: The species of the sampled host
+-DiagnosticMethod: Method used for identifying Lassa virus infection
+-Target: The molecular target for the test (i.e. IgG, Ag, IgM, Not Specified)
+-lat-lon-source: Source for the lat lon coordinates (not always the source study)
+-Citation: Citation for the study that the data came from
+-DOI: DOI for the source study
+-Human_Random_Survey: Whether or not the study conducted a human random survey (input is either T or F)
+-Notes: Notes for anything important in the curation process
