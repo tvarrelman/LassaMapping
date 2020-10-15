@@ -17,10 +17,12 @@ db_host = os.environ.get('host')
 db_name = os.environ.get('database')
 def start_year_list(host):
     if host=='human':
-        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' ORDER BY start_year;"
+        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
     if host=='rodent':
-        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus!='Homo' ORDER BY start_year;"
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND (PropAb IS NOT NULL) OR (PropAg IS NOT NULL) ORDER BY start_year;"
+
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(cmd)
     year_list = cursor.fetchall()
@@ -138,6 +140,6 @@ def rodent_year_data():
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(start_year_list('human'))
+    #print(start_year_list('rodent'))
     #print(start_year_list('rodent'))
     #print(end_year_list("2002", 'human'))
