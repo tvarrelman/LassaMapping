@@ -84,25 +84,36 @@
 								<label for="StartYear">Start Year:</label>
 								<select class="form-control" name="StartYear" id="StartYear">
 									{% for year in StartYearList  %}
-									<option value="{{year}}" SELECTED>{{year}}</option>
+									<option value="{{year}}">{{year}}</option>
 									{% endfor %}
 								</select>
 							</div>
 							<div class="form-group" style="width:45%;">
 								<label for="EndYear">End Year:</label>
-								<select class="form-control" name="EndYear" id="EndYear"></select>
+								<select class="form-control" name="EndYear" id="EndYear">
+									{% for end_year in EndYearList %}
+									<option value="{{end_year}}">{{end_year}}</option>
+									{% endfor %}
+								</select>
 							</div>
 							<script>
+								var SY = document.getElementById("StartYear");
+								SY.options[0].selected = true;
+								var EY = document.getElementById("EndYear");
+								EY.options[EY.options.length - 1].selected = true;
 								$(function(){
 									var start_year_select = $('#StartYear'),
 									end_year_select = $('#EndYear');
 									start_year_select.on('change', function(){
-										getUpdatedEndYear();
+										getUpdatedEndYear(start_year_select.val());
 									});
-									function getUpdatedEndYear() {
-										//console.log(start_year_select.val());
+									//$(document).ready(function(){
+									//	getUpdatedEndYear(SY.options[0].selected);
+									//});
+									function getUpdatedEndYear(start_val) {
+										//console.log(start_val);
 										var send = {
-											start_year: start_year_select.val(),
+											start_year: start_val,
 											host:"{{host}}"
 										};
 										$.getJSON("/_get_end_year", send, function(response) {
@@ -116,6 +127,9 @@
 													text: response[i].end_year},
 													'</option>'))
 											};
+											//var EY = document.getElementById("EndYear");
+											//console.log(EY.options.length);
+											//EY.options[EY.options.length -1].selected = true;
 										});
 									}
 								});
