@@ -15,26 +15,34 @@ db_user = os.environ.get('user')
 db_pw = os.environ.get('password')
 db_host = os.environ.get('host')
 db_name = os.environ.get('database')
-def start_year_list(host):
+def initial_year_lists(host):
     if host=='human':
-        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
+        cmd1 = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
+        cmd2 = "SELECT DISTINCT end_year FROM lassa_data WHERE end_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY end_year;"
     if host=='rodent':
-        cmd = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND (PropAb IS NOT NULL) OR (PropAg IS NOT NULL) ORDER BY start_year;"
-
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+        cmd1 = "SELECT DISTINCT start_year FROM lassa_data WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY start_year;"
+        cmd2 = "SELECT DISTINCT end_year FROM lassa_data WHERE (end_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY end_year;"
+    #cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cursor.execute(cmd)
-    year_list = cursor.fetchall()
-    start_year_list = []
-    for year in year_list:
-        start_year_list.append(year[0])
-    return start_year_list
+    cursor.execute(cmd1)
+    SY_list = cursor.fetchall()
+    init_start_year_list = []
+    for year in SY_list:
+        init_start_year_list.append(year[0])
+    cursor.execute(cmd2)
+    EY_list = cursor.fetchall()
+    init_end_year_list = []
+    for e_year in EY_list:
+        init_end_year_list.append(e_year[0])
+    
+    return init_start_year_list, init_end_year_list
 def end_year_list(start_year, host):
     if host=='human':
-        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE end_year>={0} AND Genus='Homo' ORDER BY end_year;""".format(start_year)
+        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY end_year;""".format(start_year)
     if host=='rodent':
-        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE end_year>={0} AND Genus='Homo' ORDER BY end_year;""".format(start_year)
+        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY end_year;""".format(start_year)
+    #cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(cmd)
@@ -140,6 +148,6 @@ def rodent_year_data():
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(initial_year_lists('rodent'))
     #print(start_year_list('rodent'))
-    #print(start_year_list('rodent'))
-    #print(end_year_list("2002", 'human'))
+    #print(end_year_list("2002", 'rodent'))
