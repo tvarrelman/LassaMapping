@@ -28,6 +28,19 @@ def start_year_list(host):
     for year in year_list:
         start_year_list.append(year[0])
     return start_year_list
+def end_year_list(start_year, host):
+    if host=='human':
+        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE end_year>={0} AND Genus='Homo' ORDER BY end_year;""".format(start_year)
+    if host=='rodent':
+        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE end_year>={0} AND Genus='Homo' ORDER BY end_year;""".format(start_year)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cursor.execute(cmd)
+    year_list = cursor.fetchall()
+    json_end_year = []
+    for year in year_list:
+        json_end_year.append({'end_year':year[0]})
+    return json_end_year
 def human_mapper():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -125,5 +138,6 @@ def rodent_year_data():
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-#    print(start_year_list('human'))
-#    print(start_year_list('rodent'))
+    #print(start_year_list('human'))
+    #print(start_year_list('rodent'))
+    #print(end_year_list("2002", 'human'))

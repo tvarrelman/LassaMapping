@@ -100,19 +100,22 @@
 										getUpdatedEndYear();
 									});
 									function getUpdatedEndYear() {
-										console.log(start_year_select.val());
+										//console.log(start_year_select.val());
 										var send = {
 											start_year: start_year_select.val(),
 											host:"{{host}}"
 										};
 										$.getJSON("/_get_end_year", send, function(response) {
-											console.log(response);
-										//	end_year_select.empty();
-										//	$.each(response.end_year, function (value) {
-										//		end_year_select.append(
-										//			$('<option>',{
-										//				value: value}, '</option>'))
-										//	});
+											//console.log(response);
+											end_year_select.empty();
+											for (var i in response){
+												//console.log(response[i].end_year);
+												end_year_select.append(
+													$('<option>',{
+													value: response[i].end_year,
+													text: response[i].end_year},
+													'</option>'))
+											};
 										});
 									}
 								});

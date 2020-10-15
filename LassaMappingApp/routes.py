@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
-from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, start_year_list
+from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, start_year_list, end_year_list
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -85,5 +85,6 @@ def admin():
 def get_end_year():
     start_year = request.args.get('start_year', 'default_if_none')
     host_mapped = request.args.get('host', 'default_if_none')
-    return jsonify({'Year':start_year, 'host':host_mapped})
+    end_year_json = end_year_list(start_year, host_mapped)
+    return jsonify(end_year_json)
     
