@@ -5,32 +5,14 @@
 		iconUrl: '/static/images/baseline_pest_control_rodent_black_18dp.png',
 		iconSize: [35,35]
 	}); 
-        var coords = {{ rodent_data|tojson}};
-	//let group = coords.reduce((r, a) => {
-	//	r[a.country_name] = [...r[a.country_name] || [], a];
-	//	return r;
-	//}, {});
-	//for (var i in group){
-	//	var country = group[i];
-	//	var markers = L.markerClusterGroup({setClusterCenter: [-5,5]});
-	//	for (var j in country){
-	//		var countryData = country[j];
-	//		var Abpos = countryData.NumPosAb;
-	//		var label = 'Number Antibody Positive: ';
-	//		title = label + Abpos;
-	//		var marker = L.marker(new L.LatLng(countryData.Latitude, countryData.Longitude, { title: title}));marker.bindPopup(title);
-	//		marker.bindPopup(title);
-	//		marker.setIcon(myIcon);
-	//		markers.addLayer(marker);
-	//	}
-	//	map.addLayer(markers);
-	//};
 	var markers = L.markerClusterGroup();
 	for (var i in coords){
 		var coordPair = coords[i];
-		var Abpos = coordPair.NumPosAb;
-		var label = 'Number Antibody Positive: ';
-		title = label + Abpos;
+		var PropAb = coordPair.PropAb;
+		var PropAg = coordPair.PropAg;
+		var Ablabel = 'Proportion arenavirus positive: ';
+		var Aglabel = 'Proportion Lassa virus positive: ';
+		title = Ablabel + PropAb + "<br>" + Aglabel + PropAg;
 		var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));marker.bindPopup(title);
 		marker.bindPopup(title);
 		marker.setIcon(myIcon);

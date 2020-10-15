@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
-from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list
+from db_query import mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -23,21 +23,19 @@ def main_page():
 @app.route('/LassaHumans')
 def human_mapping():
     data_summary = db_summary()
-    human_data = human_mapper()
     year_list, totalAbPos = human_year_data()
     host = 'human'
     StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Human)"
-    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
+    return render_template('human_mapper.html', data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
-    rodent_data = rodent_mapper()
     rodent_year_list, rodentTotalAbPos = rodent_year_data()
     host = 'rodent'
     StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Rodent)"
-    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+    return render_template('rodent_mapper.html', data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
@@ -87,4 +85,10 @@ def get_end_year():
     host_mapped = request.args.get('host', 'default_if_none')
     end_year_json = end_year_list(start_year, host_mapped)
     return jsonify(end_year_json)
-    
+@app.route('/_filter_points', methods=['GET', 'POST']) 
+def filter_points():
+    start_year = request.args.get('start_year', 'default_if_none')
+    end_year = request.args.get('end_year', 'default_if_none')
+    host_species = request.args.get('host', 'default_if_none')
+    mapping_json = mapper(host_species, start_year, end_year) 
+    return jsonify(mapping_json)  

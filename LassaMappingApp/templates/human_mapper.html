@@ -1,17 +1,17 @@
 {% extends "index.html" %} 
 {% block mapper %}
 <script>
+        console.log(coords);
 	var myIcon = L.icon({
 		iconUrl: '/static/images/baseline_person_black_18dp.png',
 		iconSize: [35,35]
 	}); 
-	var coords = {{ human_data|tojson}};
 	var markers = L.markerClusterGroup();
 	for (var i in coords){
 		var coordPair = coords[i];
-		var Abpos = coordPair.NumPosAb;
-		var label = 'Number Antibody Positive: ';
-		title = label + Abpos;
+		var PropAb = coordPair.PropAb;
+		var label = 'Proportion arenavirus positive: ';
+		title = label + PropAb;
 		var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
 		marker.bindPopup(title);
 		marker.setIcon(myIcon);

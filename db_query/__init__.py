@@ -51,50 +51,45 @@ def end_year_list(start_year, host):
     for year in year_list:
         json_end_year.append({'end_year':year[0]})
     return json_end_year
-def human_mapper():
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+def mapper(host, start_year, end_year):
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cursor.execute("SELECT Latitude, Longitude, NumPosAb FROM lassa_data WHERE Genus='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
-    human_data  = cursor.fetchall()
-    human_headers = [x[0] for x in cursor.description]
-    json_human_data = []
-    for row in human_data:
-        lat = float(row[0])
-        lon = float(row[1])
-        AbPos = int(row[2])
-        entry = (lat, lon, AbPos)
-        json_human_data.append(dict(zip(human_headers, entry)))
-    cursor.close()
-    return json_human_data
-
-def rodent_mapper():
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-    cursor = cnx.cursor()
-    cursor.execute("SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.NumPosAb, countries.country_name FROM lassa_data, countries WHERE lassa_data.country_id=countries.country_id AND Genus!='Homo'AND NumPosAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL")
-    rodent_data  = cursor.fetchall()
-    rodent_headers = [x[0] for x in cursor.description]
-    json_rodent_data = []
-    with open("LassaMappingApp/static/Africa.geojson") as JsonFile:
-        strJson = json.load(JsonFile)
-    for row in rodent_data:
-        lat = float(row[0])
-        lon = float(row[1])
- #       point = Point(lon, lat)
-        # check each polygon to see if it contains the point
-#        for feature in strJson['features']:
-#            polygon = shape(feature['geometry'])
-#            if polygon.contains(point):
-#                center_point = polygon.centroid
-#                center_lon = center_point.coords.xy[0][0]
-#                center_lat = center_point.coords.xy[1][0]
-        AbPos = int(row[2])
-        country = str(row[3])
-        entry = (lat, lon, AbPos, country)
- #       json_headers.append(['centerLat', 'centerLon'])
-        json_rodent_data.append(dict(zip(rodent_headers, entry)))
-    cursor.close()
-    return json_rodent_data
-
+    if host == 'human':
+        cmd = """SELECT Latitude, Longitude, PropAb FROM lassa_data WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL;""".format(start_year, end_year)
+        cursor.execute(cmd)
+        human_data  = cursor.fetchall()
+        human_headers = [x[0] for x in cursor.description]
+        json_human_data = []
+        for row in human_data:
+            lat = float(row[0])
+            lon = float(row[1])
+            AbPos = int(row[2])
+            entry = (lat, lon, AbPos)
+            json_human_data.append(dict(zip(human_headers, entry)))
+        cursor.close()
+        return json_human_data
+    if host == 'rodent':
+        cmd1 = """SELECT Latitude, Longitude, PropAb, PropAg FROM lassa_data WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAg IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL);""".format(start_year, end_year)
+        cursor.execute(cmd1)
+        rodent_data = cursor.fetchall()
+        rodent_headers = [x[0] for x in cursor.description]
+        json_rodent_data = []
+        for row in rodent_data:
+            lat = float(row[0])
+            lon = float(row[1])
+            if row[2]!=None:
+                PropAb = int(row[2])
+            else:
+                PropAb = 'NaN'
+            if row[3]!=None:
+                PropAg = int(row[3])
+            else:
+                PropAg = 'NaN'
+            entry = (lat, lon, PropAb, PropAg)
+            json_rodent_data.append(dict(zip(rodent_headers, entry)))
+        cursor.close()
+        return json_rodent_data
 def db_summary():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -148,6 +143,6 @@ def rodent_year_data():
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(initial_year_lists('rodent'))
+    #print(mapper('rodent', '1970','2015'))
     #print(start_year_list('rodent'))
     #print(end_year_list("2002", 'rodent'))

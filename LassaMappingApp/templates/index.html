@@ -97,6 +97,7 @@
 								</select>
 							</div>
 							<script>
+								var coords;
 								var SY = document.getElementById("StartYear");
 								SY.options[0].selected = true;
 								var EY = document.getElementById("EndYear");
@@ -107,32 +108,61 @@
 									start_year_select.on('change', function(){
 										getUpdatedEndYear(start_year_select.val());
 									});
-									//$(document).ready(function(){
-									//	getUpdatedEndYear(SY.options[0].selected);
-									//});
+									//var startYear = $('#StartYear').find(":selected").text();
+									//var endYear = $('#EndYear').find(":selected").text();
+									//getUpdatedPoints(startYear, endYear);
 									function getUpdatedEndYear(start_val) {
-										//console.log(start_val);
 										var send = {
 											start_year: start_val,
 											host:"{{host}}"
 										};
 										$.getJSON("/_get_end_year", send, function(response) {
-											//console.log(response);
 											end_year_select.empty();
 											for (var i in response){
-												//console.log(response[i].end_year);
 												end_year_select.append(
 													$('<option>',{
 													value: response[i].end_year,
 													text: response[i].end_year},
 													'</option>'))
 											};
-											//var EY = document.getElementById("EndYear");
-											//console.log(EY.options.length);
-											//EY.options[EY.options.length -1].selected = true;
 										});
 									}
+									//function getUpdatedPoints(start_year, end_year) {
+									//	var send_years = {
+									//		start_year: start_year,
+									//		end_year: end_year,
+									//		host:"{{host}}"
+									//	};
+									//	console.log(send_years);
+									//	$.getJSON("/_filter_points", send_years, function(myJson){
+									//		console.log(myJson);
+									//		coords = myJson;	
+									//	});
+									//};
 								});
+								var coords = GetFilteredPoints()
+								function GetFilteredPoints(){
+									var coords = null;
+									var startYear = $('#StartYear').find(":selected").text();
+									var endYear = $('#EndYear').find(":selected").text();
+									var send_years = {
+										start_year: startYear,
+										end_year: endYear,
+										host:"{{host}}"
+									};
+									console.log(send_years);
+
+									//$.getJSON("/_filter_points", send_years, function(myJson){
+									//	console.log(myJson);
+									//});
+									$.ajax({async:false, url:"/_filter_points", data:send_years, dataType:"json",
+										success: function(data){
+											result=data;
+										}
+									});
+									return result;
+								};
+								console.log(coords);
 							</script>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
