@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
-from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, start_year_list, end_year_list
+from db_query import human_mapper, rodent_mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -26,18 +26,18 @@ def human_mapping():
     human_data = human_mapper()
     year_list, totalAbPos = human_year_data()
     host = 'human'
-    StartYearList = start_year_list(host)
+    StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Human)"
-    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, host=host)    
+    return render_template('human_mapper.html', human_data=human_data, data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
     rodent_data = rodent_mapper()
     rodent_year_list, rodentTotalAbPos = rodent_year_data()
     host = 'rodent'
-    StartYearList = start_year_list(host)
+    StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Rodent)"
-    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, host=host)
+    return render_template('rodent_mapper.html', rodent_data=rodent_data, data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
