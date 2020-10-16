@@ -107,6 +107,19 @@
 									end_year_select = $('#EndYear');
 									start_year_select.on('change', function(){
 										getUpdatedEndYear(start_year_select.val());
+										end_year_select.on('change', function(){
+											var startYear = $('#StartYear').find(":selected").text();
+											var endYear = $('#EndYear').find(":selected").text();
+											console.log(startYear);
+											console.log(endYear);
+											var NewCoords = GetFilteredPoints(startYear, endYear);
+											map.removeLayer(markers);
+											//map.remove();
+											//var mapOptions = {center: [9.531665, 4.460415], zoom:4};
+											//var map = new L.map("map", mapOptions);
+											//var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+											//map.addLayer(layer);
+										});
 									});
 									function getUpdatedEndYear(start_val) {
 										var send = {
@@ -125,11 +138,13 @@
 										});
 									}
 								});
-								var coords = GetFilteredPoints()
-								function GetFilteredPoints(){
+								var startYear = $('#StartYear').find(":selected").text();
+								var endYear = $('#EndYear').find(":selected").text();
+								var coords = GetFilteredPoints(startYear, endYear);
+								function GetFilteredPoints(startYear, endYear){
 									var coords = null;
-									var startYear = $('#StartYear').find(":selected").text();
-									var endYear = $('#EndYear').find(":selected").text();
+									//var startYear = $('#StartYear').find(":selected").text();
+									//var endYear = $('#EndYear').find(":selected").text();
 									var send_years = {
 										start_year: startYear,
 										end_year: endYear,
