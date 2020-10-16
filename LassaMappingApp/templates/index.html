@@ -108,9 +108,6 @@
 									start_year_select.on('change', function(){
 										getUpdatedEndYear(start_year_select.val());
 									});
-									//var startYear = $('#StartYear').find(":selected").text();
-									//var endYear = $('#EndYear').find(":selected").text();
-									//getUpdatedPoints(startYear, endYear);
 									function getUpdatedEndYear(start_val) {
 										var send = {
 											start_year: start_val,
@@ -127,18 +124,6 @@
 											};
 										});
 									}
-									//function getUpdatedPoints(start_year, end_year) {
-									//	var send_years = {
-									//		start_year: start_year,
-									//		end_year: end_year,
-									//		host:"{{host}}"
-									//	};
-									//	console.log(send_years);
-									//	$.getJSON("/_filter_points", send_years, function(myJson){
-									//		console.log(myJson);
-									//		coords = myJson;	
-									//	});
-									//};
 								});
 								var coords = GetFilteredPoints()
 								function GetFilteredPoints(){
@@ -150,11 +135,6 @@
 										end_year: endYear,
 										host:"{{host}}"
 									};
-									console.log(send_years);
-
-									//$.getJSON("/_filter_points", send_years, function(myJson){
-									//	console.log(myJson);
-									//});
 									$.ajax({async:false, url:"/_filter_points", data:send_years, dataType:"json",
 										success: function(data){
 											result=data;
@@ -162,7 +142,6 @@
 									});
 									return result;
 								};
-								console.log(coords);
 							</script>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">

@@ -64,7 +64,7 @@ def mapper(host, start_year, end_year):
         for row in human_data:
             lat = float(row[0])
             lon = float(row[1])
-            AbPos = int(row[2])
+            AbPos = float(row[2])
             entry = (lat, lon, AbPos)
             json_human_data.append(dict(zip(human_headers, entry)))
         cursor.close()
@@ -79,11 +79,11 @@ def mapper(host, start_year, end_year):
             lat = float(row[0])
             lon = float(row[1])
             if row[2]!=None:
-                PropAb = int(row[2])
+                PropAb = float(row[2])
             else:
                 PropAb = 'NaN'
             if row[3]!=None:
-                PropAg = int(row[3])
+                PropAg = float(row[3])
             else:
                 PropAg = 'NaN'
             entry = (lat, lon, PropAb, PropAg)
@@ -143,6 +143,6 @@ def rodent_year_data():
     return year_list, totalAbPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(mapper('rodent', '1970','2015'))
+    #print(mapper('human', '1970','2015'))
     #print(start_year_list('rodent'))
     #print(end_year_list("2002", 'rodent'))
