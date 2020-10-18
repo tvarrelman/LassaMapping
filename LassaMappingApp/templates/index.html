@@ -97,7 +97,6 @@
 								</select>
 							</div>
 							<script>
-								var coords;
 								var SY = document.getElementById("StartYear");
 								SY.options[0].selected = true;
 								var EY = document.getElementById("EndYear");
@@ -110,15 +109,8 @@
 										end_year_select.on('change', function(){
 											var startYear = $('#StartYear').find(":selected").text();
 											var endYear = $('#EndYear').find(":selected").text();
-											console.log(startYear);
-											console.log(endYear);
 											var NewCoords = GetFilteredPoints(startYear, endYear);
-											map.removeLayer(markers);
-											//map.remove();
-											//var mapOptions = {center: [9.531665, 4.460415], zoom:4};
-											//var map = new L.map("map", mapOptions);
-											//var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-											//map.addLayer(layer);
+											MapPoints(NewCoords);
 										});
 									});
 									function getUpdatedEndYear(start_val) {
@@ -142,9 +134,7 @@
 								var endYear = $('#EndYear').find(":selected").text();
 								var coords = GetFilteredPoints(startYear, endYear);
 								function GetFilteredPoints(startYear, endYear){
-									var coords = null;
-									//var startYear = $('#StartYear').find(":selected").text();
-									//var endYear = $('#EndYear').find(":selected").text();
+									var NewCoords = null;
 									var send_years = {
 										start_year: startYear,
 										end_year: endYear,
@@ -156,6 +146,21 @@
 										}
 									});
 									return result;
+								};
+								function MapPoints(NewCoords){
+									markers.clearLayers();
+									map.removeLayer(markers);
+									for (var i in NewCoords){
+										coordPair = NewCoords[i];
+										var PropAb = coordPair.PropAb;
+										var label = 'Proportion arenavirus positive: ';
+										title = label + PropAb;
+										var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
+										marker.bindPopup(title);
+										marker.setIcon(myIcon);
+										markers.addLayer(marker);
+									}
+									map.addLayer(markers);
 								};
 							</script>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
