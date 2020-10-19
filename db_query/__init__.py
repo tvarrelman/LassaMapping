@@ -117,32 +117,39 @@ def human_year_data():
     cursor.execute(cmd)
     human_year_data = cursor.fetchall()
     cursor.close()
-    year_list = []
-    totalAbPos = []
+    jsonAbPos = []
     for entry in human_year_data:
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
-                year_list.append(entry[0])
-                totalAbPos.append(int(entry[1])/int(entry[2]))            
-    return year_list, totalAbPos
+                AbHeader = ("Ab_year", "propAbPos")
+                AbRow = (entry[0], int(entry[1])/int(entry[2]))
+                jsonAbPos.append(dict(zip(AbHeader, AbRow)))                       
+    return jsonAbPos
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
-    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosAg), SUM(NumTestAg) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     rodent_year_data = cursor.fetchall()
     cursor.close()
-    year_list = []
-    totalAbPos = []
+    jsonAbPos = []
+    jsonAgPos = []
     for entry in rodent_year_data:
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
-                year_list.append(entry[0])
-                totalAbPos.append(int(entry[1])/int(entry[2]))
-    return year_list, totalAbPos
+                AbHeader = ("Ab_year", "propAbPos")
+                AbRow = (entry[0], int(entry[1])/int(entry[2]))
+                jsonAbPos.append(dict(zip(AbHeader, AbRow)))
+        if entry[0]!= None and entry[3]!=None and entry[4]!=None:
+            if entry[3]!=0 and entry[4]!=0:
+                AgHeader = ("Ag_year", "propAgPos")
+                AgRow = (entry[0], int(entry[3])/int(entry[4]))
+                jsonAgPos.append(dict(zip(AgHeader, AgRow)))
+    return jsonAbPos, jsonAgPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(rodent_year_data())
     #print(mapper('human', '1970','2015'))
     #print(start_year_list('rodent'))
     #print(end_year_list("2002", 'rodent'))

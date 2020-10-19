@@ -23,19 +23,19 @@ def main_page():
 @app.route('/LassaHumans')
 def human_mapping():
     data_summary = db_summary()
-    year_list, totalAbPos = human_year_data()
+    jsonPropAb = human_year_data()
     host = 'human'
     StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Human)"
-    return render_template('human_mapper.html', data_summary=data_summary, year_list=year_list, totalAbPos=totalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
+    return render_template('human_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
-    rodent_year_list, rodentTotalAbPos = rodent_year_data()
+    jsonPropAb, jsonPropAg = rodent_year_data()
     host = 'rodent'
     StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Rodent)"
-    return render_template('rodent_mapper.html', data_summary=data_summary, year_list=rodent_year_list, totalAbPos=rodentTotalAbPos, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+    return render_template('rodent_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
