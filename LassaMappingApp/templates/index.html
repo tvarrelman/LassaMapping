@@ -80,101 +80,6 @@
 				<div class="col col-md-8" style="height: 485px">
 					<div class="card" style="height: 100%">
 						<div class="card-body">
-							<div class="form-group" style="width:45%;">
-								<label for="StartYear">Start Year:</label>
-								<select class="form-control" name="StartYear" id="StartYear">
-									{% for year in StartYearList  %}
-									<option value="{{year}}">{{year}}</option>
-									{% endfor %}
-								</select>
-							</div>
-							<div class="form-group" style="width:45%;">
-								<label for="EndYear">End Year:</label>
-								<select class="form-control" name="EndYear" id="EndYear">
-									{% for end_year in EndYearList %}
-									<option value="{{end_year}}">{{end_year}}</option>
-									{% endfor %}
-								</select>
-							</div>
-							<script>
-								var SY = document.getElementById("StartYear");
-								SY.options[0].selected = true;
-								var EY = document.getElementById("EndYear");
-								EY.options[EY.options.length - 1].selected = true;
-								$(function(){
-									var start_year_select = $('#StartYear'),
-									end_year_select = $('#EndYear');
-									start_year_select.on('change', function(){
-										getUpdatedEndYear(start_year_select.val());
-										var startYear = $('#StartYear').find(":selected").text();
-										var endYear = $('#EndYear').find(":selected").text();
-										var NewCoords = GetFilteredPoints(startYear, endYear);
-										MapPoints(NewCoords);
-										end_year_select.on('change', function(){
-											var startYear = $('#StartYear').find(":selected").text();
-											var endYear = $('#EndYear').find(":selected").text();
-											var NewCoords = GetFilteredPoints(startYear, endYear);
-											MapPoints(NewCoords);
-										});
-									});
-									end_year_select.on('change', function(){
-										var startYear = $('#StartYear').find(":selected").text();
-										var endYear = $('#EndYear').find(":selected").text();
-										var NewCoords = GetFilteredPoints(startYear, endYear);
-										MapPoints(NewCoords);
-									});
-									function getUpdatedEndYear(start_val) {
-										var send = {
-											start_year: start_val,
-											host:"{{host}}"
-										};
-										$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
-											success: function(data){
-												end_year_select.empty();
-												for (var i in data){
-													end_year_select.append(
-														$('<option>',{
-														value: data[i].end_year,
-														text: data[i].end_year},
-														'</option>'))
-												}
-											}
-										});
-									}
-								});
-								var startYear = $('#StartYear').find(":selected").text();
-								var endYear = $('#EndYear').find(":selected").text();
-								var coords = GetFilteredPoints(startYear, endYear);
-								function GetFilteredPoints(startYear, endYear){
-									var NewCoords = null;
-									var send_years = {
-										start_year: startYear,
-										end_year: endYear,
-										host:"{{host}}"
-									};
-									$.ajax({async:false, url:"/_filter_points", data:send_years, dataType:"json",
-										success: function(data){
-											result=data;
-										}
-									});
-									return result;
-								};
-								function MapPoints(NewCoords){
-									markers.clearLayers();
-									map.removeLayer(markers);
-									for (var i in NewCoords){
-										coordPair = NewCoords[i];
-										var PropAb = coordPair.PropAb;
-										var label = 'Proportion arenavirus positive: ';
-										title = label + PropAb;
-										var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
-										marker.bindPopup(title);
-										marker.setIcon(myIcon);
-										markers.addLayer(marker);
-									}
-									map.addLayer(markers);
-								};
-							</script>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
@@ -186,14 +91,114 @@
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
-									<div id="map" style="width:100%; height:370px; margin: auto">
+									<div id="MapWrapper" style="height: 370px; width:100%; margin:auto">
+                                                                        	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;">
+                                                                                	<div class="form-group" style="width:65px;">
+                                                                                        	<label for="StartYear"></label>
+                                                                                        	<select class="form-control" name="StartYear" id="StartYear">
+                                                                                                	{% for year in StartYearList  %}
+                                                                                                	<option value="{{year}}">{{year}}</option>
+                                                                                                	{% endfor %}
+                                                                                        	</select>
+                                                                                	</div>
+                                                                                	<div class="form-group" style="width:65px;">
+                                                                                        	<label for="EndYear"></label>
+                                                                                        	<select class="form-control" name="EndYear" id="EndYear">
+                                                                                                	{% for end_year in EndYearList %}
+                                                                                                	<option value="{{end_year}}">{{end_year}}</option>
+                                                                                                	{% endfor %}
+                                                                                        	</select>
+                                                                                	</div>
+                                                                        	</div>
 										<script>
-											var mapOptions = {center: [9.531665, 4.460415], zoom:4};
-											var map = new L.map("map", mapOptions);
-											var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-											map.addLayer(layer);
+										
+												var SY = document.getElementById("StartYear");
+												SY.options[0].selected = true;
+												var EY = document.getElementById("EndYear");
+												EY.options[EY.options.length - 1].selected = true;
+												var start_year_select = $('#StartYear'),
+												end_year_select = $('#EndYear');
+												start_year_select.on('change', function(){
+													getUpdatedEndYear(start_year_select.val());
+													var startYear = $('#StartYear').find(":selected").text();
+													var endYear = $('#EndYear').find(":selected").text();
+													var NewCoords = GetFilteredPoints(startYear, endYear);
+													MapPoints(NewCoords);
+													end_year_select.on('change', function(){
+														var startYear = $('#StartYear').find(":selected").text();
+														var endYear = $('#EndYear').find(":selected").text();
+														var NewCoords = GetFilteredPoints(startYear, endYear);
+														MapPoints(NewCoords);
+													});
+												});
+												end_year_select.on('change', function(){
+													var startYear = $('#StartYear').find(":selected").text();
+													var endYear = $('#EndYear').find(":selected").text();
+													var NewCoords = GetFilteredPoints(startYear, endYear);
+													MapPoints(NewCoords);
+												});
+												function getUpdatedEndYear(start_val) {
+													var send = {
+													start_year: start_val,
+													host:"{{host}}"
+													};
+													$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
+														success: function(data){
+															end_year_select.empty();
+															for (var i in data){
+																end_year_select.append(
+																	$('<option>',{
+																	value: data[i].end_year,
+																	text: data[i].end_year},
+																	'</option>'))
+															}
+														}
+													});
+												}
+												var startYear = $('#StartYear').find(":selected").text();
+												var endYear = $('#EndYear').find(":selected").text();
+												var coords = GetFilteredPoints(startYear, endYear);
+												//console.log(coords);
+												function GetFilteredPoints(startYear, endYear){
+													var NewCoords = null;
+													var send_years = {
+														start_year: startYear,
+														end_year: endYear,
+														host:"{{host}}"
+													};
+													$.ajax({async:false, url:"/_filter_points", data:send_years, dataType:"json",
+														success: function(data){
+															result=data;
+														}
+													});
+													return result;
+												};
+												function MapPoints(NewCoords){
+													markers.clearLayers();
+													map.removeLayer(markers);
+													for (var i in NewCoords){
+														coordPair = NewCoords[i];
+														var PropAb = coordPair.PropAb;
+														var label = 'Proportion arenavirus positive: ';
+														title = label + PropAb;
+														var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
+														marker.bindPopup(title);
+														marker.setIcon(myIcon);
+														markers.addLayer(marker);
+													}
+													map.addLayer(markers);
+												};
+										
 										</script>
-										{% block mapper %}{% endblock %}
+										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
+											<script>
+												var mapOptions = {center: [9.531665, 4.460415], zoom:4};
+												var map = new L.map("map", mapOptions);
+												var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+												map.addLayer(layer);
+											</script>
+											{% block mapper %}{% endblock %}
+										</div>
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaRodents">
@@ -241,7 +246,7 @@
 					</div>
 				</div>
 			</div>
-		</div>	
+		</div>
 	</body>
 </html>
 
