@@ -105,20 +105,11 @@
 									var start_year_select = $('#StartYear'),
 									end_year_select = $('#EndYear');
 									start_year_select.on('change', function(){
-										var startYear = $('#StartYear').find(":selected").text();
-										var endYear = $('#EndYear').find(":selected").text();
-										var NewCoords = GetFilteredPoints(startYear, endYear);
-										//console.log(startYear);
-										//console.log(endYear);
-										//MapPoints(NewCoords);
-									});
-									start_year_select.on('change', function(){
 										getUpdatedEndYear(start_year_select.val());
 										var startYear = $('#StartYear').find(":selected").text();
 										var endYear = $('#EndYear').find(":selected").text();
 										var NewCoords = GetFilteredPoints(startYear, endYear);
 										MapPoints(NewCoords);
-										//console.log(endYear);
 										end_year_select.on('change', function(){
 											var startYear = $('#StartYear').find(":selected").text();
 											var endYear = $('#EndYear').find(":selected").text();
@@ -126,22 +117,17 @@
 											MapPoints(NewCoords);
 										});
 									});
+									end_year_select.on('change', function(){
+										var startYear = $('#StartYear').find(":selected").text();
+										var endYear = $('#EndYear').find(":selected").text();
+										var NewCoords = GetFilteredPoints(startYear, endYear);
+										MapPoints(NewCoords);
+									});
 									function getUpdatedEndYear(start_val) {
 										var send = {
 											start_year: start_val,
 											host:"{{host}}"
 										};
-										//$.getJSON("/_get_end_year", send, function(response) {
-										//	end_year_select.empty();
-										//	for (var i in response){
-										//		end_year_select.append(
-										//			$('<option>',{
-										//			value: response[i].end_year,
-										//			text: response[i].end_year},
-										//			'</option>'))
-										//	};
-										//	end_year_select[0].selected = true;
-										//});
 										$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
 											success: function(data){
 												end_year_select.empty();
