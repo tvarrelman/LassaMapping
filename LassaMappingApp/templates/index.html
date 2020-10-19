@@ -105,7 +105,17 @@
 									var start_year_select = $('#StartYear'),
 									end_year_select = $('#EndYear');
 									start_year_select.on('change', function(){
+										var startYear = $('#StartYear').find(":selected").text();
+										var endYear = $('#EndYear').find(":selected").text();
+										var NewCoords = GetFilteredPoints(startYear, endYear);
+										console.log(startYear);
+										console.log(endYear);
+										//MapPoints(NewCoords);
+									});
+									start_year_select.on('change', function(){
 										getUpdatedEndYear(start_year_select.val());
+										//var endYear = $('#EndYear').find(":selected").text();
+										//console.log(endYear);
 										end_year_select.on('change', function(){
 											var startYear = $('#StartYear').find(":selected").text();
 											var endYear = $('#EndYear').find(":selected").text();
