@@ -17,25 +17,29 @@ db_host = os.environ.get('host')
 db_name = os.environ.get('database')
 def initial_year_lists(host):
     if host=='human':
-        cmd1 = "SELECT DISTINCT start_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
-        cmd2 = "SELECT DISTINCT end_year FROM lassa_data WHERE end_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY end_year;"
+        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
+        cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+        cursor = cnx.cursor()
+        cursor.execute(cmd)
+        year_lists = cursor.fetchall()
+        init_start_year_list = []
+        init_end_year_list = []
+        for i in range(0, len(year_lists)):
+            init_start_year_list.append(year_lists[i][0])
+            init_end_year_list.append(year_lists[i][1])
+        return init_start_year_list, init_end_year_list
     if host=='rodent':
-        cmd1 = "SELECT DISTINCT start_year FROM lassa_data WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY start_year;"
-        cmd2 = "SELECT DISTINCT end_year FROM lassa_data WHERE (end_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY end_year;"
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-    cursor = cnx.cursor()
-    cursor.execute(cmd1)
-    SY_list = cursor.fetchall()
-    init_start_year_list = []
-    for year in SY_list:
-        init_start_year_list.append(year[0])
-    cursor.execute(cmd2)
-    EY_list = cursor.fetchall()
-    init_end_year_list = []
-    for e_year in EY_list:
-        init_end_year_list.append(e_year[0])
-    
-    return init_start_year_list, init_end_year_list
+        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY start_year;"
+        cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+        cursor = cnx.cursor()
+        cursor.execute(cmd)
+        year_lists = cursor.fetchall()
+        init_start_year_list = []
+        init_end_year_list = []
+        for i in range(0, len(year_lists)):
+            init_start_year_list.append(year_lists[i][0])
+            init_end_year_list.append(year_lists[i][1])
+        return init_start_year_list, init_end_year_list
 def end_year_list(start_year, host):
     if host=='human':
         cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
@@ -125,7 +129,6 @@ def db_summary():
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
     cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     human_year_data = cursor.fetchall()
@@ -141,7 +144,6 @@ def human_year_data():
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    #cmd = "SELECT start_year, SUM(NumPosAb) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
     cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosAg), SUM(NumTestAg) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     rodent_year_data = cursor.fetchall()
@@ -162,6 +164,7 @@ def rodent_year_data():
     return jsonAbPos, jsonAgPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(initial_year_lists('human'))
     #print(rodent_year_data())
     #print(mapper('human', '2015','2015'))
     #print(start_year_list('rodent'))
