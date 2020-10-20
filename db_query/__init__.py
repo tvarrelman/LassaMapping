@@ -113,7 +113,7 @@ def db_summary():
     #Number of point samples from rodents
     rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus!='Homo';"
     #Number of point samples from humans
-    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo';"    
+    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo' AND PropAb IS NOT NULL;"    
     cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd]
     summary_list = []
     for cmd in cmd_list:
