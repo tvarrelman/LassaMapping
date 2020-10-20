@@ -320,7 +320,8 @@
 										barmode: 'group'
 									};
 									var data = [trace1, trace2];
-									Plotly.newPlot('myDiv', data, layout)
+									let modeBarButtons = [["toImage", "lasso2d"]];
+									Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
 									{% endif %}
 								</script>
 							</div>
