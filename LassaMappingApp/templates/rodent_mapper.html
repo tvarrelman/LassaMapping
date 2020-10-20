@@ -8,19 +8,15 @@
 	var markers = L.markerClusterGroup();
 	for (var i in coords){
 		var coordPair = coords[i];
-		var PropAb = coordPair.PropAb;
-		var PropAg = coordPair.PropAg;
-		var Ablabel = '<b>Proportion arenavirus positive:</b> ';
-		var Aglabel = '<b>Proportion Lassa virus positive:</b> ';
-		title = Ablabel + PropAb + "<br>" + Aglabel + PropAg;
+		var Ablabel = "<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
+		var Aglabel = "<b>Proportion Lassa virus positive:</b> " + coordPair.PropAg;
                 var Citation = "<b>Citation:</b> " + coordPair.Citation;
                 if (coordPair.DOI == 'NaN'){
                         DOI = "<b>DOI:</b> NaN";
                 } else{
                         var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
                 }
-                var label = '<b>Proportion arenavirus positive:</b> ';
-                title = Ablabel + PropAb + "<br>" + Aglabel + PropAg  + "<br>" + Citation + "<br>" + DOI ;
+                title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
 		var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));marker.bindPopup(title);
 		marker.bindPopup(title);
 		marker.setIcon(myIcon);
