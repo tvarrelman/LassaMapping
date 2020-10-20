@@ -180,7 +180,14 @@
 														coordPair = NewCoords[i];
 														var PropAb = coordPair.PropAb;
 														var label = 'Proportion arenavirus positive: ';
-														title = label + PropAb;
+														var Citation = "<b>Citation:</b> " + coordPair.Citation;
+														if (coordPair.DOI == 'NaN'){
+															DOI = "<b>DOI:</b> NaN";
+														} else{
+															var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+														}
+														var label = '<b>Proportion arenavirus positive:</b> ';
+														title = label + PropAb + "<br>" + Citation + "<br>" + DOI ;
 														var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
 														marker.bindPopup(title);
 														marker.setIcon(myIcon);
@@ -202,7 +209,7 @@
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaRodents">
-									<div id="map" style="width:890px; height:370px; margin: auto">
+									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
 										{% block RodentMapper %}{% endblock %}
 									</div>
 								</div>
