@@ -16,10 +16,10 @@ db_pw = os.environ.get('password')
 db_host = os.environ.get('host')
 db_name = os.environ.get('database')
 def initial_year_lists(host):
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
     if host=='human':
         cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
-        cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-        cursor = cnx.cursor()
         cursor.execute(cmd)
         year_lists = cursor.fetchall()
         init_start_year_list = []
@@ -27,11 +27,10 @@ def initial_year_lists(host):
         for i in range(0, len(year_lists)):
             init_start_year_list.append(year_lists[i][0])
             init_end_year_list.append(year_lists[i][1])
+        cursor.close()
         return init_start_year_list, init_end_year_list
     if host=='rodent':
         cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY start_year;"
-        cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-        cursor = cnx.cursor()
         cursor.execute(cmd)
         year_lists = cursor.fetchall()
         init_start_year_list = []
@@ -39,12 +38,26 @@ def initial_year_lists(host):
         for i in range(0, len(year_lists)):
             init_start_year_list.append(year_lists[i][0])
             init_end_year_list.append(year_lists[i][1])
+        cursor.close()
+        return init_start_year_list, init_end_year_list
+    if host=='sequence':
+        cmd = "SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear IS NOT NULL AND Lat IS NOT NULL AND Lon IS NOT NULL) ORDER BY gbCollectYear;"
+        cursor.execute(cmd)
+        year_lists = cursor.fetchall()
+        init_start_year_list = []
+        init_end_year_list = []
+        for i in range(0, len(year_lists)):
+            init_start_year_list.append(year_lists[i][0])
+            init_end_year_list.append(year_lists[i][0])
+        cursor.close()
         return init_start_year_list, init_end_year_list
 def end_year_list(start_year, host):
     if host=='human':
         cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
     if host=='rodent':
         cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY end_year;""".format(start_year)
+    if host=='sequence':
+        cmd = """SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear>={0} AND Lat IS NOT NULL AND Lon IS NOT NULL);""".format(start_year)
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(cmd)
@@ -79,8 +92,8 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_human_data
     if host == 'rodent':
-        cmd1 = """SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.PropAb, lassa_data.PropAg, data_source.Citation, data_source.DOI FROM lassa_data, data_source WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAg IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id);""".format(start_year, end_year)
-        cursor.execute(cmd1)
+        cmd = """SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.PropAb, lassa_data.PropAg, data_source.Citation, data_source.DOI FROM lassa_data, data_source WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAg IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id);""".format(start_year, end_year)
+        cursor.execute(cmd)
         rodent_data = cursor.fetchall()
         rodent_headers = [x[0] for x in cursor.description]
         json_rodent_data = []
@@ -107,6 +120,31 @@ def mapper(host, start_year, end_year):
             json_rodent_data.append(dict(zip(rodent_headers, entry)))
         cursor.close()
         return json_rodent_data
+    if host == 'sequence':
+        cmd = """SELECT seq_data.Lat, seq_data.Lon, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE (gbCollectYear BETWEEN {0} AND {1} AND Lat IS NOT NULL AND Lon IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id);""".format(start_year, end_year)
+        cursor.execute(cmd)
+        seq_data = cursor.fetchall()
+        seq_headers = [x[0] for x in cursor.description]
+        json_seq_data = []
+        for row in seq_data:
+            lat = row[0]
+            lon = row[1]
+            if row[2]!=None:
+                gbDef = row[2]
+            else:
+                gbDef = 'NaN'
+            if row[3]!=None:
+                pubMedID = row[3]
+            else:
+                pubMedID = 'NaN'
+            if row[4]!=None:
+                Ref = row[4]
+            else:
+                Ref = 'NaN'
+            entry = (lat, lon, gbDef, pubMedID, Ref)
+            json_seq_data.append(dict(zip(seq_headers, entry)))
+        cursor.close()
+        return json_seq_data
 def db_summary():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -164,8 +202,8 @@ def rodent_year_data():
     return jsonAbPos, jsonAgPos
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(initial_year_lists('human'))
+    #print(initial_year_lists('sequence'))
     #print(rodent_year_data())
-    #print(mapper('human', '2015','2015'))
+    #print(mapper('sequence', '2003','2003'))
     #print(start_year_list('rodent'))
-    #print(end_year_list("2002", 'rodent'))
+    #print(end_year_list("2002", 'sequence'))
