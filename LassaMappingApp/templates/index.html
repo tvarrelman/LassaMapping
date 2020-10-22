@@ -83,11 +83,14 @@
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
-									<a class="nav-link" id="HumanTab" href="LassaHumans">Lassa virus in humans</a>
+									<a class="nav-link" id="HumanTab" href="LassaHumans">Human Data</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" id="RodentTab" href="LassaRodents">Lassa virus in rodents</a>
+									<a class="nav-link" id="RodentTab" href="LassaRodents">Rodent Data</a>
 								</li>
+								<li class="nav-item">
+									<a class="nav-link" id="SequenceTab", href="LassaSequence">Sequence Data</a>
+								<li>
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
@@ -178,18 +181,36 @@
 													map.removeLayer(markers);
 													for (var i in NewCoords){
 														coordPair = NewCoords[i];
-														var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
-														var Citation = "<b>Citation:</b> " + coordPair.Citation;
-														if (coordPair.DOI == 'NaN'){
-															DOI = "<b>DOI:</b> NaN";
-														} else{
-															var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+														if ("{{host}}"=="human"){
+															var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
+															var Citation = "<b>Citation:</b> " + coordPair.Citation;
+															if (coordPair.DOI == "NaN"){
+																DOI = "<b>DOI:</b> NaN";
+															} else{
+																var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+															}
+															title = Ablabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
 														}
 														if ("{{host}}" == "rodent"){
-															var Aglabel = "<b>Proportion Lassa virus positive:</b> " + coordPair.PropAg;
-															title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
-														} else {
-															title = Ablabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
+															var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
+															var Aglabel="<b>Proportion Lassa virus positive:</b> " + coordPair.PropAg;
+															var Citation = "<b> Citation:</b> " + coordPair.Citation;
+															if (coordPair.DOI == "NaN"){
+																DOI = "<b>DOI:</b> NaN";
+															} else {
+																var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+															}
+															title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI
+														}
+														if ("{{host}}"=="sequence"){
+															var gbDef =  "<b>GenBank description:</b> " + coordPair.gbDefinition;
+															var ref = "<b>Reference:</b> " + coordPair.Reference;
+															if (coordPair.gbPubMedID == "NaN"){
+																PubMedID = "<b>PubMed:</b> NaN";
+															} else {
+																var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"'>link</a>";
+															}
+															title = gbDef + "<br> <br>" + ref + "<br> <br>" + PubMedID ;
 														}
 														var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
 														marker.bindPopup(title);
@@ -214,6 +235,11 @@
 								<div class="tab-pane fade in" id="LassaRodents">
 									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
 										{% block RodentMapper %}{% endblock %}
+									</div>
+								</div>
+								<div class="tab-pane fade in" id="LassaSequence">
+									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
+										{% block SequenceMapper %}{% endblock %}
 									</div>
 								</div>
 							</div>

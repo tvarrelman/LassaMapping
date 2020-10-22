@@ -36,6 +36,12 @@ def rodent_mapping():
     StartYearList, EndYearList = initial_year_lists(host)
     bar_title = "(Rodent)"
     return render_template('rodent_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+@app.route('/LassaSequence')
+def sequence_mapping():
+    data_summary = db_summary()
+    host = 'sequence'
+    StartYearList, EndYearList = initial_year_lists(host)
+    return render_template('sequence_mapper.html', data_summary=data_summary, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
