@@ -68,8 +68,7 @@ def end_year_list(start_year, host):
         json_end_year.append({'end_year':year[0]})
     return json_end_year
 def mapper(host, start_year, end_year):
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == 'human':
         cmd = """SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.PropAb, data_source.Citation, data_source.DOI, lassa_data.source_id, data_source.source_id FROM lassa_data, data_source WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id;""".format(start_year, end_year)
@@ -148,17 +147,20 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_seq_data
 def db_summary():
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     #Get the number of countries represented in our dataset
-    country_cmd = "SELECT COUNT(*) FROM countries;"
+    country_cmd = "SELECT COUNT(countryCount) FROM (SELECT DISTINCT country_id AS countryCount FROM lassa_data UNION SELECT DISTINCT country_id AS countryCount FROM seq_data) AS final;"
     #Get the number of studies that our project documents
     source_cmd = "SELECT COUNT(*) FROM data_source;"
     #Number of point samples from rodents
     rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus!='Homo';"
     #Number of point samples from humans
-    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo' AND PropAb IS NOT NULL;"    
-    cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd]
+    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo' AND PropAb IS NOT NULL;"
+    #Number of sequences    
+    seq_sample_cmd = "SELECT COUNT(Sequence) FROM seq_data WHERE Sequence IS NOT NULL;"
+    cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd, seq_sample_cmd]
     summary_list = []
     for cmd in cmd_list:
         cursor.execute(cmd)
@@ -204,8 +206,9 @@ def rodent_year_data():
     return jsonAbPos, jsonAgPos
 # This bit is only used for testing the functions before implementation 
 if __name__ == '__main__':
+    print(db_summary())
     #print(initial_year_lists('sequence'))
     #print(rodent_year_data())
-    print(mapper('sequence', '2015','2015'))
+    #print(mapper('sequence', '2015','2015'))
     #print(start_year_list('rodent'))
     #print(end_year_list("2002", 'sequence'))
