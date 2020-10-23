@@ -204,9 +204,24 @@ def rodent_year_data():
                 AgRow = (entry[0], int(entry[3])/int(entry[4]))
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
+def sequence_year_data():
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cmd = "SELECT gbCollectYear, COUNT(Sequence) FROM seq_data GROUP BY (gbCollectYear);"
+    cursor.execute(cmd)
+    sequence_year_data = cursor.fetchall()
+    cursor.close()
+    jsonSeq = []
+    for entry in sequence_year_data:
+        seqRow = (entry[0], entry[1])
+        seqHeader = ("seq_year", "seq_count")
+        jsonSeq.append(dict(zip(seqHeader, seqRow)))
+    return jsonSeq
 # This bit is only used for testing the functions before implementation 
-if __name__ == '__main__':
-    print(db_summary())
+#if __name__ == '__main__':
+    #print(sequence_year_data())
+    #print(db_summary())
     #print(initial_year_lists('sequence'))
     #print(rodent_year_data())
     #print(mapper('sequence', '2015','2015'))
