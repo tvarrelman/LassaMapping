@@ -205,8 +205,7 @@ def rodent_year_data():
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
 def sequence_year_data():
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cmd = "SELECT gbCollectYear, COUNT(Sequence) FROM seq_data GROUP BY (gbCollectYear);"
     cursor.execute(cmd)

@@ -358,6 +358,16 @@
 									let modeBarButtons = [["toImage", "lasso2d"]];
 									Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
 									{% endif %}
+									{% if host=="sequence" %}
+										var seqData = {{ jsonSeq|tojson}};
+										let seqYear = [];
+										let seqCount = [];
+										for (var i in seqCount){
+											seqYear.push(seqData[i].seq_year);
+											seqCount.push(seqData[i].seq_count); 
+										};
+										
+									{% endif  %}
 								</script>
 							</div>
 						</div>

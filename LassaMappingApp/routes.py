@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
-from db_query import mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list
+from db_query import mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list, sequence_year_data
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -39,9 +39,10 @@ def rodent_mapping():
 @app.route('/LassaSequence')
 def sequence_mapping():
     data_summary = db_summary()
+    jsonSeq = sequence_year_data()
     host = 'sequence'
     StartYearList, EndYearList = initial_year_lists(host)
-    return render_template('sequence_mapper.html', data_summary=data_summary, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+    return render_template('sequence_mapper.html', data_summary=data_summary, jsonSeq=jsonSeq, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
