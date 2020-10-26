@@ -79,9 +79,18 @@ def admin():
         if myfile and allowed_file(myfile.filename):
             str_data = str(myfile.read(), 'utf-8')
             data = StringIO(str_data)
-            data_df = pd.read_csv(data, sep='\t')
-            message = 'Successfully imported data'
-            return render_template('admin.html', message=message)
+            data_df = pd.read_csv(data)
+            entry_columns = ['Town_Region', 'Village', 'Month', 'Day', 'Year', 'Latitude',
+               'Longitude', 'Country', 'Confidence', 'Status', 'NumPosAg', 'NumTestAg',
+               'PropAg', 'NumPosAb', 'NumTestAb', 'PropAb', 'Genus', 'Species',
+               'DiagnosticMethod', 'Target', 'lat-lon-source', 'Source', 'Citation',
+               'DOI', 'Human_Random_Survey', 'Notes']
+            if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
+                message = 'Successfully imported data'
+                return render_template('admin.html', message=message)
+            else:
+                error = "Inconsistent column names"
+                return render_template('admin.html', error=error)
         else:
             error = "No file selected/incorrect file type"
             return render_template('admin.html', error=error)
