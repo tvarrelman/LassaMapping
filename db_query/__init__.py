@@ -16,8 +16,7 @@ db_pw = os.environ.get('password')
 db_host = os.environ.get('host')
 db_name = os.environ.get('database')
 def initial_year_lists(host):
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host=='human':
         cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
@@ -147,8 +146,7 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_seq_data
 def db_summary():
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     #Get the number of countries represented in our dataset
     country_cmd = "SELECT COUNT(countryCount) FROM (SELECT DISTINCT country_id AS countryCount FROM lassa_data UNION SELECT DISTINCT country_id AS countryCount FROM seq_data) AS final;"
@@ -217,8 +215,23 @@ def sequence_year_data():
         seqHeader = ("seq_year", "seq_count")
         jsonSeq.append(dict(zip(seqHeader, seqRow)))
     return jsonSeq
+def filtered_download(host, start_year, end_year):
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    if host=="human":
+        cmd = """SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1};""".format(start_year, end_year)
+    if host=="rodent":
+        cmd = """SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus!='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1};""".format(start_year, end_year)
+    cursor.execute(cmd)
+    dataDump = cursor.fetchall()
+    headers = [x[0] for x in cursor.description]
+    jsonDump = []
+    for result in dataDump:
+        jsonDump.append(dict(zip(headers, result)))
+    return jsonDump
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(filtered_download('human', '2003', '2003'))
     #print(sequence_year_data())
     #print(db_summary())
     #print(initial_year_lists('sequence'))
