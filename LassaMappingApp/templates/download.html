@@ -27,36 +27,39 @@
 			<h3>{{message}}</h3>
 			<p style="text-align: center" class="text-danger"> This page will allow users to download the Lassa data that is displayed on the visualization page.</p>
 		</div>
-		<div class="row justify-content-center">
-			<div class="card border-secondary mb-3">
-				<div class="card-header">Download Lassa Data</div>
-				<div class="card-body">
-					<div class="form-group row">
-						<label for="Host">Host</label>
-						<select class="form-control" name="Host" id="Host">
-							<option value="human">human</option>
-							<option value="rodent">rodent</option>
-						</select>
-					</div>
-					<div class="form-group row">
-						<label for="StartYear">Start Year</label>
-						<select class="form-control" name="StartYear" id="StartYear">
-							{% for year in StartYearList  %}
-							<option value="{{year}}">{{year}}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="form-group row">
-						<label for="EndYear">End Year</label>
-						<select class="form-control" name="EndYear" id="EndYear">
-							{% for end_year in EndYearList %}
-							<option value="{{end_year}}">{{end_year}}</option>
-							{% endfor %}
-						</select>
+		<form>
+			<div class="row justify-content-center">
+				<div class="card border-secondary mb-3">
+					<div class="card-header">Download Lassa Data</div>
+					<div class="card-body">
+						<div class="form-group row">
+							<label for="Host">Host</label>
+							<select class="form-control" name="Host" id="Host">
+								<option value="human">human</option>
+								<option value="rodent">rodent</option>
+							</select>
+						</div>
+						<div class="form-group row">
+							<label for="StartYear">Start Year</label>
+							<select class="form-control" name="StartYear" id="StartYear">
+								{% for year in StartYearList  %}
+								<option value="{{year}}">{{year}}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="form-group row">
+							<label for="EndYear">End Year</label>
+							<select class="form-control" name="EndYear" id="EndYear">
+								{% for end_year in EndYearList %}
+								<option value="{{end_year}}">{{end_year}}</option>
+								{% endfor %}
+							</select>
+						</div>
+					<button type="submit" class="btn btn-primary mb-2">Download Data</button>
 					</div>
 				</div>
 			</div>
-		</div>
+		</form>
 		<script>
 			var hostList = document.getElementById("Host");
 			hostList.options[0].selected = true;
