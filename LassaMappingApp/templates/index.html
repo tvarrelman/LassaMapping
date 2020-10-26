@@ -360,13 +360,46 @@
 									{% endif %}
 									{% if host=="sequence" %}
 										var seqData = {{ jsonSeq|tojson}};
+										//console.log(seqData);
+										var finalTitle = "Sequence Data";
 										let seqYear = [];
 										let seqCount = [];
-										for (var i in seqCount){
+										for (var i in seqData){
 											seqYear.push(seqData[i].seq_year);
 											seqCount.push(seqData[i].seq_count); 
 										};
-										
+										var data = [{
+											x: seqYear,
+											y: seqCount,
+											name: 'Numer of Sequences',
+											type: 'bar',
+											marker: {color: '#f0ad4e'}
+										}];
+										//console.log(data);
+										var layout = { 
+											title: finalTitle,
+											font: {color:'#1a1a1a'},
+											autosize: true,
+											automargin: false,
+											margin: {
+												l: 55,
+												r: 10,
+												b: 50,
+												t: 50,
+												pad: 4
+											},
+											xaxis:{title: {text: 'Year'}},
+											yaxis:{title: {text: 'Count'}},
+											showlegend: true,
+											legend: {
+												x: 0.45,
+												xanchor: 'center',
+												y: 1,
+												"orientation": "h"
+												}
+											};
+										let modeBarButtons = [["toImage", "lasso2d"]];
+										Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
 									{% endif  %}
 								</script>
 							</div>
