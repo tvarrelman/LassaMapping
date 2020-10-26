@@ -1,7 +1,7 @@
 
 from flask import Flask, url_for, render_template, request, redirect, flash, jsonify
 import os
-from db_query import mapper, db_summary, human_year_data, rodent_year_data, initial_year_lists, end_year_list, sequence_year_data
+from db_query import *
 from LassaMappingApp.forms import LoginForm
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -113,3 +113,11 @@ def get_init_year_lists():
     host = request.args.get('host', 'default_if_none')
     StartYearList, EndYearList = initial_year_lists(host)
     return jsonify(StartYearList, EndYearList)
+@app.route('/_download_data', methods=['GET', 'POSE'])
+def download_data():
+    host = request.args.get('host', 'default_if_none')
+    start_year = request.args.get('start_year', 'default_if_none')
+    end_year = request.args.get('end_year', 'default_if_none')
+    jsonDump = filtered_download(host, start_year, end_year)
+    return jsonify(jsonDump)
+
