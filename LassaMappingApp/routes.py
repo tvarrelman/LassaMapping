@@ -98,4 +98,9 @@ def filter_points():
     end_year = request.args.get('end_year', 'default_if_none')
     host_species = request.args.get('host', 'default_if_none')
     mapping_json = mapper(host_species, start_year, end_year) 
-    return jsonify(mapping_json)  
+    return jsonify(mapping_json)
+@app.route('/_get_init_year_lists', methods=['GET', 'POST'])  
+def get_init_year_lists():
+    host = request.args.get('host', 'default_if_none')
+    StartYearList, EndYearList = initial_year_lists(host)
+    return jsonify(StartYearList, EndYearList)

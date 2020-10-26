@@ -1,8 +1,9 @@
 <!-- templates/download.html -->
 <html>
-<link rel="stylesheet" href="/static/bootstrap.css">
 	<head>
 		<title>Download Lassa Data</title>
+		<link rel="stylesheet" href="/static/bootstrap.css">
+		<script src='/static/jquery-3.5.1.js'></script>
 	</head>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light">
   		<a class="navbar-brand" href="{{ url_for('main_page') }}">Lassa Virus Dashboard</a>
@@ -33,12 +34,12 @@
 					<div class="form-group row">
 						<label for="Host">Host</label>
 						<select class="form-control" name="Host" id="Host">
-							<option value="Human">Human</option>
-							<option value="Rodent">Rodent</option>
+							<option value="human">human</option>
+							<option value="rodent">rodent</option>
 						</select>
 					</div>
 					<div class="form-group row">
-						<label for="StartYear">End Year</label>
+						<label for="StartYear">Start Year</label>
 						<select class="form-control" name="StartYear" id="StartYear">
 							{% for year in StartYearList  %}
 							<option value="{{year}}">{{year}}</option>
@@ -46,7 +47,7 @@
 						</select>
 					</div>
 					<div class="form-group row">
-						<label for="EndYear">Start Year</label>
+						<label for="EndYear">End Year</label>
 						<select class="form-control" name="EndYear" id="EndYear">
 							{% for end_year in EndYearList %}
 							<option value="{{end_year}}">{{end_year}}</option>
@@ -56,5 +57,62 @@
 				</div>
 			</div>
 		</div>
+		<script>
+			var hostList = document.getElementById("Host");
+			hostList.options[0].selected = true;
+			var startYear = document.getElementById("StartYear"),
+			endYear = document.getElementById("EndYear");
+			start_year_select = $('#StartYear');
+			end_year_select = $('#EndYear');
+			host_select = $('#Host');
+			//var myRes = getYearLists();
+			//console.log(myRes);
+			$( document ).ready(function() {
+				initYears();
+			});
+			host_select.on('change', function(){
+				initYears();
+			});
+			function initYears(){
+				var host = $('#Host').find(":selected").text();
+				var sendHost = {host: host};
+				$.ajax({async:false, url:"/_get_init_year_lists", data:sendHost, dataType:"json",
+					success: function(data){
+						result = data;
+						start_year_select.empty();
+						end_year_select.empty();
+						for (var i in result[0]){
+							start_year_select.append(
+								$('<option>',{
+								value: result[0][i],
+								text: result[0][i]},
+								'</option>'))
+						};
+						for (var j in result[1]){
+							end_year_select.append(
+								$('<option>',{
+								value: result[1][j],
+								text: result[1][j]},
+								'</option>'))
+						}
+					}
+				});
+			};
+			function getYearLists() {
+				var startYear = 2003;
+				var host = $('#Host').find(":selected").text();
+				console.log(host);
+				var download_filter = {
+					start_year: startYear,
+					host: host
+				};
+				$.ajax({async:false, url:"/_get_end_year", data:download_filter ,dataType:"json",
+					success: function(data){
+						result=data;
+					}
+				});
+				return result	
+			};
+		</script>
 	</body>
 </html>
