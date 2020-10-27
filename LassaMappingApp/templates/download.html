@@ -27,39 +27,37 @@
 			<h3>{{message}}</h3>
 			<p style="text-align: center" class="text-danger"> This page will allow users to download the Lassa data that is displayed on the visualization page.</p>
 		</div>
-		<form>
-			<div class="row justify-content-center">
-				<div class="card border-secondary mb-3">
-					<div class="card-header">Download Lassa Data</div>
-					<div class="card-body">
-						<div class="form-group row">
-							<label for="Host">Host</label>
-							<select class="form-control" name="Host" id="Host">
-								<option value="human">human</option>
-								<option value="rodent">rodent</option>
-							</select>
-						</div>
-						<div class="form-group row">
-							<label for="StartYear">Start Year</label>
-							<select class="form-control" name="StartYear" id="StartYear">
-								{% for year in StartYearList  %}
-								<option value="{{year}}">{{year}}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<div class="form-group row">
-							<label for="EndYear">End Year</label>
-							<select class="form-control" name="EndYear" id="EndYear">
-								{% for end_year in EndYearList %}
-								<option value="{{end_year}}">{{end_year}}</option>
-								{% endfor %}
-							</select>
-						</div>
-					<button type="submit" class="btn btn-primary mb-2">Download Data</button>
+		<div class="row justify-content-center">
+			<div class="card border-secondary mb-3" style="max-width: 30rem;">
+				<div class="card-header">Download Lassa Data</div>
+				<div class="card-body">
+					<div class="form-group row">
+						<label for="Host">Host</label>
+						<select class="form-control" name="Host" id="Host">
+							<option value="human">human</option>
+							<option value="rodent">rodent</option>
+						</select>
 					</div>
+					<div class="form-group row">
+						<label for="StartYear">Start Year</label>
+						<select class="form-control" name="StartYear" id="StartYear">
+							{% for year in StartYearList  %}
+							<option value="{{year}}">{{year}}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group row">
+						<label for="EndYear">End Year</label>
+						<select class="form-control" name="EndYear" id="EndYear">
+							{% for end_year in EndYearList %}
+							<option value="{{end_year}}">{{end_year}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Data</button>
 				</div>
 			</div>
-		</form>
+		</div>
 		<script>
 			var hostList = document.getElementById("Host");
 			hostList.options[0].selected = true;
@@ -75,6 +73,31 @@
 			});
 			host_select.on('change', function(){
 				initYears();
+			});
+			$('#dwnBtn').on('click', function(){
+				var host = $('#Host').find(":selected").text();
+				var startYear = $('#StartYear').find(":selected").text();
+				var endYear = $('#EndYear').find(":selected").text();
+				var sendPars = {host: host, start_year: startYear, end_year: endYear};
+				$.ajax({async:false, url:"/_download_data", data:sendPars, dataType:"json",
+					success: function(data){
+						items = data;
+						const replacer = (key, value) => value ===null ? '' : value;
+						const header = Object.keys(items[0]);
+						let csv = items.map(row=> header.map(fieldName=> JSON.stringify(row[fieldName], replacer)).join(','));
+						csv.unshift(header.join(','));
+						csv = csv.join('\r\n');
+						//console.log(csv);
+						var downloadLink = document.createElement("a");
+						var blob = new Blob(["\ufeff", csv]);
+						var url = URL.createObjectURL(blob);
+						downloadLink.href = url;
+						downloadLink.download = "LassaData.csv";
+						document.body.appendChild(downloadLink);
+						downloadLink.click();
+						document.body.removeChild(downloadLink);
+					}
+				});
 			});
 			function initYears(){
 				var host = $('#Host').find(":selected").text();
@@ -101,21 +124,7 @@
 					}
 				});
 			};
-			function getYearLists() {
-				var startYear = 2003;
-				var host = $('#Host').find(":selected").text();
-				console.log(host);
-				var download_filter = {
-					start_year: startYear,
-					host: host
-				};
-				$.ajax({async:false, url:"/_get_end_year", data:download_filter ,dataType:"json",
-					success: function(data){
-						result=data;
-					}
-				});
-				return result	
-			};
+			
 		</script>
 	</body>
 </html>
