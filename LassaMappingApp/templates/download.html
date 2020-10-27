@@ -74,6 +74,9 @@
 			host_select.on('change', function(){
 				initYears();
 			});
+			start_year_select.on('change', function(){
+				getUpdatedEndYear();
+			});
 			$('#dwnBtn').on('click', function(){
 				var host = $('#Host').find(":selected").text();
 				var startYear = $('#StartYear').find(":selected").text();
@@ -124,7 +127,19 @@
 					}
 				});
 			};
-			
+			function getUpdatedEndYear(){
+				var host = $('#Host').find(":selected").text();
+				var start_year = $('#StartYear').find(":selected").text();
+				var send = {start_year: start_year, host: host};
+				$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
+					success: function(data){
+						end_year_select.empty();
+						for (var i in data){
+							end_year_select.append($('<option>',{value: data[i].end_year,text: data[i].end_year},'</option>'))
+						}
+					}
+				});
+			};
 		</script>
 	</body>
 </html>
