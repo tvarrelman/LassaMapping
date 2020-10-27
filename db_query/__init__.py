@@ -146,6 +146,23 @@ def mapper(host, start_year, end_year):
             json_seq_data.append(dict(zip(seq_headers, entry)))
         cursor.close()
         return json_seq_data
+def country_list(host):
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    if host == "human":
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus='Homo' ORDER BY countries.country_name;"
+    if host == "rodent":
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' ORDER BY countries.country_name;"
+    if host == "sequence":
+        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id ORDER BY countries.country_name;"
+    cursor.execute(cmd)
+    country_headers = [x[0] for x in cursor.description]
+    country_list = cursor.fetchall()
+    countryJson = []
+    for countryEntry in country_list:
+        countryJson.append(dict(zip(country_headers, countryEntry)))
+    return countryJson
 def db_summary():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -238,11 +255,4 @@ def filtered_download(host, start_year, end_year):
     return jsonDump
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(filtered_download('human', '2003', '2003'))
-    #print(sequence_year_data())
-    #print(db_summary())
-    #print(initial_year_lists('sequence'))
-    #print(rodent_year_data())
-    #print(mapper('sequence', '2015','2015'))
-    #print(start_year_list('rodent'))
-    #print(end_year_list("2002", 'sequence'))
+    #print(country_list('sequence'))
