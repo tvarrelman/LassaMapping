@@ -95,29 +95,33 @@ def admin():
             error = "No file selected/incorrect file type"
             return render_template('admin.html', error=error)
     return render_template('admin.html')
-@app.route('/_get_end_year', methods=['GET','POST'])
+@app.route('/_get_end_year', methods=['GET'])
 def get_end_year():
     start_year = request.args.get('start_year', 'default_if_none')
     host_mapped = request.args.get('host', 'default_if_none')
     end_year_json = end_year_list(start_year, host_mapped)
     return jsonify(end_year_json)
-@app.route('/_filter_points', methods=['GET', 'POST']) 
+@app.route('/_filter_points', methods=['GET']) 
 def filter_points():
     start_year = request.args.get('start_year', 'default_if_none')
     end_year = request.args.get('end_year', 'default_if_none')
     host_species = request.args.get('host', 'default_if_none')
     mapping_json = mapper(host_species, start_year, end_year) 
     return jsonify(mapping_json)
-@app.route('/_get_init_year_lists', methods=['GET', 'POST'])  
+@app.route('/_get_init_year_lists', methods=['GET'])  
 def get_init_year_lists():
     host = request.args.get('host', 'default_if_none')
     StartYearList, EndYearList = initial_year_lists(host)
     return jsonify(StartYearList, EndYearList)
-@app.route('/_download_data', methods=['GET', 'POSE'])
+@app.route('/_download_data', methods=['GET'])
 def download_data():
     host = request.args.get('host', 'default_if_none')
     start_year = request.args.get('start_year', 'default_if_none')
     end_year = request.args.get('end_year', 'default_if_none')
     jsonDump = filtered_download(host, start_year, end_year)
     return jsonify(jsonDump)
-
+@app.route('/_get_countries', methods=['GET'])
+def get_country_list():
+    host = request.args.get('host', 'default_if_none') 
+    countryJson = country_list(host)
+    return jsonify(countryJson)

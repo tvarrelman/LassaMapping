@@ -39,20 +39,16 @@
 						</select>
 					</div>
 					<div class="form-group row">
+						<label for="CountryList">Countries</label>
+						<select class="form-control" name="CountryList" id="CountryList"></select>
+					</div>
+					<div class="form-group row">
 						<label for="StartYear">Start Year</label>
-						<select class="form-control" name="StartYear" id="StartYear">
-							{% for year in StartYearList  %}
-							<option value="{{year}}">{{year}}</option>
-							{% endfor %}
-						</select>
+						<select class="form-control" name="StartYear" id="StartYear"></select>
 					</div>
 					<div class="form-group row">
 						<label for="EndYear">End Year</label>
-						<select class="form-control" name="EndYear" id="EndYear">
-							{% for end_year in EndYearList %}
-							<option value="{{end_year}}">{{end_year}}</option>
-							{% endfor %}
-						</select>
+						<select class="form-control" name="EndYear" id="EndYear"></select>
 					</div>
 				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Data</button>
 				</div>
@@ -66,13 +62,16 @@
 			start_year_select = $('#StartYear');
 			end_year_select = $('#EndYear');
 			host_select = $('#Host');
+			country_select = $('#CountryList')
 			//var myRes = getYearLists();
 			//console.log(myRes);
 			$( document ).ready(function() {
 				initYears();
+				countries();
 			});
 			host_select.on('change', function(){
 				initYears();
+				countries();
 			});
 			start_year_select.on('change', function(){
 				getUpdatedEndYear();
@@ -102,6 +101,25 @@
 					}
 				});
 			});
+			function countries(){
+				var host = $('#Host').find(":selected").text();
+				var sendHost = {host: host};
+				$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
+					success: function(data){
+						countryList = data;
+						country_select.empty();
+						country_select.append($('<option>',{value:'All', text:'All'},'</option>'));
+						//console.log(countryList);
+						for (var i in countryList){
+							country_select.append(
+								$('<option>', {
+								value: countryList[i].country_name,
+								text: countryList[i].country_name},
+								'</option>'))
+						};
+					}
+				});
+			};
 			function initYears(){
 				var host = $('#Host').find(":selected").text();
 				var sendHost = {host: host};
