@@ -59,33 +59,51 @@
 			</div>
 		</div>
 		<script>
-			var testHuman = $("#human"),
-			testRodent = $('#rodent');
-			testHuman.on('change', function(){
-				console.log(testHuman.val());
+			country_select = $('#CountryList')
+			var checkHuman = $('#human'),
+			checkRodent = $('#rodent');
+			checkHuman.on('click', function(){
+				var map = {};
+				$('.form-check-input:checked').each(function(){
+					map[$(this).attr("name")] = $(this).val();
+				});
+				if (Object.keys(map).length == 0){
+					country_select.empty();
+				};
+				if (Object.keys(map).length == 1){
+					var host = $('.form-check-input:checked').val()
+					countries(host);
+				};
+				if (Object.keys(map).length == 2){
+					countries('both');
+				};
 			});
-			testRodent.on('change', function(){
-				console.log(testRodent.val());
+			checkRodent.on('click', function(){
+				var map = {};
+				$('.form-check-input:checked').each(function(){
+					map[$(this).attr("name")] = $(this).val();
+				});
+				if (Object.keys(map).length == 0){
+					country_select.empty();
+				};
+				if (Object.keys(map).length == 1){
+					var host = $('.form-check-input:checked').val()
+					countries(host);
+				};
+				if (Object.keys(map).length == 2){
+					countries('both');
+				};
 			});
-			console.log(test);
-			var hostList = document.getElementById("Host");
-			hostList.options[0].selected = true;
 			var startYear = document.getElementById("StartYear"),
 			endYear = document.getElementById("EndYear");
 			start_year_select = $('#StartYear');
 			end_year_select = $('#EndYear');
-			host_select = $('#Host');
-			country_select = $('#CountryList')
 			//var myRes = getYearLists();
 			//console.log(myRes);
-			$( document ).ready(function() {
-				initYears();
-				countries();
-			});
-			host_select.on('change', function(){
-				initYears();
-				countries();
-			});
+			//$( document ).ready(function() {
+			//	initYears();
+			//	countries();
+			//});
 			start_year_select.on('change', function(){
 				getUpdatedEndYear();
 			});
@@ -114,8 +132,8 @@
 					}
 				});
 			});
-			function countries(){
-				var host = $('#Host').find(":selected").text();
+			function countries(host){
+				//var host = $('#Host').find(":selected").text();
 				var sendHost = {host: host};
 				$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
 					success: function(data){

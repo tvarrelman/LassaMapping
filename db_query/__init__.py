@@ -156,6 +156,8 @@ def country_list(host):
         cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' ORDER BY countries.country_name;"
     if host == "sequence":
         cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id ORDER BY countries.country_name;"
+    if host == "both":
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id ORDER BY countries.country_name;"
     cursor.execute(cmd)
     country_headers = [x[0] for x in cursor.description]
     country_list = cursor.fetchall()
