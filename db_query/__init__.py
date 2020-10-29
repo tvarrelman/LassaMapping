@@ -107,8 +107,7 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(final_cmd)
     year_list = cursor.fetchall()
@@ -159,8 +158,7 @@ def filtered_end_year_list(host, start_year, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(final_cmd)
     end_year_list = cursor.fetchall()
@@ -249,8 +247,7 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_seq_data
 def country_list(host):
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == "human":
         cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
@@ -337,14 +334,52 @@ def sequence_year_data():
         seqHeader = ("seq_year", "seq_count")
         jsonSeq.append(dict(zip(seqHeader, seqRow)))
     return jsonSeq
-def filtered_download(host, start_year, end_year):
+def filtered_download(host, start_year, end_year, country_list):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    if host=="human":
-        cmd = """SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1};""".format(start_year, end_year)
-    if host=="rodent":
-        cmd = """SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb ,lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus!='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1};""".format(start_year, end_year)
-    cursor.execute(cmd)
+    
+    if host == 'human':
+        ext_list = []
+        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:    
+            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+        
+    if host == 'rodent':
+        ext_list = []
+        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:    
+            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus!='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+        
+    if host == 'both':
+        ext_list = []
+        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:    
+            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end    
+    cursor.execute(final_cmd)
     dataDump = cursor.fetchall()
     headers = [x[0] for x in cursor.description]
     jsonDump = []
@@ -359,6 +394,7 @@ def filtered_download(host, start_year, end_year):
     return jsonDump
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(filtered_download('both', '1990', '2001', ['Nigeria']))
     #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))
     #print(filtered_year_list('human', ['Benin']))
     #print(country_list('human'))

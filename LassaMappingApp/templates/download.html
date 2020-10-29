@@ -151,11 +151,20 @@
 				getUpdatedEndYear();
 			});
 			$('#dwnBtn').on('click', function(){
-				var host = $('#Host').find(":selected").text();
+                                map = {};
+				$('.form-check-input:checked').each(function(){
+                                        map[$(this).attr("name")] = $(this).val()
+                                });
+                                if (Object.keys(map).length ==2){
+                                        var host = 'both'
+                                };
+                                if (Object.keys(map).length ==1){ 
+                                        var host = $('.form-check-input:checked').val()
+                                };
 				var startYear = $('#StartYear').find(":selected").text();
 				var endYear = $('#EndYear').find(":selected").text();
-				var sendPars = {host: host, start_year: startYear, end_year: endYear};
-				$.ajax({async:false, url:"/_download_data", data:sendPars, dataType:"json",
+				var sendPars = {host: host, start_year: startYear, end_year: endYear, country: country_select.val()};
+				$.ajax({async:false, url:"/_download_data", data:sendPars, dataType:"json", traditional: true,
 					success: function(data){
 						items = data;
 						const replacer = (key, value) => value ===null ? '' : value;

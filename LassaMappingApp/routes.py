@@ -118,7 +118,8 @@ def download_data():
     host = request.args.get('host', 'default_if_none')
     start_year = request.args.get('start_year', 'default_if_none')
     end_year = request.args.get('end_year', 'default_if_none')
-    jsonDump = filtered_download(host, start_year, end_year)
+    country_list = request.args.getlist('country')
+    jsonDump = filtered_download(host, start_year, end_year, country_list)
     return jsonify(jsonDump)
 @app.route('/_get_countries', methods=['GET'])
 def get_country_list():
