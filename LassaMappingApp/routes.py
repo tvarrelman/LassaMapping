@@ -130,6 +130,6 @@ def test():
     #print(request)
     country_list = request.args.getlist('country')
     host = request.args.get('host')
-    print(host, country_list)
+    #print(host, country_list)
     StartYearList, EndYearList = filtered_year_list(host, country_list)
     return jsonify(StartYearList, EndYearList)

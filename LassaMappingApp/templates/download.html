@@ -59,7 +59,10 @@
 			</div>
 		</div>
 		<script>
-			//console.log($('#CountryList option'));
+                        var startYear = document.getElementById("StartYear"),
+                        endYear = document.getElementById("EndYear");
+                        start_year_select = $('#StartYear');
+                        end_year_select = $('#EndYear');
 			country_select = $('#CountryList')
 			var checkHuman = $('#human'),
 			checkRodent = $('#rodent');
@@ -78,6 +81,8 @@
 				if (Object.keys(map).length == 2){
 					countries('both');
 				};
+				start_year_select.empty();
+				end_year_select.empty();
 			});
 			checkRodent.on('click', function(){
 				var map = {};
@@ -93,10 +98,16 @@
 				};
 				if (Object.keys(map).length == 2){
 					countries('both');
-					//multiCountrySel();
 				};
+                                start_year_select.empty();
+                                end_year_select.empty();
 			});
 			country_select.on('click', function(){
+				if (country_select.val().length == 0){
+					start_year_select.empty();
+					end_year_select.empty();
+					return;
+				};
 				var map = {};
                                 $('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
@@ -130,10 +141,6 @@
 					}
 				});
 			});
-			var startYear = document.getElementById("StartYear"),
-			endYear = document.getElementById("EndYear");
-			start_year_select = $('#StartYear');
-			end_year_select = $('#EndYear');
 			//var myRes = getYearLists();
 			//console.log(myRes);
 			//$( document ).ready(function() {
