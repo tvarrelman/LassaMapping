@@ -125,3 +125,8 @@ def get_country_list():
     host = request.args.get('host', 'default_if_none') 
     countryJson = country_list(host)
     return jsonify(countryJson)
+@app.route('/_test', methods=['GET'])
+def test():
+    country_list = request.args.getlist('country')
+    print(country_list)
+    return jsonify({"status": 'Great Sucess!'})

@@ -44,7 +44,7 @@
 					</div>
 					<div class="form-group" style="text-align:left;">
 						<label for="CountryList">Countries</label>
-						<select class="form-control" name="CountryList" id="CountryList"></select>
+						<select class="form-control" name="CountryList" id="CountryList" multiple></select>
 					</div>
 					<div class="form-group" style="text-align:left;">
 						<label for="StartYear">Start Year</label>
@@ -59,6 +59,7 @@
 			</div>
 		</div>
 		<script>
+			//console.log($('#CountryList option'));
 			country_select = $('#CountryList')
 			var checkHuman = $('#human'),
 			checkRodent = $('#rodent');
@@ -92,7 +93,16 @@
 				};
 				if (Object.keys(map).length == 2){
 					countries('both');
+					//multiCountrySel();
 				};
+			});
+			country_select.on('click', function(){
+				var sendCountry = {country: country_select.val()};
+				$.ajax({async:false, url:"/_test", data:sendCountry, dataType:"json", traditional: true,
+					success: function(data){
+						result = data;
+					}
+				});
 			});
 			var startYear = document.getElementById("StartYear"),
 			endYear = document.getElementById("EndYear");
@@ -132,6 +142,14 @@
 					}
 				});
 			});
+                        function multiCountrySel(){
+                                //console.log($('#CountryList option'));
+                                $('#CountryList option').mousedown(function(e) {
+                                        e.preventDefault();
+                                        $(this).prop('selected', !$(this).prop('selected'));
+                                        return false;
+                                });
+                        };
 			function countries(host){
 				//var host = $('#Host').find(":selected").text();
 				var sendHost = {host: host};
@@ -139,7 +157,7 @@
 					success: function(data){
 						countryList = data;
 						country_select.empty();
-						country_select.append($('<option>',{value:'All', text:'All'},'</option>'));
+						country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
 						//console.log(countryList);
 						for (var i in countryList){
 							country_select.append(
@@ -150,6 +168,7 @@
 						};
 					}
 				});
+				multiCountrySel();
 			};
 			function initYears(){
 				var host = $('#Host').find(":selected").text();
