@@ -133,3 +133,11 @@ def test():
     #print(host, country_list)
     StartYearList, EndYearList = filtered_year_list(host, country_list)
     return jsonify(StartYearList, EndYearList)
+@app.route('/_get_filtered_end_year', methods=['GET'])
+def filtered_end_year():
+    host = request.args.get('host', 'default_if_none')
+    start_year = request.args.get('start_year', 'default_if_none')
+    country_list = request.args.getlist('country')
+    json_end_year = filtered_end_year_list(host, start_year, country_list)
+    return jsonify(json_end_year)
+

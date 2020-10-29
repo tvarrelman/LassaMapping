@@ -119,6 +119,56 @@ def filtered_year_list(host, country_list):
         init_end_year_list.append(year_list[i][1])
     cursor.close()
     return init_start_year_list, init_end_year_list
+def filtered_end_year_list(host, start_year, country_list):
+    if host == 'human':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY end_year;"
+        for country in country_list:
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'rodent':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY end_year;"
+        for country in country_list:
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus!='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'both':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY end_year;"
+        for country in country_list:
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cursor.execute(final_cmd)
+    end_year_list = cursor.fetchall()
+    json_end_year = []
+    for end_year in end_year_list:
+        json_end_year.append(end_year[0])
+    cursor.close()
+    return json_end_year
 def mapper(host, start_year, end_year):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -309,5 +359,6 @@ def filtered_download(host, start_year, end_year):
     return jsonDump
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))
     #print(filtered_year_list('human', ['Benin']))
     #print(country_list('human'))

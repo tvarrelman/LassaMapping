@@ -229,14 +229,28 @@
 				});
 			};
 			function getUpdatedEndYear(){
-				var host = $('#Host').find(":selected").text();
+                                if (country_select.val().length == 0){
+                                        start_year_select.empty();
+                                        end_year_select.empty();
+                                        return;
+                                };
+                                var map = {};
+                                $('.form-check-input:checked').each(function(){
+                                        map[$(this).attr("name")] = $(this).val()
+                                });
+                                if (Object.keys(map).length ==2){
+                                        var host = 'both'
+                                };
+                                if (Object.keys(map).length ==1){ 
+                                        var host = $('.form-check-input:checked').val()
+                                };				
 				var start_year = $('#StartYear').find(":selected").text();
-				var send = {start_year: start_year, host: host};
-				$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
+				var send = {start_year: start_year, host: host, country: country_select.val()};
+				$.ajax({async:false, url:"/_get_filtered_end_year", data:send, dataType:"json",traditional: true,
 					success: function(data){
 						end_year_select.empty();
 						for (var i in data){
-							end_year_select.append($('<option>',{value: data[i].end_year,text: data[i].end_year},'</option>'))
+							end_year_select.append($('<option>',{value: data[i],text: data[i]},'</option>'))
 						}
 					}
 				});
