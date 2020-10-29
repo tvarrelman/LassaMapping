@@ -97,10 +97,36 @@
 				};
 			});
 			country_select.on('click', function(){
-				var sendCountry = {country: country_select.val()};
+				var map = {};
+                                $('.form-check-input:checked').each(function(){
+                                        map[$(this).attr("name")] = $(this).val()
+				});
+				if (Object.keys(map).length ==2){
+					var host = 'both'
+				};
+				if (Object.keys(map).length ==1){ 
+					var host = $('.form-check-input:checked').val()
+				};
+				var sendCountry = {host: host, country: country_select.val()};
 				$.ajax({async:false, url:"/_test", data:sendCountry, dataType:"json", traditional: true,
 					success: function(data){
 						result = data;
+						start_year_select.empty();
+                                               	end_year_select.empty();
+                                               	for (var i in result[0]){
+                                                       	start_year_select.append(
+                                                               	$('<option>',{
+                                                               	value: result[0][i],
+                                                               	text: result[0][i]},
+                                                               	'</option>'))
+                                               	};
+                                               	for (var j in result[1]){
+                                                       	end_year_select.append(
+                                                               	$('<option>',{
+                                                               	value: result[1][j],
+                                                               	text: result[1][j]},
+                                                               	'</option>'))
+						};
 					}
 				});
 			});

@@ -127,6 +127,9 @@ def get_country_list():
     return jsonify(countryJson)
 @app.route('/_test', methods=['GET'])
 def test():
+    #print(request)
     country_list = request.args.getlist('country')
-    print(country_list)
-    return jsonify({"status": 'Great Sucess!'})
+    host = request.args.get('host')
+    print(host, country_list)
+    StartYearList, EndYearList = filtered_year_list(host, country_list)
+    return jsonify(StartYearList, EndYearList)

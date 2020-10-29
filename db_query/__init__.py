@@ -67,6 +67,58 @@ def end_year_list(start_year, host):
     for year in year_list:
         json_end_year.append({'end_year':year[0]})
     return json_end_year
+def filtered_year_list(host, country_list):
+    if host == 'human':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:
+            ext = " (start_year IS NOT NULL AND Genus='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end 
+    if host == 'rodent':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:
+            ext = " (start_year IS NOT NULL AND Genus!='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'both':
+        ext_list = []
+        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_end = "ORDER BY start_year;"
+        for country in country_list:
+            ext = " (start_year IS NOT NULL AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cursor.execute(final_cmd)
+    year_list = cursor.fetchall()
+    init_start_year_list = []
+    init_end_year_list = []
+    for i in range(0, len(year_list)):
+        init_start_year_list.append(year_list[i][0])
+        init_end_year_list.append(year_list[i][1])
+    cursor.close()
+    return init_start_year_list, init_end_year_list
 def mapper(host, start_year, end_year):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -151,13 +203,13 @@ def country_list(host):
     #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == "human":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus='Homo' ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "rodent":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "sequence":
         cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id ORDER BY countries.country_name;"
     if host == "both":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
     cursor.execute(cmd)
     country_headers = [x[0] for x in cursor.description]
     country_list = cursor.fetchall()
@@ -257,4 +309,5 @@ def filtered_download(host, start_year, end_year):
     return jsonDump
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(country_list('sequence'))
+    #print(filtered_year_list('human', ['Benin']))
+    #print(country_list('human'))
