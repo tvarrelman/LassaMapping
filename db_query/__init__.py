@@ -6,6 +6,7 @@ from os import environ, path
 from dotenv import load_dotenv
 import json
 from decimal import Decimal
+import pandas as pd 
 #from shapely.geometry import shape, Point
 
 # finds the absolute path of this file
@@ -392,6 +393,46 @@ def filtered_download(host, start_year, end_year, country_list):
                 col_vals.append(str(data))
         jsonDump.append(dict(zip(headers, col_vals)))
     return jsonDump
+def source_id_mapper(data_df):
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    source_cmd = "SELECT * FROM data_source;"
+    source_result = pd.read_sql(source_cmd, cnx)
+    source_df = pd.DataFrame(columns=['source_id'])
+    for i in range(0, len(data_df)):
+        cite = data_df['Citation'][i]
+        source = data_df['Source'][i]
+        doi = data_df['DOI'][i]
+        if cite in list(source_result['Citation']):
+            source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
+            source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
+            source_df.loc[source_ind] = source_id
+        else:
+            insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI) VALUES ('{0}', '{1}', '{2}')""".format(cite, source, doi)
+            cursor.execute(insert_cmd)
+            cnx.commit()
+            #return source_id_mapper()
+    cursor.close()
+    return source_df
+def country_id_mapper(data_df):
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    country_cmd = "SELECT * FROM countries;"
+    country_result = pd.read_sql(country_cmd, cnx)
+    country_df = pd.DataFrame(columns=['country_id'])
+    for country in data_df['Country']:
+        if country in list(country_result['country_name']):
+            country_id = country_result[country_result['country_name']==country]['country_id'].iloc[0]
+            country_ind = country_result[country_result['country_name']==country]['country_id'].index[0]
+            country_df.loc[country_ind] = country_id
+        else:
+            insert_cmd = """INSERT INTO test_countries (country_name) VALUES ('{0}')""".format(country)
+            cursor.execute(insert_cmd)
+            cnx.commit()
+            #return country_id_mapper()
+    cursor.close()
+    return country_df
+
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(filtered_download('both', '1990', '2001', ['Nigeria']))
