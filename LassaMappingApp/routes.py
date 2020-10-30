@@ -87,6 +87,10 @@ def admin():
                'DOI', 'Human_Random_Survey', 'Notes']
             if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
                 message = 'Successfully imported data'
+                source_df = source_id_mapper(data_df)
+                country_df = country_id_mapper(data_df)
+                print(source_df)
+                print(country_df)
                 return render_template('admin.html', message=message)
             else:
                 error = "Inconsistent column names"
