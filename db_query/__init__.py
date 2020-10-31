@@ -443,14 +443,19 @@ def lat_lon_check(data_df):
             dir_path = os.path.dirname(os.path.realpath(__file__))
             africa_geo_file = os.path.join(dir_path, 'Africa.geojson')
             africa_gdf = gpd.read_file(africa_geo_file)
-            result = africa_gdf['geometry'].contains(Point(lat, lon))
-            res = [i for i, val in enumerate(result) if val]
-            country_gdf = africa_gdf['Country'].loc[res[0]]
-            if country == country_gdf:
-                continue
+            africa_gdf = africa_gdf.replace({"CÃ´te d'Ivoire": "Ivory Coast"})
+            result = africa_gdf['geometry'].contains(Point(lon, lat))
+            res = [j for j, val in enumerate(result) if val]
+            if len(res)<1:
+                latlonError = 'Latitude: {0}, Longitude: {1} Not Within Africa'.format(lat, lon)
             else:
-                check_list.append([country, country_gdf])
-    return check_list
+                latlonError = None
+                country_gdf = africa_gdf['Country'].loc[res[0]]
+                if country == country_gdf:
+                    continue
+                else:
+                    check_list.append([country, country_gdf])
+    return check_list, latlonError
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(lat_lon_check())
