@@ -6,8 +6,9 @@ from os import environ, path
 from dotenv import load_dotenv
 import json
 from decimal import Decimal
-import pandas as pd 
-#from shapely.geometry import shape, Point
+import pandas as pd
+import geopandas as gpd 
+from shapely.geometry import shape, Point
 
 # finds the absolute path of this file
 basedir = path.abspath(path.dirname(__file__))
@@ -432,9 +433,27 @@ def country_id_mapper(data_df):
             #return country_id_mapper()
     cursor.close()
     return country_df
-
+def lat_lon_check(data_df):
+    check_list = []
+    for i in range(0, len(data_df)):
+        lat = data_df['Latitude'][i]
+        lon = data_df['Longitude'][i]
+        country = data_df['Country'][i]
+        if lat or lon != None:
+            dir_path = os.path.dirname(os.path.realpath(__file__))
+            africa_geo_file = os.path.join(dir_path, 'Africa.geojson')
+            africa_gdf = gpd.read_file(africa_geo_file)
+            result = africa_gdf['geometry'].contains(Point(lat, lon))
+            res = [i for i, val in enumerate(result) if val]
+            country_gdf = africa_gdf['Country'].loc[res[0]]
+            if country == country_gdf:
+                continue
+            else:
+                check_list.append([country, country_gdf])
+    return check_list
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(lat_lon_check())
     #print(filtered_download('both', '1990', '2001', ['Nigeria']))
     #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))
     #print(filtered_year_list('human', ['Benin']))
