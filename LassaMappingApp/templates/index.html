@@ -92,13 +92,13 @@
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs" id="myTabs">
 								<li class="nav-item">
-									<a class="nav-link" id="HumanTab" href="LassaHumans">Human Data</a>
+									<a class="nav-link" id="HumanTab" href="LassaHumans">Viral Infection Humans</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" id="RodentTab" href="LassaRodents">Rodent Data</a>
+									<a class="nav-link" id="RodentTab" href="LassaRodents">Viral Infection Rodents</a>
 								</li>
 								<li class="nav-item">
-									<a class="nav-link" id="SequenceTab", href="LassaSequence">Sequence Data</a>
+									<a class="nav-link" id="SequenceTab", href="LassaSequence">Viral Sequence</a>
 								<li>
 							</ul>
 							<div class="tab-content" id="myTabContent">
@@ -268,7 +268,7 @@
 										AbTime.push(propAb[i].Ab_year);
 										AbProp.push(propAb[i].propAbPos);
 									};
-									var finalTitle = "Human Data"
+									var finalTitle = "Viral Infection Humans"
 									var layout = {
 										title: finalTitle,
 										font: {color:'#1a1a1a'},
@@ -304,7 +304,7 @@
 									{% if host == "rodent" %}
 									var propAb = {{ jsonPropAb|tojson}};
 									var propAg = {{jsonPropAg|tojson}};
-                                                                        var finalTitle = "Rodent Data"
+                                                                        var finalTitle = "Viral Infection Rodents"
 									var layout = { 
 										title: finalTitle,
 										font: {color:'#1a1a1a'},
@@ -360,7 +360,7 @@
 									{% if host=="sequence" %}
 										var seqData = {{ jsonSeq|tojson}};
 										//console.log(seqData);
-										var finalTitle = "Sequence Data";
+										var finalTitle = "Viral Sequences";
 										let seqYear = [];
 										let seqCount = [];
 										for (var i in seqData){
