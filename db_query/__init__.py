@@ -109,15 +109,35 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    if host=='sequence':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    #print(final_cmd)
+    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
+    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(final_cmd)
     year_list = cursor.fetchall()
     init_start_year_list = []
     init_end_year_list = []
-    for i in range(0, len(year_list)):
-        init_start_year_list.append(year_list[i][0])
-        init_end_year_list.append(year_list[i][1])
+    if host=='rodent' or host=='human' or host=='both':
+        for i in range(0, len(year_list)):
+            init_start_year_list.append(year_list[i][0])
+            init_end_year_list.append(year_list[i][1])
+    else:
+        for i in range(0, len(year_list)):
+            init_start_year_list.append(year_list[i][0])
+            init_end_year_list.append(year_list[i][0])
     cursor.close()
     return init_start_year_list, init_end_year_list
 def filtered_end_year_list(host, start_year, country_list):
@@ -153,6 +173,19 @@ def filtered_end_year_list(host, start_year, country_list):
         sel_end = "ORDER BY end_year;"
         for country in country_list:
             ext = " (end_year>={0} AND end_year IS NOT NULL AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'sequence':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear>={0} AND gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -256,7 +289,7 @@ def country_list(host):
     if host == "rodent":
         cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "sequence":
-        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL ORDER BY countries.country_name;"
     if host == "both":
         cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
     cursor.execute(cmd)
@@ -458,7 +491,8 @@ def lat_lon_check(data_df):
                     data_df[['Country']] = data_df[['Country']].replace([country], [country_gdf])
     return data_df, latlonError
 # This bit is only used for testing the functions before implementation 
-#if __name__ == '__main__':
+if __name__ == '__main__':
+    print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
     #print(lat_lon_check())
     #print(filtered_download('both', '1990', '2001', ['Nigeria']))
     #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))

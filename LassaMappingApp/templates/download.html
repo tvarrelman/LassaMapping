@@ -43,7 +43,7 @@
 							<label class="form-check-label" for="Host">rodent</label>
 						</div>
 					</div>
-					<div class="form-group" style="text-align:left;">
+					<div class="form-group" style="text-align:left;" id="CountryForm">
 						<label for="CountryList">Countries</label>
 						<select class="form-control" name="CountryList" id="CountryList" multiple></select>
 					</div>
@@ -55,28 +55,63 @@
 						<label for="EndYear">End Year</label>
 						<select class="form-control" name="EndYear" id="EndYear"></select>
 					</div>
-				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Data</button>
+				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Infection Data</button>
+				</div>
+			</div>
+                        <div class="card border-secondary mb-3" style="width: 25rem; text-align:center">
+                                <div class="card-header">Download Viral Sequence  Data</div>
+                                <div class="card-body">
+                                        <div class="form-group" style="text-align:left;" id="seqCheckBoxes">
+                                                <label for="SeqCheckBoxes">Host</label>
+                                                <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="sequence" value="sequence" id="sequence">
+                                                        <label class="form-check-label" for="Host">sequence</label>
+                                                </div>
+					</div>
+                                        <div class="form-group" style="text-align:left;" id="SeqCountryForm">
+                                                <label for="CountryList">Countries</label>
+                                                <select class="form-control" name="CountryList" id="SeqCountryList" multiple></select>
+                                        </div>
+                                        <div class="form-group" style="text-align:left;">
+                                                <label for="StartYear">Start Year</label>
+                                                <select class="form-control" name="StartYear" id="SeqStartYear"></select>
+                                        </div>
+                                        <div class="form-group" style="text-align:left;">
+                                                <label for="EndYear">End Year</label>
+                                                <select class="form-control" name="EndYear" id="SeqEndYear"></select>
+                                        </div>
+                                <button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Sequence Data</button>
 				</div>
 			</div>
 		</div>
 		<script>
+			// Define all of the variables in our two forms
                         var startYear = document.getElementById("StartYear"),
                         endYear = document.getElementById("EndYear");
                         start_year_select = $('#StartYear');
                         end_year_select = $('#EndYear');
 			country_select = $('#CountryList')
+			var seqStartYear = document.getElementById("SeqStartYear"),
+			seqEndYear = document.getElementById("SeqEndYear");
+			seq_start_year_select = $('#SeqStartYear');
+			seq_end_year_select = $('#SeqEndYear');
+			seq_country_select = $('#SeqCountryList');
 			var checkHuman = $('#human'),
-			checkRodent = $('#rodent');
+			checkRodent = $('#rodent'),
+			checkSequence = $('#sequence');
 			checkHuman.on('click', function(){
+				//console.log($('#checkBoxes').find('.form-check-input:checked'));
 				var map = {};
-				$('.form-check-input:checked').each(function(){
+				$('#checkBoxes').find('.form-check-input:checked').each(function(){
+				//$('.form-check-input:checked').each(function(){
 					map[$(this).attr("name")] = $(this).val();
 				});
 				if (Object.keys(map).length == 0){
 					country_select.empty();
 				};
 				if (Object.keys(map).length == 1){
-					var host = $('.form-check-input:checked').val()
+					//var host = $('.form-check-input:checked').val()
+					var host = $('#checkBoxes').find('.form-check-input:checked').val();
 					countries(host);
 				};
 				if (Object.keys(map).length == 2){
@@ -86,15 +121,18 @@
 				end_year_select.empty();
 			});
 			checkRodent.on('click', function(){
+				//console.log($('#checkBoxes').find('.form-check-input:checked'));
 				var map = {};
-				$('.form-check-input:checked').each(function(){
+				$('#checkBoxes').find('.form-check-input:checked').each(function(){
+				//$('.form-check-input:checked').each(function(){
 					map[$(this).attr("name")] = $(this).val();
 				});
 				if (Object.keys(map).length == 0){
 					country_select.empty();
 				};
 				if (Object.keys(map).length == 1){
-					var host = $('.form-check-input:checked').val()
+					//var host = $('.form-check-input:checked').val()
+					var host = $('#checkBoxes').find('.form-check-input:checked').val();
 					countries(host);
 				};
 				if (Object.keys(map).length == 2){
@@ -103,6 +141,16 @@
                                 start_year_select.empty();
                                 end_year_select.empty();
 			});
+			checkSequence.on('change', function(){
+				var host = $('#seqCheckBoxes').find('.form-check-input:checked').val();
+				if (host==undefined){
+					seq_country_select.empty();
+					seq_start_year_select.empty();
+					seq_end_year_select.empty();
+				} else {
+					countries(host);
+				};	
+			});
 			country_select.on('click', function(){
 				if (country_select.val().length == 0){
 					start_year_select.empty();
@@ -110,14 +158,16 @@
 					return;
 				};
 				var map = {};
-                                $('.form-check-input:checked').each(function(){
+                                $('#checkBoxes').find('.form-check-input:checked').each(function(){
+				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
 				});
 				if (Object.keys(map).length ==2){
 					var host = 'both'
 				};
 				if (Object.keys(map).length ==1){ 
-					var host = $('.form-check-input:checked').val()
+					//var host = $('.form-check-input:checked').val()
+					var host = $('#checkBoxes').find('.form-check-input:checked').val();
 				};
 				var sendCountry = {host: host, country: country_select.val()};
 				$.ajax({async:false, url:"/_test", data:sendCountry, dataType:"json", traditional: true,
@@ -142,6 +192,36 @@
 					}
 				});
 			});
+                        seq_country_select.on('click', function(){
+                                if (seq_country_select.val().length == 0){
+                                        seq_start_year_select.empty();
+                                        seq_end_year_select.empty();
+                                        return;
+                                };
+                                var sendCountry = {host: 'sequence', country: seq_country_select.val()};
+				//console.log(sendCountry);
+                                $.ajax({async:false, url:"/_test", data:sendCountry, dataType:"json", traditional: true,
+                                        success: function(data){
+                                                result = data;
+                                                seq_start_year_select.empty();
+                                                seq_end_year_select.empty();
+                                                for (var i in result[0]){
+                                                        seq_start_year_select.append(
+                                                                $('<option>',{
+                                                                value: result[0][i],
+                                                                text: result[0][i]},
+                                                                '</option>'))
+                                                };
+                                                for (var j in result[1]){
+                                                        seq_end_year_select.append(
+                                                                $('<option>',{
+                                                                value: result[1][j],
+                                                                text: result[1][j]},
+                                                                '</option>'))
+                                                };
+                                        }
+                                });
+                        });
 			//var myRes = getYearLists();
 			//console.log(myRes);
 			//$( document ).ready(function() {
@@ -151,16 +231,21 @@
 			start_year_select.on('change', function(){
 				getUpdatedEndYear();
 			});
+			seq_start_year_select.on('change', function(){
+				getUpdatedEndYearSeq();
+			});
 			$('#dwnBtn').on('click', function(){
                                 map = {};
-				$('.form-check-input:checked').each(function(){
+				$('#checkBoxes').find('.form-check-input:checked').each(function(){
+				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
                                 });
                                 if (Object.keys(map).length ==2){
                                         var host = 'both'
                                 };
                                 if (Object.keys(map).length ==1){ 
-                                        var host = $('.form-check-input:checked').val()
+                                        //var host = $('.form-check-input:checked').val()
+					var host = $('#checkBoxes').find('.form-check-input:checked').val();
                                 };
 				var startYear = $('#StartYear').find(":selected").text();
 				var endYear = $('#EndYear').find(":selected").text();
@@ -192,25 +277,49 @@
                                         $(this).prop('selected', !$(this).prop('selected'));
                                         return false;
                                 });
+                                $('#SeqCountryList option').mousedown(function(e) {
+                                        e.preventDefault();
+                                        $(this).prop('selected', !$(this).prop('selected'));
+                                        return false;
+                                });
                         };
 			function countries(host){
 				//var host = $('#Host').find(":selected").text();
 				var sendHost = {host: host};
-				$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
-					success: function(data){
-						countryList = data;
-						country_select.empty();
-						country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
-						//console.log(countryList);
-						for (var i in countryList){
-							country_select.append(
-								$('<option>', {
-								value: countryList[i].country_name,
-								text: countryList[i].country_name},
-								'</option>'))
-						};
-					}
-				});
+				if (host == "sequence"){
+					//console.log('sequence')
+                                        $.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
+                                                success: function(data){
+                                                        countryList = data;
+                                                        seq_country_select.empty();
+                                                        seq_country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
+                                                        //console.log(countryList);
+                                                        for (var i in countryList){
+                                                                seq_country_select.append(
+                                                                        $('<option>', {
+                                                                        value: countryList[i].country_name,
+                                                                        text: countryList[i].country_name},
+                                                                        '</option>'))
+                                                        };
+                                                }
+                                        });	
+				} else {
+					$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
+						success: function(data){
+							countryList = data;
+							country_select.empty();
+							country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
+							//console.log(countryList);
+							for (var i in countryList){
+								country_select.append(
+									$('<option>', {
+									value: countryList[i].country_name,
+									text: countryList[i].country_name},
+									'</option>'))
+							};
+						}
+					});
+				};
 				multiCountrySel();
 			};
 			function initYears(){
@@ -245,14 +354,16 @@
                                         return;
                                 };
                                 var map = {};
-                                $('.form-check-input:checked').each(function(){
+                                $('#checkBoxes').find('.form-check-input:checked').each(function(){
+				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
                                 });
                                 if (Object.keys(map).length ==2){
                                         var host = 'both'
                                 };
                                 if (Object.keys(map).length ==1){ 
-                                        var host = $('.form-check-input:checked').val()
+                                        //var host = $('.form-check-input:checked').val()
+					var host = $('#checkBoxes').find('.form-check-input:checked').val();
                                 };				
 				var start_year = $('#StartYear').find(":selected").text();
 				var send = {start_year: start_year, host: host, country: country_select.val()};
@@ -265,6 +376,31 @@
 					}
 				});
 			};
+                        function getUpdatedEndYearSeq(){
+                                if (seq_country_select.val().length == 0){
+                                        seq_start_year_select.empty();
+                                        seq_end_year_select.empty();
+                                        return;
+                                };
+                                var start_year = $('#SeqStartYear').find(":selected").text();
+                                var send = {start_year: start_year, host: 'sequence', country: seq_country_select.val()};
+                                $.ajax({async:false, url:"/_get_filtered_end_year", data:send, dataType:"json",traditional: true,
+                                        success: function(data){
+                                                seq_end_year_select.empty();
+                                                for (var i in data){
+                                                        seq_end_year_select.append($('<option>',{value: data[i],text: data[i]},'</option>'))
+                                                }
+                                        }
+                                });
+                        };
+                	//$(document).ready(function(){
+			//	console.log($('#CountryForm').position().top);
+			//	console.log($('#SeqCountryForm').position().top);
+			//	var formTop = $('#CountryForm').position.top;
+			//	var formLeft = $('#SeqCountryForm').position.left;
+			//	$('#SeqCountryForm').css({'top': formTop, 'left': formLeft});
+                        //        console.log($('#SeqCountryForm').position().top);
+			//});
 		</script>
 	</body>
 </html>
