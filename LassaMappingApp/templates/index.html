@@ -88,7 +88,7 @@
 		<div class="container-fluid" id="MainContain">
 			<div class="row">
 				<div class="col-lg-8" style="height: 485px">
-					<div class="card" style="height: 100%">
+					<div class="card" style="height: 100%" id="mapCard">
 						<div class="card-body">
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
@@ -105,7 +105,7 @@
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
 									<div id="MapWrapper" style="height: 370px; width:100%; margin:auto">
-                                                                        	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;">
+                                                                        	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;" id="yearFilter">
                                                                                 	<div class="form-group" style="width:65px;">
                                                                                         	<label for="StartYear"></label>
                                                                                         	<select class="form-control" name="StartYear" id="StartYear">
@@ -408,6 +408,23 @@
 				</div>
 			</div>
 		</div>
+	<script>
+		$(window).on("resize", function(){
+			//if ($('#RodentTab').height()==42){
+			//	$('#yearFilter').css({'bottom': '293px'});
+			//} else {
+			//	$('#yearFilter').css({'bottom': '315px'});
+			//};
+                        var filterTop = $('#map').position().top + 4;
+                        var filterLeft = $('#map').position().left + 55;
+                        $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
+		});
+		$( document ).ready(function() {
+		        var filterTop = $('#map').position().top + 4;
+			var filterLeft = $('#map').position().left + 55;
+                        $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
+		});
+	</script>
 	</body>
 </html>
 
