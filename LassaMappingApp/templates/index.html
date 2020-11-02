@@ -93,10 +93,10 @@
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px;">
-									<a class="nav-link" id="HumanTab" href="LassaHumans" style="border-color: #dfdfdf; border-bottom: transparent;">Viral Infection Humans</a>
+									<a class="nav-link" id="HumanTab" href="LassaHumans" style="border-color: #dfdfdf; border-bottom: transparent;">Viral Infection: Humans</a>
 								</li>
 								<li class="nav-item" style="margin-left:0px;margin-right:0px;">
-									<a class="nav-link" id="RodentTab" href="LassaRodents" style="border-color: #dfdfdf; border-bottom: transparent;">Viral Infection Rodents</a>
+									<a class="nav-link" id="RodentTab" href="LassaRodents" style="border-color: #dfdfdf; border-bottom: transparent;">Viral Infection: Rodents</a>
 								</li>
 								<li class="nav-item" style="margin-left:0px;margin-right:0px;">
 									<a class="nav-link" id="SequenceTab", href="LassaSequence" style="border-color: #dfdfdf; border-bottom: transparent;">Viral Sequences</a>
@@ -104,7 +104,7 @@
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
-									<div id="MapWrapper" style="height: 370px; width:100%; margin:auto">
+									<div id="MapWrapper" style="height: 75%; width:100%; margin:auto">
                                                                         	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;" id="yearFilter">
                                                                                 	<div class="form-group" style="width:65px;">
                                                                                         	<label for="StartYear"></label>
@@ -269,7 +269,7 @@
 										AbTime.push(propAb[i].Ab_year);
 										AbProp.push(propAb[i].propAbPos);
 									};
-									var finalTitle = "Viral Infection Humans"
+									var finalTitle = "Viral Infection: Humans"
 									var layout = {
 										title: finalTitle,
 										font: {color:'#1a1a1a'},
@@ -305,7 +305,7 @@
 									{% if host == "rodent" %}
 									var propAb = {{ jsonPropAb|tojson}};
 									var propAg = {{jsonPropAg|tojson}};
-                                                                        var finalTitle = "Viral Infection Rodents"
+                                                                        var finalTitle = "Viral Infection: Rodents"
 									var layout = { 
 										title: finalTitle,
 										font: {color:'#1a1a1a'},
@@ -410,19 +410,23 @@
 		</div>
 	<script>
 		$(window).on("resize", function(){
-			//if ($('#RodentTab').height()==42){
-			//	$('#yearFilter').css({'bottom': '293px'});
-			//} else {
-			//	$('#yearFilter').css({'bottom': '315px'});
-			//};
                         var filterTop = $('#map').position().top + 4;
                         var filterLeft = $('#map').position().left + 55;
                         $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
 		});
-		$( document ).ready(function() {
-		        var filterTop = $('#map').position().top + 4;
-			var filterLeft = $('#map').position().left + 55;
-                        $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
+		$(document).ready(function(){
+    			if(window.matchMedia("(max-width: 767px)").matches){
+        		// The viewport is less than 768 pixels wide
+        			//alert("This is a mobile device.");
+				var newMapHeight = $('#map').height() - 44;
+				$('#map').css({'height': newMapHeight});
+    			} else{
+        		// The viewport is at least 768 pixels wide
+                        	var filterTop = $('#map').position().top + 4;
+                        	var filterLeft = $('#map').position().left + 55;
+                        	$('#yearFilter').css({'top': filterTop, 'left':filterLeft});
+        			//alert("This is a tablet or desktop.");
+    			}
 		});
 	</script>
 	</body>
