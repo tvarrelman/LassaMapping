@@ -87,14 +87,14 @@ def admin():
                'DOI', 'Human_Random_Survey', 'Notes']
             if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
                 message = 'Successfully imported data'
-                country_check, latlonError = lat_lon_check(data_df)
+                data_df2, latlonError = lat_lon_check(data_df)
                 if latlonError==None:
-                    source_df = source_id_mapper(data_df)
-                    country_df = country_id_mapper(data_df)
-                    print(source_df)
-                    print(country_df)
-                    print(country_check)
-                    print(latlonError)
+                    source_df = source_id_mapper(data_df2)
+                    country_df = country_id_mapper(data_df2)
+                    #print(source_df)
+                    #print(country_df)
+                    #print(country_check)
+                    #print(latlonError)
                     return render_template('admin.html', message=message)
                 else:
                     return render_template('admin.html', error=latlonError)

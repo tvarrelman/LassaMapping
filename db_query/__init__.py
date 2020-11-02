@@ -454,8 +454,9 @@ def lat_lon_check(data_df):
                 if country == country_gdf:
                     continue
                 else:
-                    check_list.append([country, country_gdf])
-    return check_list, latlonError
+                    #check_list.append([country, country_gdf])
+                    data_df[['Country']] = data_df[['Country']].replace([country], [country_gdf])
+    return data_df, latlonError
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(lat_lon_check())
