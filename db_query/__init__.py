@@ -460,6 +460,7 @@ def source_id_mapper(data_df):
             cnx.commit()
             #return source_id_mapper()
     cursor.close()
+    source_df = source_df.sort_index()
     return source_df
 def country_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
@@ -478,6 +479,7 @@ def country_id_mapper(data_df):
             cnx.commit()
             #return country_id_mapper()
     cursor.close()
+    country_df = country_df.sort_index()
     return country_df
 def lat_lon_check(data_df):
     check_list = []
@@ -504,8 +506,8 @@ def lat_lon_check(data_df):
                     data_df[['Country']] = data_df[['Country']].replace([country], [country_gdf])
     return data_df, latlonError
 # This bit is only used for testing the functions before implementation 
-if __name__ == '__main__':
-    print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
+#if __name__ == '__main__':
+    #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
     #print(lat_lon_check())
     #print(filtered_download('both', '1990', '2001', ['Nigeria']))
     #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))

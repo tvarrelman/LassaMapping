@@ -12,7 +12,7 @@ from . import login_manager
 from werkzeug.utils import secure_filename
 import pandas as pd
 from io import StringIO
-
+from sqlalchemy import create_engine
 # This is a callback function that relaods the user object from the User ID stored in the session
 @login_manager.user_loader
 def load_user(user_id):
@@ -91,10 +91,10 @@ def admin():
                 if latlonError==None:
                     source_df = source_id_mapper(data_df2)
                     country_df = country_id_mapper(data_df2)
-                    #print(source_df)
-                    #print(country_df)
-                    #print(country_check)
-                    #print(latlonError)
+                    data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Country','Year'], axis=1)
+                    final_df = pd.concat([data_df2, country_df, source_df], axis=1)
+                    engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                    final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
                     return render_template('admin.html', message=message)
                 else:
                     return render_template('admin.html', error=latlonError)
