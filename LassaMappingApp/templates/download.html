@@ -80,7 +80,7 @@
                                                 <label for="EndYear">End Year</label>
                                                 <select class="form-control" name="EndYear" id="SeqEndYear"></select>
                                         </div>
-                                <button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Sequence Data</button>
+                                <button type="submit" class="btn btn-primary mb-2" id="SeqDwnBtn">Download Sequence Data</button>
 				</div>
 			</div>
 		</div>
@@ -263,13 +263,37 @@
 						var blob = new Blob(["\ufeff", csv]);
 						var url = URL.createObjectURL(blob);
 						downloadLink.href = url;
-						downloadLink.download = "LassaData.csv";
+						downloadLink.download = "LassaViralInfectionData.csv";
 						document.body.appendChild(downloadLink);
 						downloadLink.click();
 						document.body.removeChild(downloadLink);
 					}
 				});
 			});
+                        $('#SeqDwnBtn').on('click', function(){
+                                var startYear = $('#SeqStartYear').find(":selected").text();
+                                var endYear = $('#SeqEndYear').find(":selected").text();
+                                var sendPars = {host: 'sequence', start_year: startYear, end_year: endYear, country: seq_country_select.val()};
+                                $.ajax({async:false, url:"/_download_data", data:sendPars, dataType:"json", traditional: true,
+                                        success: function(data){
+                                                items = data;
+                                                const replacer = (key, value) => value ===null ? '' : value;
+                                                const header = Object.keys(items[0]);
+                                                let csv = items.map(row=> header.map(fieldName=> JSON.stringify(row[fieldName], replacer)).join(','));
+                                                csv.unshift(header.join(','));
+                                                csv = csv.join('\r\n');
+                                                //console.log(csv);
+                                                var downloadLink = document.createElement("a");
+                                                var blob = new Blob(["\ufeff", csv]);
+                                                var url = URL.createObjectURL(blob);
+                                                downloadLink.href = url;
+                                                downloadLink.download = "LassaViralSequenceData.csv";
+                                                document.body.appendChild(downloadLink);
+                                                downloadLink.click();
+                                                document.body.removeChild(downloadLink);
+                                        }
+                                });
+                        });
                         function multiCountrySel(){
                                 //console.log($('#CountryList option'));
                                 $('#CountryList option').mousedown(function(e) {
