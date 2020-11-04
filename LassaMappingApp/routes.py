@@ -19,7 +19,12 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 @app.route('/')
 def main_page():
-    return redirect(url_for('human_mapping'))
+    data_summary = db_summary()
+    host = 'rodent'
+    jsonPropAb, jsonPropAg  = rodent_year_data()
+    StartYearList, EndYearList = initial_year_lists(host)
+    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList, host=host, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg)
+    #return redirect(url_for('human_mapping'))
 @app.route('/LassaHumans')
 def human_mapping():
     data_summary = db_summary()

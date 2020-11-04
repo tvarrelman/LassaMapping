@@ -124,132 +124,30 @@
                                                                                         	</select>
                                                                                 	</div>
                                                                         	</div>
-										<script>
-												var SY = document.getElementById("StartYear");
-												SY.options[0].selected = true;
-												var EY = document.getElementById("EndYear");
-												EY.options[EY.options.length - 1].selected = true;
-												var start_year_select = $('#StartYear'),
-												end_year_select = $('#EndYear');
-												start_year_select.on('change', function(){
-													getUpdatedEndYear(start_year_select.val());
-													var startYear = $('#StartYear').find(":selected").text();
-													var endYear = $('#EndYear').find(":selected").text();
-													var NewCoords = GetFilteredPoints(startYear, endYear);
-													MapPoints(NewCoords);
-													end_year_select.on('change', function(){
-														var startYear = $('#StartYear').find(":selected").text();
-														var endYear = $('#EndYear').find(":selected").text();
-														var NewCoords = GetFilteredPoints(startYear, endYear);
-														MapPoints(NewCoords);
-													});
-												});
-												end_year_select.on('change', function(){
-													var startYear = $('#StartYear').find(":selected").text();
-													var endYear = $('#EndYear').find(":selected").text();
-													var NewCoords = GetFilteredPoints(startYear, endYear);
-													MapPoints(NewCoords);
-												});
-												function getUpdatedEndYear(start_val) {
-													var send = {
-													start_year: start_val,
-													host:"{{host}}"
-													};
-													$.ajax({async:false, url:"/_get_end_year", data:send, dataType:"json",
-														success: function(data){
-															end_year_select.empty();
-															for (var i in data){
-																end_year_select.append(
-																	$('<option>',{
-																	value: data[i].end_year,
-																	text: data[i].end_year},
-																	'</option>'))
-															}
-														}
-													});
-												}
-												var startYear = $('#StartYear').find(":selected").text();
-												var endYear = $('#EndYear').find(":selected").text();
-												var coords = GetFilteredPoints(startYear, endYear);
-												//console.log(coords);
-												function GetFilteredPoints(startYear, endYear){
-													var NewCoords = null;
-													var send_years = {
-														start_year: startYear,
-														end_year: endYear,
-														host:"{{host}}"
-													};
-													$.ajax({async:false, url:"/_filter_points", data:send_years, dataType:"json",
-														success: function(data){
-															result=data;
-														}
-													});
-													return result;
-												};
-												function MapPoints(NewCoords){
-													markers.clearLayers();
-													map.removeLayer(markers);
-													for (var i in NewCoords){
-														coordPair = NewCoords[i];
-														if ("{{host}}"=="human"){
-															var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
-															var Citation = "<b>Citation:</b> " + coordPair.Citation;
-															if (coordPair.DOI == "NaN"){
-																DOI = "<b>DOI:</b> NaN";
-															} else{
-																var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
-															}
-															title = Ablabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
-														}
-														if ("{{host}}" == "rodent"){
-															var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
-															var Aglabel="<b>Proportion Lassa virus positive:</b> " + coordPair.PropAg;
-															var Citation = "<b> Citation:</b> " + coordPair.Citation;
-															if (coordPair.DOI == "NaN"){
-																DOI = "<b>DOI:</b> NaN";
-															} else {
-																var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
-															}
-															title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI
-														}
-														if ("{{host}}"=="sequence"){
-															var gbDef =  "<b>GenBank description:</b> " + coordPair.gbDefinition;
-															var ref = "<b>Reference:</b> " + coordPair.Reference;
-															if (coordPair.gbPubMedID == "NaN"){
-																PubMedID = "<b>PubMed:</b> NaN";
-															} else {
-																var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"'>link</a>";
-															}
-															title = gbDef + "<br> <br>" + ref + "<br> <br>" + PubMedID ;
-														}
-														var marker = L.marker(new L.LatLng(coordPair.Latitude, coordPair.Longitude, { title: title}));
-														marker.bindPopup(title);
-														marker.setIcon(myIcon);
-														markers.addLayer(marker);
-													}
-													map.addLayer(markers);
-												};
-										
-										</script>
 										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-											<script>
+											<!--<script>
 												var mapOptions = {center: [9.531665, 4.460415], zoom:4};
 												var map = new L.map("map", mapOptions);
 												var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
 												map.addLayer(layer);
 											</script>
-											{% block mapper %}{% endblock %}
+											{% if host == "human" %}
+												<script src = "/static/HumanMapper.js"></script>
+											{% endif  %}-->
+											<!--{% block mapper %}{% endblock %}-->
 										</div>
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaRodents">
 									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-										{% block RodentMapper %}{% endblock %}
+										<!--{% if host == "rodent" %}
+										<script src = '/static/RodentMapper.js'></script>
+										{% endif  %}-->
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaSequence">
 									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-										{% block SequenceMapper %}{% endblock %}
+										<!--<script src = '/static/SequenceMapper.js'></script>-->
 									</div>
 								</div>
 							</div>
@@ -431,6 +329,47 @@
     			}
 		});
 	</script>
+                                                                                <script src="/static/test.js" type="text/javascript"></script>
+                                                                                <script>
+                                                                                                //$(document).ready(function(){
+                                                                                                //      alert('worked');
+                                                                                                //});
+                                                                                                var SY = document.getElementById("StartYear");
+                                                                                                SY.options[0].selected = true;
+                                                                                                var EY = document.getElementById("EndYear");
+                                                                                                EY.options[EY.options.length - 1].selected = true;
+                                                                                                var start_year_select = $('#StartYear'),
+                                                                                                end_year_select = $('#EndYear');
+                                                                                                //console.log(start_year_select.val());
+                                                                                                $(document).ready(function(){
+                                                                                                        var startYear = $('#StartYear').find(":selected").text();
+                                                                                                        var endYear = $('#EndYear').find(":selected").text();
+                                                                                                        var coords = GetFilteredPoints(startYear, endYear, 'rodent');
+                                                                                                        console.log(coords);
+                                                                                                });
+                                                                                                start_year_select.on('change', function(){
+                                                                                                        getUpdatedEndYear(start_year_select.val(), 'rodent');
+                                                                                                });
+                                                                                                        var startYear = $('#StartYear').find(":selected").text();
+                                                                                                        var endYear = $('#EndYear').find(":selected").text();
+                                                                                                        var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+                                                                                                        console.log(NewCoords);
+                                                                                                        MapPoints(NewCoords, 'rodent');
+                                                                                                        //end_year_select.on('change', function(){
+                                                                                                        //      var startYear = $('#StartYear').find(":selected").text();
+                                                                                                        //      var endYear = $('#EndYear').find(":selected").text();
+                                                                                                        //      var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+                                                                                                        //      MapPoints(NewCoords, 'rodent');
+                                                                                                        //});
+                                                                                                //});
+                                                                                                //end_year_select.on('change', function(){
+                                                                                                //      var startYear = $('#StartYear').find(":selected").text();
+                                                                                                //      var endYear = $('#EndYear').find(":selected").text();
+                                                                                                //      var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+                                                                                                //      MapPoints(NewCoords, 'rodent');
+                                                                                                //});
+                                                                                
+                                                                                </script>
 	</body>
 </html>
 
