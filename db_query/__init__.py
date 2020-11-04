@@ -473,14 +473,16 @@ def country_id_mapper(data_df):
             country_id = country_result[country_result['country_name']==country]['country_id'].iloc[0]
             country_ind = country_result[country_result['country_name']==country]['country_id'].index[0]
             country_df.loc[country_ind] = country_id
+            country_error = None
         else:
-            insert_cmd = """INSERT INTO test_countries (country_name) VALUES ('{0}')""".format(country)
-            cursor.execute(insert_cmd)
-            cnx.commit()
+            country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
+            #insert_cmd = """INSERT INTO test_countries (country_name) VALUES ('{0}')""".format(country)
+            #cursor.execute(insert_cmd)
+            #cnx.commit()
             #return country_id_mapper()
     cursor.close()
     country_df = country_df.sort_index()
-    return country_df
+    return country_df, country_error
 def lat_lon_check(data_df):
     check_list = []
     for i in range(0, len(data_df)):
@@ -495,7 +497,7 @@ def lat_lon_check(data_df):
             result = africa_gdf['geometry'].contains(Point(lon, lat))
             res = [j for j, val in enumerate(result) if val]
             if len(res)<1:
-                latlonError = 'Latitude: {0}, Longitude: {1} Not Within Africa'.format(lat, lon)
+                latlonError = 'Latitude: {0}, Longitude: {1}, Not Within Africa. Line: {2}'.format(lat, lon, i)
             else:
                 latlonError = None
                 country_gdf = africa_gdf['Country'].loc[res[0]]
