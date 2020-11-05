@@ -23,16 +23,22 @@ def main_page():
     host = 'rodent'
     jsonPropAb, jsonPropAg  = rodent_year_data()
     StartYearList, EndYearList = initial_year_lists(host)
-    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList, host=host, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg)
+    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg)
     #return redirect(url_for('human_mapping'))
 @app.route('/LassaHumans')
 def human_mapping():
-    data_summary = db_summary()
+    print(request.args)
+    visual = request.args.get('visual', 'default_if_none')
+    print(visual)
     jsonPropAb = human_year_data()
     host = 'human'
     StartYearList, EndYearList = initial_year_lists(host)
-    bar_title = "(Human)"
-    return render_template('human_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
+    jsonYears = dict(zip(('host', 'start_year', 'end_year'), ('human', StartYearList, EndYearList)))
+    if visual == 'chart':
+        return jsonify(jsonPropAb)
+    if visual == 'map':
+        return jsonify(jsonYears)
+    #return render_template('human_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
     data_summary = db_summary()
