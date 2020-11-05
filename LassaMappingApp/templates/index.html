@@ -312,11 +312,6 @@
         			//alert("This is a tablet or desktop.");
     			}
 		});
-		var mapOptions = {center: [9.531665, 4.460415], zoom:4};
-		var map = new L.map("map", mapOptions);
-		var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-		map.addLayer(layer);
-		var markers = L.markerClusterGroup();
 		var SY = document.getElementById("StartYear");
 		SY.options[0].selected = true;
 		var EY = document.getElementById("EndYear");
