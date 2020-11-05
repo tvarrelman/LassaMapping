@@ -140,152 +140,7 @@
 				<div class="col-lg-4" style="height: 485px">
 					<div class="card" style="height: 100%">
 						<div class="card-body">
-							<div id='myDiv' style="width:100%">
-								<script>
-									//console.log("{{host}}")
-									{% if host == "human" %}
-									var propAb = {{jsonPropAb|tojson}};
-									let AbTime = [];
-									let AbProp = [];
-									for (var i in propAb){
-										AbTime.push(propAb[i].Ab_year);
-										AbProp.push(propAb[i].propAbPos);
-									};
-									var finalTitle = "Viral Infection: Humans"
-									var layout = {
-										title: finalTitle,
-										font: {color:'#1a1a1a'},
-										autosize: true,
-										automargin: false,
-										margin: {
-											l: 55,
-											r: 10,
-											b: 50,
-											t: 50,
-											pad: 4
-											},
-										xaxis:{title: {text: 'Year'}},
-										yaxis:{title: {text: 'Proportion of Individuals'}},
-										showlegend: true,
-                                                                                legend: {
-											x: 0.45,
-                                                                                        xanchor: 'center',
-                                                                                        y: 1,
-                                                                                        "orientation": "h"
-                                                                                        }
-									};
-									var data = [{
-										x: AbTime,
-										y: AbProp,
-										type: 'bar',
-										name: 'Arenavirus positive',
-										marker: {color: '#f0ad4e'}
-									}];
-									let modeBarButtons = [["toImage", "lasso2d"]];
-									Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
-									{% endif  %}
-									{% if host == "rodent" %}
-									var propAb = {{ jsonPropAb|tojson}};
-									var propAg = {{jsonPropAg|tojson}};
-                                                                        var finalTitle = "Viral Infection: Rodents"
-									var layout = { 
-										title: finalTitle,
-										font: {color:'#1a1a1a'},
-										autosize: true,
-										automargin: false,
-										margin: {
-											l: 55,
-											r: 10,
-											b: 50,
-											t: 50,
-											pad: 4
-											},
-										xaxis:{title: {text: 'Year'}},
-										yaxis:{title: {text: 'Proportion of Individuals'}},
-										legend: {
-											x: 0.45,
-											xanchor: 'center',
-											y: 1,
-											"orientation": "h"
-											}
-									};
-									let AbTime = [];
-									let AbProp = [];
-									for (var i in propAb){
-										AbTime.push(propAb[i].Ab_year);
-										AbProp.push(propAb[i].propAbPos);
-									};
-									let AgTime = [];
-									let AgProp = [];
-									for (var j in propAg){
-										AgTime.push(propAg[j].Ag_year);
-										AgProp.push(propAg[j].propAgPos);
-									};
-									var trace1 = {
-										x: AbTime,
-										y: AbProp,
-										name: 'Lassa virus positive',
-										type: 'bar',
-										barmode: 'group',
-										marker: {color: '#f0ad4e'}
-									};
-									var trace2 = {
-										x: AgTime,
-										y: AgProp,
-										name: 'Arenavirus positive',
-										type: 'bar',
-										barmode: 'group',
-										marker: {color: '#7f7fff'}
-									};
-									var data = [trace1, trace2];
-									let modeBarButtons = [["toImage", "lasso2d"]];
-									Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
-									{% endif %}
-									{% if host=="sequence" %}
-										var seqData = {{ jsonSeq|tojson}};
-										//console.log(seqData);
-										var finalTitle = "Viral Sequences";
-										let seqYear = [];
-										let seqCount = [];
-										for (var i in seqData){
-											seqYear.push(seqData[i].seq_year);
-											seqCount.push(seqData[i].seq_count); 
-										};
-										var data = [{
-											x: seqYear,
-											y: seqCount,
-											name: 'Numer of Sequences',
-											type: 'bar',
-											marker: {color: '#f0ad4e'}
-										}];
-										//console.log(data);
-										var layout = { 
-											title: finalTitle,
-											font: {color:'#1a1a1a'},
-											autosize: true,
-											automargin: false,
-											margin: {
-												l: 55,
-												r: 10,
-												b: 50,
-												t: 50,
-												pad: 4
-											},
-											xaxis:{title: {text: 'Year'}},
-											yaxis:{title: {text: 'Count'}},
-											showlegend: true,
-											legend: {
-												x: 0.45,
-												xanchor: 'center',
-												y: 1,
-												"orientation": "h"
-												}
-											};
-										let modeBarButtons = [["toImage", "lasso2d"]];
-										Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
-									{% endif  %}
-								</script>
-							</div>
+							<div id='myDiv' style="width:100%"></div>
 						</div>
 					</div>
 				</div>
@@ -312,6 +167,29 @@
         			//alert("This is a tablet or desktop.");
     			}
 		});
+		var host = {};
+		var propAb = {};
+		function humanMap(){
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaHumans", data:chartPars, dataType:"json",
+				success: function(data){
+					propAb = data;
+					//propAb = chartData.propAb;
+					//console.log(chartData);
+				}
+			});
+			$.ajax({async:false, url:"/LassaHumans", data:mapPars, dataType:"json",
+				success: function(data){
+					mapYearData = data;
+					//console.log(mapYearData);
+				}
+			});
+			host = mapYearData.host;
+			propAb = propAb;
+		};
+		humanMap();
+		//console.log(host);
 		var SY = document.getElementById("StartYear");
 		SY.options[0].selected = true;
 		var EY = document.getElementById("EndYear");
@@ -321,31 +199,32 @@
 		$(document).ready(function(){
 			var startYear = $('#StartYear').find(":selected").text();
 			var endYear = $('#EndYear').find(":selected").text();
-			var coords = GetFilteredPoints(startYear, endYear, 'rodent');
-			MapPoints(coords, 'rodent', map);
+			var coords = GetFilteredPoints(startYear, endYear, host);
+			MapPoints(coords, host, map);
 		});
 		start_year_select.on('change', function(){
 			getUpdatedEndYear(start_year_select.val(), 'rodent');
 			var startYear = $('#StartYear').find(":selected").text();
 			var endYear = $('#EndYear').find(":selected").text();
-			var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+			var NewCoords = GetFilteredPoints(startYear, endYear, host);
 			//console.log(NewCoords);
-			MapPoints(NewCoords, 'rodent', map);
+			MapPoints(NewCoords, host, map);
 			end_year_select.on('change', function(){
 				var startYear = $('#StartYear').find(":selected").text();
 				var startYear = $('#StartYear').find(":selected").text();
 				var endYear = $('#EndYear').find(":selected").text();
-				var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
-				MapPoints(NewCoords, 'rodent', map);
+				var NewCoords = GetFilteredPoints(startYear, endYear, host);
+				MapPoints(NewCoords, host, map);
 			});
 		});
 		end_year_select.on('change', function(){
 			var startYear = $('#StartYear').find(":selected").text();
 			var endYear = $('#EndYear').find(":selected").text();
-			var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
-			MapPoints(NewCoords, 'rodent', map);
+			var NewCoords = GetFilteredPoints(startYear, endYear, host);
+			MapPoints(NewCoords, host, map);
 		});
 	</script>
+	<script src = "/static/lassaCharts.js" type="text/javascript"></script>
 	</body>
 </html>
 
