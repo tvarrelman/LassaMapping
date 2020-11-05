@@ -109,19 +109,11 @@
                                                                         	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;" id="yearFilter">
                                                                                 	<div class="form-group" style="width:65px;">
                                                                                         	<label for="StartYear"></label>
-                                                                                        	<select class="form-control" name="StartYear" id="StartYear">
-                                                                                                	{% for year in StartYearList  %}
-                                                                                                	<option value="{{year}}">{{year}}</option>
-                                                                                                	{% endfor %}
-                                                                                        	</select>
+                                                                                        	<select class="form-control" name="StartYear" id="StartYear"></select>
                                                                                 	</div>
                                                                                 	<div class="form-group" style="width:65px;">
                                                                                         	<label for="EndYear"></label>
-                                                                                        	<select class="form-control" name="EndYear" id="EndYear">
-                                                                                                	{% for end_year in EndYearList %}
-                                                                                                	<option value="{{end_year}}">{{end_year}}</option>
-                                                                                                	{% endfor %}
-                                                                                        	</select>
+                                                                                        	<select class="form-control" name="EndYear" id="EndYear"></select>
                                                                                 	</div>
                                                                         	</div>
 										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
@@ -169,31 +161,93 @@
 		});
 		var host = {};
 		var propAb = {};
+		var propAg = {};
 		function humanMap(){
 			var chartPars = {visual: "chart"};
 			var mapPars = {visual: "map"};
 			$.ajax({async:false, url:"/LassaHumans", data:chartPars, dataType:"json",
 				success: function(data){
 					propAb = data;
-					//propAb = chartData.propAb;
-					//console.log(chartData);
 				}
 			});
 			$.ajax({async:false, url:"/LassaHumans", data:mapPars, dataType:"json",
 				success: function(data){
 					mapYearData = data;
-					//console.log(mapYearData);
+                                        end_year_select.empty();
+                                        start_year_select.empty();
+					for (var i in mapYearData.end_year){
+						end_year_select.append($('<option>', {value: mapYearData.end_year[i], text: mapYearData.end_year[i]}, '</option>'))
+					};
+					for (var j in mapYearData.start_year){
+						start_year_select.append($('<option>', {value: mapYearData.start_year[j], text: mapYearData.start_year[j]}, '</option>'))
+					}
 				}
 			});
 			host = mapYearData.host;
 			propAb = propAb;
 		};
-		humanMap();
-		//console.log(host);
-		var SY = document.getElementById("StartYear");
-		SY.options[0].selected = true;
-		var EY = document.getElementById("EndYear");
-		EY.options[EY.options.length - 1].selected = true;
+		function rodentMap(){
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaRodents", data:chartPars, dataType:"json",
+				success: function(data){
+					propAb = data[0];
+					propAg = data[1];
+				}
+			});
+			$.ajax({async:false, url:"/LassaRodents", data:mapPars, dataType:"json",
+				success: function(data){
+					mapYearData = data;
+                                        end_year_select.empty();
+                                        start_year_select.empty();
+                                        for (var i in mapYearData.end_year){
+                                                end_year_select.append($('<option>', {value: mapYearData.end_year[i], text: mapYearData.end_year[i]}, '</option>'))
+                                        };
+                                        for (var j in mapYearData.start_year){
+                                                start_year_select.append($('<option>', {value: mapYearData.start_year[j], text: mapYearData.start_year[j]}, '</option>'))
+                                        }
+				}
+			});
+			host = mapYearData.host;
+			propAb = propAb;
+			propAg = propAg;
+		};
+		function sequenceMap(){
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaSequence", data:chartPars, dataType:"json",
+				success: function(data){
+					seqData = data;
+				}
+			});
+			$.ajax({async:false, url:"/LassaSequence", data:mapPars, dataType:"json",
+				success: function(data){
+					mapYearData = data;
+					end_year_select.empty();
+					start_year_select.empty();
+                                        for (var i in mapYearData.end_year){
+                                                end_year_select.append($('<option>', {value: mapYearData.end_year[i], text: mapYearData.end_year[i]}, '</option>'))
+                                        };
+                                        for (var j in mapYearData.start_year){
+                                                start_year_select.append($('<option>', {value: mapYearData.start_year[j], text: mapYearData.start_year[j]}, '</option>'))
+                                        }
+				}
+			});
+			seqData = seqData;
+			host = mapYearData.host;
+		};
+		$(document).ready(function(){
+			humanMap();
+			lassaBarChart(host);
+			var SY = document.getElementById("StartYear");
+			SY.options[0].selected = true;
+			var EY = document.getElementById("EndYear");
+			EY.options[EY.options.length - 1].selected = true;
+		});
+		//var SY = document.getElementById("StartYear");
+		//SY.options[0].selected = true;
+		//var EY = document.getElementById("EndYear");
+		//EY.options[EY.options.length - 1].selected = true;
 		var start_year_select = $('#StartYear'),
 		end_year_select = $('#EndYear');
 		$(document).ready(function(){
@@ -203,7 +257,7 @@
 			MapPoints(coords, host, map);
 		});
 		start_year_select.on('change', function(){
-			getUpdatedEndYear(start_year_select.val(), 'rodent');
+			getUpdatedEndYear(start_year_select.val(), host);
 			var startYear = $('#StartYear').find(":selected").text();
 			var endYear = $('#EndYear').find(":selected").text();
 			var NewCoords = GetFilteredPoints(startYear, endYear, host);
