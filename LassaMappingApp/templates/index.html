@@ -124,31 +124,14 @@
                                                                                         	</select>
                                                                                 	</div>
                                                                         	</div>
-										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-											<!--<script>
-												var mapOptions = {center: [9.531665, 4.460415], zoom:4};
-												var map = new L.map("map", mapOptions);
-												var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-												map.addLayer(layer);
-											</script>
-											{% if host == "human" %}
-												<script src = "/static/HumanMapper.js"></script>
-											{% endif  %}-->
-											<!--{% block mapper %}{% endblock %}-->
-										</div>
+										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 									</div>
 								</div>
 								<div class="tab-pane fade in" id="LassaRodents">
-									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-										<!--{% if host == "rodent" %}
-										<script src = '/static/RodentMapper.js'></script>
-										{% endif  %}-->
-									</div>
+									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 								</div>
 								<div class="tab-pane fade in" id="LassaSequence">
-									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;">
-										<!--<script src = '/static/SequenceMapper.js'></script>-->
-									</div>
+									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 								</div>
 							</div>
 						</div>
@@ -308,6 +291,7 @@
 				</div>
 			</div>
 		</div>
+	<script src="/static/test.js" type="text/javascript"></script> 
 	<script>
 		$(window).on("resize", function(){
                         var filterTop = $('#map').position().top + 4;
@@ -328,48 +312,45 @@
         			//alert("This is a tablet or desktop.");
     			}
 		});
+		var mapOptions = {center: [9.531665, 4.460415], zoom:4};
+		var map = new L.map("map", mapOptions);
+		var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+		map.addLayer(layer);
+		var markers = L.markerClusterGroup();
+		var SY = document.getElementById("StartYear");
+		SY.options[0].selected = true;
+		var EY = document.getElementById("EndYear");
+		EY.options[EY.options.length - 1].selected = true;
+		var start_year_select = $('#StartYear'),
+		end_year_select = $('#EndYear');
+		$(document).ready(function(){
+			var startYear = $('#StartYear').find(":selected").text();
+			var endYear = $('#EndYear').find(":selected").text();
+			var coords = GetFilteredPoints(startYear, endYear, 'rodent');
+			MapPoints(coords, 'rodent', map);
+		});
+		start_year_select.on('change', function(){
+			getUpdatedEndYear(start_year_select.val(), 'rodent');
+			var startYear = $('#StartYear').find(":selected").text();
+			var endYear = $('#EndYear').find(":selected").text();
+			var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+			//console.log(NewCoords);
+			MapPoints(NewCoords, 'rodent', map);
+			end_year_select.on('change', function(){
+				var startYear = $('#StartYear').find(":selected").text();
+				var startYear = $('#StartYear').find(":selected").text();
+				var endYear = $('#EndYear').find(":selected").text();
+				var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+				MapPoints(NewCoords, 'rodent', map);
+			});
+		});
+		end_year_select.on('change', function(){
+			var startYear = $('#StartYear').find(":selected").text();
+			var endYear = $('#EndYear').find(":selected").text();
+			var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
+			MapPoints(NewCoords, 'rodent', map);
+		});
 	</script>
-                                                                                <script src="/static/test.js" type="text/javascript"></script>
-                                                                                <script>
-                                                                                                //$(document).ready(function(){
-                                                                                                //      alert('worked');
-                                                                                                //});
-                                                                                                var SY = document.getElementById("StartYear");
-                                                                                                SY.options[0].selected = true;
-                                                                                                var EY = document.getElementById("EndYear");
-                                                                                                EY.options[EY.options.length - 1].selected = true;
-                                                                                                var start_year_select = $('#StartYear'),
-                                                                                                end_year_select = $('#EndYear');
-                                                                                                //console.log(start_year_select.val());
-                                                                                                $(document).ready(function(){
-                                                                                                        var startYear = $('#StartYear').find(":selected").text();
-                                                                                                        var endYear = $('#EndYear').find(":selected").text();
-                                                                                                        var coords = GetFilteredPoints(startYear, endYear, 'rodent');
-                                                                                                        console.log(coords);
-                                                                                                });
-                                                                                                start_year_select.on('change', function(){
-                                                                                                        getUpdatedEndYear(start_year_select.val(), 'rodent');
-                                                                                                });
-                                                                                                        var startYear = $('#StartYear').find(":selected").text();
-                                                                                                        var endYear = $('#EndYear').find(":selected").text();
-                                                                                                        var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
-                                                                                                        console.log(NewCoords);
-                                                                                                        MapPoints(NewCoords, 'rodent');
-                                                                                                        //end_year_select.on('change', function(){
-                                                                                                        //      var startYear = $('#StartYear').find(":selected").text();
-                                                                                                        //      var endYear = $('#EndYear').find(":selected").text();
-                                                                                                        //      var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
-                                                                                                        //      MapPoints(NewCoords, 'rodent');
-                                                                                                        //});
-                                                                                                //});
-                                                                                                //end_year_select.on('change', function(){
-                                                                                                //      var startYear = $('#StartYear').find(":selected").text();
-                                                                                                //      var endYear = $('#EndYear').find(":selected").text();
-                                                                                                //      var NewCoords = GetFilteredPoints(startYear, endYear, 'rodent');
-                                                                                                //      MapPoints(NewCoords, 'rodent');
-                                                                                                //});
-                                                                                
-                                                                                </script>
 	</body>
 </html>
 
