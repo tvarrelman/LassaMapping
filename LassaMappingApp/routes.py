@@ -24,36 +24,40 @@ def main_page():
     jsonPropAb, jsonPropAg  = rodent_year_data()
     StartYearList, EndYearList = initial_year_lists(host)
     return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg)
-    #return redirect(url_for('human_mapping'))
 @app.route('/LassaHumans')
 def human_mapping():
-    print(request.args)
     visual = request.args.get('visual', 'default_if_none')
-    print(visual)
     jsonPropAb = human_year_data()
     host = 'human'
     StartYearList, EndYearList = initial_year_lists(host)
-    jsonYears = dict(zip(('host', 'start_year', 'end_year'), ('human', StartYearList, EndYearList)))
+    jsonYears = dict(zip(('host', 'start_year', 'end_year'), (host, StartYearList, EndYearList)))
     if visual == 'chart':
         return jsonify(jsonPropAb)
     if visual == 'map':
         return jsonify(jsonYears)
-    #return render_template('human_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)    
 @app.route('/LassaRodents')
 def rodent_mapping():
-    data_summary = db_summary()
+    visual = request.args.get('visual', 'default_if_none')
     jsonPropAb, jsonPropAg = rodent_year_data()
     host = 'rodent'
     StartYearList, EndYearList = initial_year_lists(host)
-    bar_title = "(Rodent)"
-    return render_template('rodent_mapper.html', data_summary=data_summary, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg, bar_title=bar_title, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+    jsonYears = dict(zip(('host', 'start_year', 'end_year'), (host, StartYearList, EndYearList)))
+    if visual == 'chart':
+        return jsonify([jsonPropAb, jsonPropAg])
+    if visual == 'map':
+        return jsonify(jsonYears)
 @app.route('/LassaSequence')
 def sequence_mapping():
+    visual = request.args.get('visual', 'default_if_none')
     data_summary = db_summary()
     jsonSeq = sequence_year_data()
     host = 'sequence'
     StartYearList, EndYearList = initial_year_lists(host)
-    return render_template('sequence_mapper.html', data_summary=data_summary, jsonSeq=jsonSeq, StartYearList=StartYearList, EndYearList=EndYearList, host=host)
+    jsonYears = dict(zip(('host', 'start_year', 'end_year'), (host, StartYearList, EndYearList)))
+    if visual == 'chart':
+        return jsonify(jsonSeq)
+    if visual == 'map':
+        return jsonify(jsonYears)
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
