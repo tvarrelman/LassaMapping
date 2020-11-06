@@ -94,13 +94,13 @@
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
-									<a class="nav-link" id="HumanTab" href="LassaHumans" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Infection: Humans</a>
+									<a class="nav-link" id="HumanTab" href="#LassaHumans" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Infection: Humans</a>
 								</li>
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
-									<a class="nav-link" id="RodentTab" href="LassaRodents" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Infection: Rodents</a>
+									<a class="nav-link" id="RodentTab" href="#LassaRodents" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Infection: Rodents</a>
 								</li>
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
-									<a class="nav-link" id="SequenceTab", href="LassaSequence" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Sequences</a>
+									<a class="nav-link" id="SequenceTab", href="#LassaSequence" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Sequences</a>
 								<li>
 							</ul>
 							<div class="tab-content" id="myTabContent">
@@ -138,7 +138,7 @@
 				</div>
 			</div>
 		</div>
-	<script src="/static/test.js" type="text/javascript"></script> 
+	<script src="/static/lassaMapping.js" type="text/javascript"></script> 
 	<script>
 		$(window).on("resize", function(){
                         var filterTop = $('#map').position().top + 4;
@@ -237,24 +237,62 @@
 			host = mapYearData.host;
 		};
 		$(document).ready(function(){
+			$('#HumanTab').addClass('active');
 			humanMap();
 			lassaBarChart(host);
 			var SY = document.getElementById("StartYear");
 			SY.options[0].selected = true;
 			var EY = document.getElementById("EndYear");
 			EY.options[EY.options.length - 1].selected = true;
+                        var startYear = $('#StartYear').find(":selected").text();
+                        var endYear = $('#EndYear').find(":selected").text();
+                        var coords = GetFilteredPoints(startYear, endYear, host);
+                        MapPoints(coords, host, map);
 		});
-		//var SY = document.getElementById("StartYear");
-		//SY.options[0].selected = true;
-		//var EY = document.getElementById("EndYear");
-		//EY.options[EY.options.length - 1].selected = true;
-		var start_year_select = $('#StartYear'),
-		end_year_select = $('#EndYear');
-		$(document).ready(function(){
-			var startYear = $('#StartYear').find(":selected").text();
-			var endYear = $('#EndYear').find(":selected").text();
-			var coords = GetFilteredPoints(startYear, endYear, host);
-			MapPoints(coords, host, map);
+		$('#HumanTab').on('click', function(){
+                        $('#RodentTab').removeClass('active');
+			$('#SequenceTab').removeClass('active');
+			$('#HumanTab').addClass('active');
+                        humanMap();
+                        lassaBarChart(host);
+                        var SY = document.getElementById("StartYear");
+                        SY.options[0].selected = true;
+                        var EY = document.getElementById("EndYear");
+                        EY.options[EY.options.length - 1].selected = true;
+                        var startYear = $('#StartYear').find(":selected").text();
+                        var endYear = $('#EndYear').find(":selected").text();
+                        var coords = GetFilteredPoints(startYear, endYear, host);
+                        MapPoints(coords, host, map);
+		});
+		$('#RodentTab').on('click', function(){
+                        $('#HumanTab').removeClass('active');
+                        $('#SequenceTab').removeClass('active');
+			$('#RodentTab').addClass('active');
+                        rodentMap();
+                        lassaBarChart(host);
+                        var SY = document.getElementById("StartYear");
+                        SY.options[0].selected = true;
+                        var EY = document.getElementById("EndYear");
+                        EY.options[EY.options.length - 1].selected = true;
+                        var startYear = $('#StartYear').find(":selected").text();
+                        var endYear = $('#EndYear').find(":selected").text();
+                        var coords = GetFilteredPoints(startYear, endYear, host);
+                        MapPoints(coords, host, map);
+		});
+		$('#SequenceTab').on('click', function(){
+                        $('#RodentTab').removeClass('active');
+                        $('#HumanTab').removeClass('active');
+			$('#SequenceTab').addClass('active');
+                        sequenceMap();
+                        lassaBarChart(host);
+                        var SY = document.getElementById("StartYear");
+                        SY.options[0].selected = true;
+                        var EY = document.getElementById("EndYear");
+                        EY.options[EY.options.length - 1].selected = true;
+                        var startYear = $('#StartYear').find(":selected").text();
+                        var endYear = $('#EndYear').find(":selected").text();
+                        var coords = GetFilteredPoints(startYear, endYear, host);
+                        MapPoints(coords, host, map);
 		});
 		start_year_select.on('change', function(){
 			getUpdatedEndYear(start_year_select.val(), host);
