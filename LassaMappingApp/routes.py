@@ -23,7 +23,7 @@ def main_page():
     host = 'rodent'
     jsonPropAb, jsonPropAg  = rodent_year_data()
     StartYearList, EndYearList = initial_year_lists(host)
-    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList, jsonPropAb=jsonPropAb, jsonPropAg=jsonPropAg)
+    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList)
 @app.route('/LassaHumans')
 def human_mapping():
     visual = request.args.get('visual', 'default_if_none')
