@@ -20,10 +20,7 @@ def load_user(user_id):
 @app.route('/')
 def main_page():
     data_summary = db_summary()
-    host = 'rodent'
-    jsonPropAb, jsonPropAg  = rodent_year_data()
-    StartYearList, EndYearList = initial_year_lists(host)
-    return render_template('index.html', data_summary = data_summary, StartYearList=StartYearList, EndYearList=EndYearList)
+    return render_template('index.html', data_summary = data_summary)
 @app.route('/LassaHumans')
 def human_mapping():
     visual = request.args.get('visual', 'default_if_none')
