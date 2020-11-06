@@ -122,9 +122,7 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    #print(final_cmd)
-    cnx = mysql.connector.connect(user='tanner', password='atgh-klpM-cred5', host='localhost', database='lassa_tanner')
-    #cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(final_cmd)
     year_list = cursor.fetchall()
