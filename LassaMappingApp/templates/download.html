@@ -31,10 +31,21 @@
 		</div>
 		<div class="row justify-content-center">
 			<div class="card border-secondary mb-3 mr-3" style="width: 25rem; text-align:center">
-				<div class="card-header">Download Viral Infection Data</div>
+				<div class="card-header">Download Arenavirus/Lassa virus Data</div>
 				<div class="card-body">
+					<div class="form-group" style="text-align:left;" id="dataTypeCheck">
+						<label for="dataTypeCheck">Data Type:</label>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="dType" value="viralSeq" id="viralSeq">
+							<label class="form-check-label" for="viralSeq">Viral Sequence</label>
+						</div>
+						<div class="form-check">
+							<input class="form-check-input" type="radio" name="dType" value="viralInf" id="viralInf">
+							<label class="form-check-label" for="viralInf">Viral Infection</label>
+						</div>
+					</div>
 					<div class="form-group" style="text-align:left;" id="checkBoxes">
-						<label for="checkBoxes">Sample:</label>
+						<label for="checkBoxes">Host:</label>
 						<div class="form-check">
 							<input class="form-check-input" type="checkbox" name="human" value="human" id="human">
 							<label class="form-check-label" for="Host">human</label>
@@ -56,34 +67,7 @@
 						<label for="EndYear">End Year:</label>
 						<select class="form-control" name="EndYear" id="EndYear"></select>
 					</div>
-				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Infection Data</button>
-				</div>
-			</div>
-                        <div class="card border-secondary mb-3 mr-3" style="width: 25rem; text-align:center">
-                                <div class="card-header">Download Viral Sequence  Data</div>
-                                <div class="card-body">
-                                        <div class="form-group" style="text-align:left;" id="seqCheckBoxes">
-                                                <label for="SeqCheckBoxes">Sample:</label>
-                                                <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="sequence" value="sequence" id="sequence">
-                                                        <label class="form-check-label" for="Host">sequence</label>
-							<br>
-							<br>
-                                                </div>
-					</div>
-                                        <div class="form-group" style="text-align:left;" id="SeqCountryForm">
-                                                <label for="CountryList">Countries:</label>
-                                                <select class="form-control" name="CountryList" id="SeqCountryList" multiple></select>
-                                        </div>
-                                        <div class="form-group" style="text-align:left;">
-                                                <label for="StartYear">Start Year:</label>
-                                                <select class="form-control" name="StartYear" id="SeqStartYear"></select>
-                                        </div>
-                                        <div class="form-group" style="text-align:left;">
-                                                <label for="EndYear">End Year:</label>
-                                                <select class="form-control" name="EndYear" id="SeqEndYear"></select>
-                                        </div>
-                                <button type="submit" class="btn btn-primary mb-2" id="SeqDwnBtn">Download Sequence Data</button>
+				<button type="submit" class="btn btn-primary mb-2" id="dwnBtn">Download Data</button>
 				</div>
 			</div>
 		</div>
@@ -94,65 +78,66 @@
                         start_year_select = $('#StartYear');
                         end_year_select = $('#EndYear');
 			country_select = $('#CountryList')
-			var seqStartYear = document.getElementById("SeqStartYear"),
-			seqEndYear = document.getElementById("SeqEndYear");
-			seq_start_year_select = $('#SeqStartYear');
-			seq_end_year_select = $('#SeqEndYear');
-			seq_country_select = $('#SeqCountryList');
 			var checkHuman = $('#human'),
 			checkRodent = $('#rodent'),
-			checkSequence = $('#sequence');
-			checkHuman.on('click', function(){
-				//console.log($('#checkBoxes').find('.form-check-input:checked'));
-				var map = {};
-				$('#checkBoxes').find('.form-check-input:checked').each(function(){
-				//$('.form-check-input:checked').each(function(){
-					map[$(this).attr("name")] = $(this).val();
-				});
-				if (Object.keys(map).length == 0){
-					country_select.empty();
-				};
-				if (Object.keys(map).length == 1){
-					//var host = $('.form-check-input:checked').val()
-					var host = $('#checkBoxes').find('.form-check-input:checked').val();
-					countries(host);
-				};
-				if (Object.keys(map).length == 2){
-					countries('both');
-				};
+			checkSequence = $('#viralSeq');
+			checkInfection = $('#viralInf');
+			$("#checkBoxes").hide();
+			$('#dwnBtn').addClass("disabled").attr("aria-disabled", "true");
+			$('#dwnBtn').prop('disabled', true);
+			checkSequence.on('change', function(){
+				$('#dwnBtn').prop('disabled', true);
+				$('#dwnBtn').addClass("disabled").attr("aria-disabled", "true");
+				$('#human').prop('checked', false);
+				$('#rodent').prop('checked', false);
+				$("#checkBoxes").hide();
 				start_year_select.empty();
 				end_year_select.empty();
+				countries('sequence');
 			});
-			checkRodent.on('click', function(){
-				//console.log($('#checkBoxes').find('.form-check-input:checked'));
-				var map = {};
-				$('#checkBoxes').find('.form-check-input:checked').each(function(){
-				//$('.form-check-input:checked').each(function(){
-					map[$(this).attr("name")] = $(this).val();
+			checkInfection.on('change', function(){
+				$('#dwnBtn').prop('disabled', true);
+				$('#dwnBtn').addClass("disabled").attr("aria-disabled", "true");
+				country_select.empty();
+				$("#checkBoxes").show();
+				start_year_select.empty();
+				end_year_select.empty();
+				checkHuman.on('click', function(){
+					var map = {};
+					$('#checkBoxes').find('.form-check-input:checked').each(function(){
+						map[$(this).attr("name")] = $(this).val();
+					});
+					if (Object.keys(map).length == 0){
+						country_select.empty();
+					};
+					if (Object.keys(map).length == 1){
+						var host = $('#checkBoxes').find('.form-check-input:checked').val();
+						countries(host);
+					};
+					if (Object.keys(map).length == 2){
+						countries('both');
+					};
+					start_year_select.empty();
+					end_year_select.empty();
 				});
-				if (Object.keys(map).length == 0){
-					country_select.empty();
-				};
-				if (Object.keys(map).length == 1){
-					//var host = $('.form-check-input:checked').val()
-					var host = $('#checkBoxes').find('.form-check-input:checked').val();
-					countries(host);
-				};
-				if (Object.keys(map).length == 2){
-					countries('both');
-				};
-                                start_year_select.empty();
-                                end_year_select.empty();
-			});
-			checkSequence.on('change', function(){
-				var host = $('#seqCheckBoxes').find('.form-check-input:checked').val();
-				if (host==undefined){
-					seq_country_select.empty();
-					seq_start_year_select.empty();
-					seq_end_year_select.empty();
-				} else {
-					countries(host);
-				};	
+				checkRodent.on('click', function(){
+					var map = {};
+					$('#checkBoxes').find('.form-check-input:checked').each(function(){
+						map[$(this).attr("name")] = $(this).val();
+					});
+					if (Object.keys(map).length == 0){
+						country_select.empty();
+					};
+					if (Object.keys(map).length == 1){
+						var host = $('#checkBoxes').find('.form-check-input:checked').val();
+						countries(host);
+					};
+					if (Object.keys(map).length == 2){
+						countries('both');
+					};
+                          	    	start_year_select.empty();
+                        	        end_year_select.empty();
+				});
 			});
 			country_select.on('click', function(){
 				if (country_select.val().length == 0){
@@ -162,14 +147,15 @@
 				};
 				var map = {};
                                 $('#checkBoxes').find('.form-check-input:checked').each(function(){
-				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
 				});
+				if (Object.keys(map).length == 0){
+					var host = 'sequence'
+				};
 				if (Object.keys(map).length ==2){
 					var host = 'both'
 				};
 				if (Object.keys(map).length ==1){ 
-					//var host = $('.form-check-input:checked').val()
 					var host = $('#checkBoxes').find('.form-check-input:checked').val();
 				};
 				var sendCountry = {host: host, country: country_select.val()};
@@ -194,62 +180,31 @@
 						};
 					}
 				});
+				$('#dwnBtn').prop('disabled', false);
+				$('#dwnBtn').removeClass("disabled").attr("aria-disabled", "false");
 			});
-                        seq_country_select.on('click', function(){
-                                if (seq_country_select.val().length == 0){
-                                        seq_start_year_select.empty();
-                                        seq_end_year_select.empty();
-                                        return;
-                                };
-                                var sendCountry = {host: 'sequence', country: seq_country_select.val()};
-				//console.log(sendCountry);
-                                $.ajax({async:false, url:"/_test", data:sendCountry, dataType:"json", traditional: true,
-                                        success: function(data){
-                                                result = data;
-                                                seq_start_year_select.empty();
-                                                seq_end_year_select.empty();
-                                                for (var i in result[0]){
-                                                        seq_start_year_select.append(
-                                                                $('<option>',{
-                                                                value: result[0][i],
-                                                                text: result[0][i]},
-                                                                '</option>'))
-                                                };
-                                                for (var j in result[1]){
-                                                        seq_end_year_select.append(
-                                                                $('<option>',{
-                                                                value: result[1][j],
-                                                                text: result[1][j]},
-                                                                '</option>'))
-                                                };
-                                        }
-                                });
-                        });
-			//var myRes = getYearLists();
-			//console.log(myRes);
-			//$( document ).ready(function() {
-			//	initYears();
-			//	countries();
-			//});
 			start_year_select.on('change', function(){
 				getUpdatedEndYear();
-			});
-			seq_start_year_select.on('change', function(){
-				getUpdatedEndYearSeq();
 			});
 			$('#dwnBtn').on('click', function(){
                                 map = {};
 				$('#checkBoxes').find('.form-check-input:checked').each(function(){
-				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
                                 });
+				if (Object.keys(map).length ==0){
+					var host = 'sequence'
+				};
                                 if (Object.keys(map).length ==2){
                                         var host = 'both'
                                 };
                                 if (Object.keys(map).length ==1){ 
-                                        //var host = $('.form-check-input:checked').val()
 					var host = $('#checkBoxes').find('.form-check-input:checked').val();
                                 };
+				if (host == 'sequence'){
+					var fileName = "LassaViralSequenceData.csv";
+				} else {
+					var fileName = "LassaViralInfectionData.csv";
+				};
 				var startYear = $('#StartYear').find(":selected").text();
 				var endYear = $('#EndYear').find(":selected").text();
 				var sendPars = {host: host, start_year: startYear, end_year: endYear, country: country_select.val()};
@@ -266,37 +221,13 @@
 						var blob = new Blob(["\ufeff", csv]);
 						var url = URL.createObjectURL(blob);
 						downloadLink.href = url;
-						downloadLink.download = "LassaViralInfectionData.csv";
+						downloadLink.download = fileName;
 						document.body.appendChild(downloadLink);
 						downloadLink.click();
 						document.body.removeChild(downloadLink);
 					}
 				});
 			});
-                        $('#SeqDwnBtn').on('click', function(){
-                                var startYear = $('#SeqStartYear').find(":selected").text();
-                                var endYear = $('#SeqEndYear').find(":selected").text();
-                                var sendPars = {host: 'sequence', start_year: startYear, end_year: endYear, country: seq_country_select.val()};
-                                $.ajax({async:false, url:"/_download_data", data:sendPars, dataType:"json", traditional: true,
-                                        success: function(data){
-                                                items = data;
-                                                const replacer = (key, value) => value ===null ? '' : value;
-                                                const header = Object.keys(items[0]);
-                                                let csv = items.map(row=> header.map(fieldName=> JSON.stringify(row[fieldName], replacer)).join(','));
-                                                csv.unshift(header.join(','));
-                                                csv = csv.join('\r\n');
-                                                //console.log(csv);
-                                                var downloadLink = document.createElement("a");
-                                                var blob = new Blob(["\ufeff", csv]);
-                                                var url = URL.createObjectURL(blob);
-                                                downloadLink.href = url;
-                                                downloadLink.download = "LassaViralSequenceData.csv";
-                                                document.body.appendChild(downloadLink);
-                                                downloadLink.click();
-                                                document.body.removeChild(downloadLink);
-                                        }
-                                });
-                        });
                         function multiCountrySel(){
                                 //console.log($('#CountryList option'));
                                 $('#CountryList option').mousedown(function(e) {
@@ -304,50 +235,23 @@
                                         $(this).prop('selected', !$(this).prop('selected'));
                                         return false;
                                 });
-                                $('#SeqCountryList option').mousedown(function(e) {
-                                        e.preventDefault();
-                                        $(this).prop('selected', !$(this).prop('selected'));
-                                        return false;
-                                });
                         };
 			function countries(host){
-				//var host = $('#Host').find(":selected").text();
 				var sendHost = {host: host};
-				if (host == "sequence"){
-					//console.log('sequence')
-                                        $.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
-                                                success: function(data){
-                                                        countryList = data;
-                                                        seq_country_select.empty();
-                                                        //seq_country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
-                                                        //console.log(countryList);
-                                                        for (var i in countryList){
-                                                                seq_country_select.append(
-                                                                        $('<option>', {
-                                                                        value: countryList[i].country_name,
-                                                                        text: countryList[i].country_name},
-                                                                        '</option>'))
-                                                        };
-                                                }
-                                        });	
-				} else {
-					$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
-						success: function(data){
-							countryList = data;
-							country_select.empty();
-							//country_select.append($('<option>',{value:'Select All', text:'Select All', id:'select_all'},'</option>'));
-							//console.log(countryList);
-							for (var i in countryList){
-								country_select.append(
-									$('<option>', {
-									value: countryList[i].country_name,
-									text: countryList[i].country_name},
-									'</option>'))
-							};
-						}
-					});
-				};
-				multiCountrySel();
+				$.ajax({async:false, url:"/_get_countries", data:sendHost, dataType:"json",
+					success: function(data){
+						countryList = data;
+						country_select.empty();
+						for (var i in countryList){
+							country_select.append(
+								$('<option>', {
+								value: countryList[i].country_name,
+								text: countryList[i].country_name},
+								'</option>'))
+						};
+					}
+				});
+			multiCountrySel();
 			};
 			function initYears(){
 				var host = $('#Host').find(":selected").text();
@@ -382,14 +286,15 @@
                                 };
                                 var map = {};
                                 $('#checkBoxes').find('.form-check-input:checked').each(function(){
-				//$('.form-check-input:checked').each(function(){
                                         map[$(this).attr("name")] = $(this).val()
                                 });
+				if (Object.keys(map).length == 0){
+					var host = 'sequence'
+				};
                                 if (Object.keys(map).length ==2){
                                         var host = 'both'
                                 };
                                 if (Object.keys(map).length ==1){ 
-                                        //var host = $('.form-check-input:checked').val()
 					var host = $('#checkBoxes').find('.form-check-input:checked').val();
                                 };				
 				var start_year = $('#StartYear').find(":selected").text();
@@ -403,31 +308,6 @@
 					}
 				});
 			};
-                        function getUpdatedEndYearSeq(){
-                                if (seq_country_select.val().length == 0){
-                                        seq_start_year_select.empty();
-                                        seq_end_year_select.empty();
-                                        return;
-                                };
-                                var start_year = $('#SeqStartYear').find(":selected").text();
-                                var send = {start_year: start_year, host: 'sequence', country: seq_country_select.val()};
-                                $.ajax({async:false, url:"/_get_filtered_end_year", data:send, dataType:"json",traditional: true,
-                                        success: function(data){
-                                                seq_end_year_select.empty();
-                                                for (var i in data){
-                                                        seq_end_year_select.append($('<option>',{value: data[i],text: data[i]},'</option>'))
-                                                }
-                                        }
-                                });
-                        };
-                	//$(document).ready(function(){
-			//	console.log($('#CountryForm').position().top);
-			//	console.log($('#SeqCountryForm').position().top);
-			//	var formTop = $('#CountryForm').position.top;
-			//	var formLeft = $('#SeqCountryForm').position.left;
-			//	$('#SeqCountryForm').css({'top': formTop, 'left': formLeft});
-                        //        console.log($('#SeqCountryForm').position().top);
-			//});
 		</script>
 	</body>
 </html>
