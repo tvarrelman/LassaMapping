@@ -505,6 +505,30 @@ def lat_lon_check(data_df):
                     #check_list.append([country, country_gdf])
                     data_df[['Country']] = data_df[['Country']].replace([country], [country_gdf])
     return data_df, latlonError
+def check_data_types(data_df):
+    error_list = []
+    for index, row in data_df.iterrows():
+        col_list = ['Town_Region', 'Village', 'Month', 'Day', 'Year', 'Latitude',
+                'Longitude', 'Country', 'Confidence', 'Status', 'NumPosAg', 'NumTestAg',
+                'PropAg', 'NumPosAb', 'NumTestAb', 'PropAb', 'Genus', 'Species',
+                'DiagnosticMethod', 'Target', 'lat-lon-source', 'Source', 'Citation',
+                'DOI', 'Human_Random_Survey', 'Notes']
+        type_list = [str, str, int, int, int, float, float, str, str, str, int, 
+                     int, float, int, int, float, str, str, str, str, str, str,
+                     str, str, str, str]
+        for i in range(0, len(col_list)):
+            col = col_list[i]
+            dtype = type_list[i]
+            if pd.isnull(row[col]):
+                continue
+            else: 
+                if isinstance(row[col], dtype):
+                    continue
+                else:
+                    error_data_t = type(row[col])
+                    error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                    error_list.append(error)
+    return error_list
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
