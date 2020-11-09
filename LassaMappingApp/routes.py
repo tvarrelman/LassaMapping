@@ -98,18 +98,22 @@ def admin():
                'DiagnosticMethod', 'Target', 'lat-lon-source', 'Source', 'Citation',
                'DOI', 'Human_Random_Survey', 'Notes']
             if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
-                message = 'Successfully imported data'
-                data_df2, latlonError = lat_lon_check(data_df)
-                if latlonError==None:
-                    source_df = source_id_mapper(data_df2)
-                    country_df = country_id_mapper(data_df2)
-                    data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Country','Year'], axis=1)
-                    final_df = pd.concat([data_df2, country_df, source_df], axis=1)
-                    engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                    final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
-                    return render_template('admin.html', message=message)
+                dtype_errors = check_data_types(data_df)
+                if len(dtype_errors) > 0 :
+                    return render_template('admin.html', error=dtype_errors)
                 else:
-                    return render_template('admin.html', error=latlonError)
+                    data_df2, latlonError = lat_lon_check(data_df)
+                    if latlonError==None:
+                        source_df = source_id_mapper(data_df2)
+                        country_df = country_id_mapper(data_df2)
+                        data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Country','Year'], axis=1)
+                        final_df = pd.concat([data_df2, country_df, source_df], axis=1)
+                        engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                        final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
+                        message = "Successfully imported data"
+                        return render_template('admin.html', message=message)
+                    else:
+                        return render_template('admin.html', error=latlonError)
             else:
                 error = "Inconsistent column names"
                 return render_template('admin.html', error=error)
