@@ -474,10 +474,6 @@ def country_id_mapper(data_df):
             country_error = None
         else:
             country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
-            #insert_cmd = """INSERT INTO test_countries (country_name) VALUES ('{0}')""".format(country)
-            #cursor.execute(insert_cmd)
-            #cnx.commit()
-            #return country_id_mapper()
     cursor.close()
     country_df = country_df.sort_index()
     return country_df, country_error
@@ -519,16 +515,27 @@ def check_data_types(data_df):
         for i in range(0, len(col_list)):
             col = col_list[i]
             dtype = type_list[i]
-            if pd.isnull(row[col]):
-                continue
-            else: 
-                if isinstance(row[col], dtype):
-                    continue
-                else:
-                    error_data_t = type(row[col])
-                    error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
-                    error_list.append(error)
+            if col == 'Month' or col == 'Day' or col == 'Year' or col == 'NumPosAb' or \
+                col == 'NumPosAg' or col == 'NumTestAb' or col == 'NumTestAg' or \
+                col == 'PropAb' or col == 'PropAg':
+                if pd.notnull(row[col]):
+                    # print(row[col])
+                    if isinstance(row[col], int) or isinstance(row[col], float):
+                        continue
+                    else:
+                        error_data_t = type(row[col])
+                        error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                        error_list.append(error)
+            else:
+                if pd.notnull(row[col]):
+                    if isinstance(row[col], dtype):
+                        continue
+                    else:
+                        error_data_t = type(row[col])
+                        error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                        error_list.append(error)
     return error_list
+
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
