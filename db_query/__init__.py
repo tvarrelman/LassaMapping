@@ -483,7 +483,7 @@ def lat_lon_check(data_df):
         lat = data_df['Latitude'][i]
         lon = data_df['Longitude'][i]
         country = data_df['Country'][i]
-        if lat or lon != None:
+        if pd.notnull([lat, lon]).any():
             dir_path = os.path.dirname(os.path.realpath(__file__))
             africa_geo_file = os.path.join(dir_path, 'Africa.geojson')
             africa_gdf = gpd.read_file(africa_geo_file)
