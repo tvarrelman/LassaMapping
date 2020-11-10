@@ -86,6 +86,10 @@ function MapPoints(NewCoords, host, map){
                         title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI
                 }
                 if (host=="sequence"){
+			var myIcon = L.icon({
+				iconUrl: '/static/images/baseline_virus_black_18dp.png',
+				iconSize: [35,35]
+			});
                         var gbDef =  "<b>GenBank description:</b> " + coordPair.gbDefinition;
                         var ref = "<b>Reference:</b> " + coordPair.Reference;
                         if (coordPair.gbPubMedID == "NaN"){
