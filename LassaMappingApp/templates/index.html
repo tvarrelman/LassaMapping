@@ -109,15 +109,19 @@
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
 									<div id="MapWrapper" style="height: 77%; width:100%; margin:auto">
-                                                                        	<div class="row" style="position: absolute; z-index:99; left:75px; bottom:315px;" id="yearFilter">
-                                                                                	<div class="form-group" style="width:65px;">
-                                                                                        	<label for="StartYear"></label>
-                                                                                        	<select class="form-control" name="StartYear" id="StartYear"></select>
-                                                                                	</div>
-                                                                                	<div class="form-group" style="width:65px;">
-                                                                                        	<label for="EndYear"></label>
-                                                                                        	<select class="form-control" name="EndYear" id="EndYear"></select>
-                                                                                	</div>
+                                                                        	<div class="row" style="position: absolute; z-index:2; left:65px; bottom:315px;" id="yearFilter">
+											<div class="col" style="margin-right: 2px; width:65px;">
+                                                                                		<div class="form-group">
+                                                                                        		<label for="StartYear"></label>
+                                                                                        		<select class="form-control" style="position: absolute; z-index:3; padding: 0px;" name="StartYear" id="StartYear"></select>
+                                                                                		</div>
+											</div>
+											<div class="col" style="width:65px;">
+                                                                                		<div class="form-group">
+                                                                                      	  		<label for="EndYear"></label>
+                                                                                        		<select class="form-control" style="position: absolute; z-index:3; padding: 0px;" name="EndYear" id="EndYear"></select>
+                                                                                		</div>
+											</div>
                                                                         	</div>
 										<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 									</div>
@@ -319,6 +323,13 @@
 			var endYear = $('#EndYear').find(":selected").text();
 			var NewCoords = GetFilteredPoints(startYear, endYear, host);
 			MapPoints(NewCoords, host, map);
+		});
+		$(function () {
+			var nua = navigator.userAgent
+			var isAndroid = (nua.indexOf('Mozilla/5.0') > -1 && nua.indexOf('Android ') > -1 && nua.indexOf('AppleWebKit') > -1 && nua.indexOf('Chrome') === -1)
+			if (isAndroid) {
+				$('select.form-control').removeClass('form-control').css('width', '100%')
+			}
 		});
 	</script>
 	<script src = "/static/lassaCharts.js" type="text/javascript"></script>
