@@ -467,13 +467,14 @@ def country_id_mapper(data_df):
     country_result = pd.read_sql(country_cmd, cnx)
     country_df = pd.DataFrame(columns=['country_id'])
     for country in data_df['Country']:
-        if country in list(country_result['country_name']):
-            country_id = country_result[country_result['country_name']==country]['country_id'].iloc[0]
-            country_ind = country_result[country_result['country_name']==country]['country_id'].index[0]
-            country_df.loc[country_ind] = country_id
-            country_error = None
-        else:
-            country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
+        if pd.notnull(country):
+            if country in list(country_result['country_name']):
+                country_id = country_result[country_result['country_name']==country]['country_id'].iloc[0]
+                country_ind = country_result[country_result['country_name']==country]['country_id'].index[0]
+                country_df.loc[country_ind] = country_id
+                country_error = None
+            else:
+                country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
     cursor.close()
     country_df = country_df.sort_index()
     return country_df, country_error
