@@ -141,17 +141,17 @@
 				</div>
 			</div>
 		</div>
-	<script src="/static/lassaMapping.js" type="text/javascript"></script> 
+	<script src="/static/lassaMapping.js" type="text/javascript"></script>
 	<script>
 		$(window).on("resize", function(){
                         var filterTop = $('#map').position().top + 4;
                         var filterLeft = $('#map').position().left + 55;
                         $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
 		});
+		var mapOptions = {};
 		$(document).ready(function(){
     			if(window.matchMedia("(max-width: 767px)").matches){
         		// The viewport is less than 768 pixels wide
-        			//alert("This is a mobile device.");
 				var newMapHeight = $('#map').height() - 44;
 				$('#map').css({'height': newMapHeight});
     			} else{
@@ -159,7 +159,6 @@
                         	var filterTop = $('#map').position().top + 4;
                         	var filterLeft = $('#map').position().left + 55;
                         	$('#yearFilter').css({'top': filterTop, 'left':filterLeft});
-        			//alert("This is a tablet or desktop.");
     			}
 		});
 		//$(window).load(function() {
