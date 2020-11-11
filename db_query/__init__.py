@@ -321,7 +321,7 @@ def db_summary():
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb) FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb), DiagnosticMethod FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     human_year_data = cursor.fetchall()
     cursor.close()
@@ -329,14 +329,14 @@ def human_year_data():
     for entry in human_year_data:
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
-                AbHeader = ("Ab_year", "propAbPos")
-                AbRow = (entry[0], int(entry[1])/int(entry[2]))
+                AbHeader = ("Ab_year", "propAbPos", "DiagnosticMethod")
+                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[3])
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))                       
     return jsonAbPos
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosAg), SUM(NumTestAg) FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosAg), SUM(NumTestAg), DiagnosticMethod FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     rodent_year_data = cursor.fetchall()
     cursor.close()
@@ -345,13 +345,13 @@ def rodent_year_data():
     for entry in rodent_year_data:
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
-                AbHeader = ("Ab_year", "propAbPos")
-                AbRow = (entry[0], int(entry[1])/int(entry[2]))
+                AbHeader = ("Ab_year", "propAbPos", "DiagnosticMethod")
+                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[5])
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))
         if entry[0]!= None and entry[3]!=None and entry[4]!=None:
             if entry[3]!=0 and entry[4]!=0:
-                AgHeader = ("Ag_year", "propAgPos")
-                AgRow = (entry[0], int(entry[3])/int(entry[4]))
+                AgHeader = ("Ag_year", "propAgPos", "DiagnosticMethod")
+                AgRow = (entry[0], int(entry[3])/int(entry[4]), entry[5])
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
 def sequence_year_data():
@@ -539,6 +539,7 @@ def check_data_types(data_df):
 
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(rodent_year_data())
     #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
     #print(lat_lon_check())
     #print(filtered_download('both', '1990', '2001', ['Nigeria']))
