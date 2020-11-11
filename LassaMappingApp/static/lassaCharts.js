@@ -1,12 +1,42 @@
 
 function lassaBarChart(host){
 	if (host == "human"){
+		var myPlot = document.getElementById('myDiv');
 		let AbTime = [];
 		let AbProp = [];
+		let DiagnosticMethod = [];
 		for (var i in propAb){
 			AbTime.push(propAb[i].Ab_year);
 			AbProp.push(propAb[i].propAbPos);
+			DiagnosticMethod.push(propAb[i].DiagnosticMethod);
 		};
+		var dataGroupByDiagMethod = {};
+		for (var i in propAb){
+			var DiagMethod = propAb[i].DiagnosticMethod;
+			if (!dataGroupByDiagMethod[DiagMethod]){
+				dataGroupByDiagMethod[DiagMethod] = [];
+			};
+			dataGroupByDiagMethod[DiagMethod].push(propAb[i]);
+		};
+		data2 = [];
+		for (var key in dataGroupByDiagMethod){
+			//console.log(dataGroupByDiagMethod[key]);
+			Ab_year = [];
+			propAbPos = [];
+			for (var i in dataGroupByDiagMethod[key]){
+				Ab_year.push(dataGroupByDiagMethod[key][i].Ab_year);
+				propAbPos.push(dataGroupByDiagMethod[key][i].propAbPos);
+			};
+			var trace = {
+				x: Ab_year,
+				y: propAbPos,
+				name: key,
+				type: 'bar',
+				barmode: 'group',
+			};
+			data2.push(trace);
+		};
+		//console.log(data2);
 		var finalTitle = "Viral Infection: Humans"
 		var layout = {
 			title: finalTitle,
@@ -24,6 +54,7 @@ function lassaBarChart(host){
 			yaxis:{title: {text: 'Proportion of Individuals'}},
 			showlegend: true,
 			legend: {
+				bgcolor: 'rgba(0,0,0,0)',
 				x: 0.45,
 				xanchor: 'center',
 				y: 1,
@@ -39,6 +70,9 @@ function lassaBarChart(host){
 		}];
 		let modeBarButtons = [["toImage", "lasso2d"]];
 		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		myPlot.on('plotly_doubleclick', function(){
+			Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		});
 	};
 	if (host == "rodent"){
 		var finalTitle = "Viral Infection: Rodents"
@@ -124,7 +158,7 @@ function lassaBarChart(host){
 				pad: 4
 			},
 			xaxis:{title: {text: 'Year'}},
-			yaxis:{title: {text: 'Count'}},
+			yaxis:{title: {text: 'Number of Sequences'}},
 			showlegend: true,
 			legend: {
 				x: 0.45,
