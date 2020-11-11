@@ -4,11 +4,9 @@ function lassaBarChart(host){
 		var myPlot = document.getElementById('myDiv');
 		let AbTime = [];
 		let AbProp = [];
-		let DiagnosticMethod = [];
 		for (var i in propAb){
 			AbTime.push(propAb[i].Ab_year);
 			AbProp.push(propAb[i].propAbPos);
-			DiagnosticMethod.push(propAb[i].DiagnosticMethod);
 		};
 		var dataGroupByDiagMethod = {};
 		for (var i in propAb){
@@ -20,7 +18,6 @@ function lassaBarChart(host){
 		};
 		data2 = [];
 		for (var key in dataGroupByDiagMethod){
-			//console.log(dataGroupByDiagMethod[key]);
 			Ab_year = [];
 			propAbPos = [];
 			for (var i in dataGroupByDiagMethod[key]){
@@ -36,7 +33,6 @@ function lassaBarChart(host){
 			};
 			data2.push(trace);
 		};
-		//console.log(data2);
 		var finalTitle = "Viral Infection: Humans"
 		var layout = {
 			title: finalTitle,
@@ -75,6 +71,7 @@ function lassaBarChart(host){
 		});
 	};
 	if (host == "rodent"){
+		var myPlot = document.getElementById('myDiv');
 		var finalTitle = "Viral Infection: Rodents"
 		var layout = { 
 			title: finalTitle,
@@ -91,12 +88,50 @@ function lassaBarChart(host){
 			xaxis:{title: {text: 'Year'}},
 			yaxis:{title: {text: 'Proportion of Individuals'}},
 			legend: {
+				bgcolor: 'rgba(0,0,0,0)',
 				x: 0.45,
 				xanchor: 'center',
 				y: 1,
 				"orientation": "h"
 			}
 		};
+		var propPos = [].concat(propAb, propAg);
+		var dataGroupByDiagMethod = {};
+                for (var i in propPos){
+                        var DiagMethod = propPos[i].DiagnosticMethod;
+                        if (!dataGroupByDiagMethod[DiagMethod]){
+                                dataGroupByDiagMethod[DiagMethod] = [];
+                        };
+                        dataGroupByDiagMethod[DiagMethod].push(propPos[i]);
+                };
+                data2 = [];
+                for (var key in dataGroupByDiagMethod){
+                        Ab_year = [];
+			Ag_year = [];
+                        propAbPos = [];
+			propAgPos = [];
+                        for (var i in dataGroupByDiagMethod[key]){
+                                Ab_year.push(dataGroupByDiagMethod[key][i].Ab_year);
+				Ag_year.push(dataGroupByDiagMethod[key][i].Ag_year);
+                                propAbPos.push(dataGroupByDiagMethod[key][i].propAbPos);
+				propAgPos.push(dataGroupByDiagMethod[key][i].propAgPos);
+                        };
+                        var trace1 = {
+                                x: Ab_year,
+                                y: propAbPos,
+                                name: key,
+                                type: 'bar',
+                                barmode: 'group',
+                        };
+                        var trace2 = {
+                                x: Ag_year,
+                                y: propAgPos,
+                                name: key,
+                                type: 'bar',
+                                barmode: 'group',
+                        }; 
+                        data2.push(trace1, trace2);
+                };
 		let AbTime = [];
 		let AbProp = [];
 		for (var i in propAb){
@@ -127,7 +162,10 @@ function lassaBarChart(host){
 		};
 		var data = [trace1, trace2];
 		let modeBarButtons = [["toImage", "lasso2d"]];
-		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
+		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                myPlot.on('plotly_doubleclick', function(){
+                        Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                });
 	};
 	
 	if (host=="sequence"){
