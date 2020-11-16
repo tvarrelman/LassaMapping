@@ -87,42 +87,47 @@ def allowed_file(filename):
 @login_required
 def admin(): 
     if request.method == 'POST':
-        myfile = request.files['fileupload']
-        if myfile and allowed_file(myfile.filename):
-            str_data = str(myfile.read(), 'utf-8')
-            data = StringIO(str_data)
-            data_df = pd.read_csv(data)
-            entry_columns = ['Town_Region', 'Village', 'Month', 'Day', 'Year', 'Latitude',
+        if 'ViralInfection' in request.files:
+            infFile = request.files['ViralInfection']
+            if infFile and allowed_file(infFile.filename):
+                str_data = str(infFile.read(), 'utf-8')
+                data = StringIO(str_data)
+                data_df = pd.read_csv(data)
+                entry_columns = ['Town_Region', 'Village', 'Month', 'Day', 'Year', 'Latitude',
                'Longitude', 'Country', 'Confidence', 'Status', 'NumPosAg', 'NumTestAg',
                'PropAg', 'NumPosAb', 'NumTestAb', 'PropAb', 'Genus', 'Species',
                'DiagnosticMethod', 'Target', 'lat-lon-source', 'Source', 'Citation',
                'DOI', 'Human_Random_Survey', 'Notes']
-            if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
-                dtype_errors = check_data_types(data_df)
-                if len(dtype_errors) > 0 :
-                    return render_template('admin.html', error=dtype_errors)
-                else:
-                    data_df2, latlonError = lat_lon_check(data_df)
-                    if latlonError==None:
-                        source_df = source_id_mapper(data_df2)
-                        country_df, country_error = country_id_mapper(data_df2)
-                        if country_error:
-                         return render_template('admin.html', error=country_error)
-                        else:
-                            data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Country','Year'], axis=1)
-                            final_df = pd.concat([data_df2, country_df, source_df], axis=1)
-                            #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                            #final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
-                            message = "Successfully imported data"
-                            return render_template('admin.html', message=message)
+                if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
+                    dtype_errors = check_data_types(data_df)
+                    if len(dtype_errors) > 0 :
+                        return render_template('admin.html', error=dtype_errors)
                     else:
-                        return render_template('admin.html', error=latlonError)
+                        data_df2, latlonError = lat_lon_check(data_df)
+                        if latlonError==None:
+                            source_df = source_id_mapper(data_df2)
+                            country_df, country_error = country_id_mapper(data_df2)
+                            if country_error:
+                                return render_template('admin.html', error=country_error)
+                            else:
+                                data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Country','Year'], axis=1)
+                                final_df = pd.concat([data_df2, country_df, source_df], axis=1)
+                                #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                                #final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
+                                message = "Successfully imported data"
+                                return render_template('admin.html', message=message)
+                        else:
+                            return render_template('admin.html', error=latlonError)
+                else:
+                    error = "Inconsistent column names"
+                    return render_template('admin.html', error=error)
             else:
-                error = "Inconsistent column names"
+                error = "No file selected/incorrect file type"
                 return render_template('admin.html', error=error)
-        else:
-            error = "No file selected/incorrect file type"
-            return render_template('admin.html', error=error)
+        if 'ViralSequence' in request.files:
+            seqFile = request.files['ViralSequence']
+            if seqFile and allowed_file(seqFile.filename):
+                return render_template('admin.html', seq_message="File post works")
     return render_template('admin.html')
 @app.route('/_get_end_year', methods=['GET'])
 def get_end_year():
