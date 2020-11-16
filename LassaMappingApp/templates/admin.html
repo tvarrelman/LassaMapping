@@ -24,63 +24,62 @@
                 </div>
         </nav>
 
-        <body>
-        <div class="container" style="padding-top: 40px;">
-                <div class="row justify-content-center">
+	<body>
+		<div class="container" style="padding-top: 40px; max-width:800px">
 			<div class="col">
-                        <div class="card border-secondary mb-3">
-                                <div class="card-header">Data Entry: Viral Infection Data</div>
-                                <div class="card-body">
-                                        <form action="" method="POST" enctype="multipart/form-data">
-						<div class="form-group">
-							<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-							<label for="InputCSV">File input</label>
-							<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="ViralInfection">
-      							<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa infection data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/LassaDataTemplate.csv">template</a>. For a detailed desciption of the data fields, see <a download href="/static/LassaDataDescription.txt">here</a>.</small>
-    							<input type="submit" value="Upload File" name="submit1">
-						</div>
-					</form>
-					{% if message  %}
+				<div class="card border-secondary mb-3">
+					<div class="card-header">Data Entry: Viral Infection Data</div>
+					<div class="card-body">
+						<form action="" method="POST" enctype="multipart/form-data">
+							<div class="form-group">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+								<label for="InputCSV">File input</label>
+								<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="ViralInfection">
+								<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa infection data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/LassaDataTemplate.csv">template</a>. For a detailed desciption of the data fields, see <a download href="/static/LassaDataDescription.txt">here</a>.</small>
+								<input type="submit" value="Upload File" name="submit1">
+							</div>
+						</form>
+						{% if message  %}
 						<div class="alert alert-dismissible alert-success">
 							<strong>{{message}}</strong>
 						<div>
-					{% endif  %}
-					{% if error  %}
+						{% endif  %}
+						{% if error  %}
 						<div class="alert alert-dismissible alert-danger">
 							<strong>{{error}}</strong>
 						</div>
-					{% endif  %}
+						{% endif  %}
+					</div>
 				</div>
 			</div>
-			</div>
-			</div>
+		</div>
+		<div class="container" style="padding-top: 40px; max-width:800px">
 			<div class="col">
-                        <div class="card border-secondary mb-3">
-                                <div class="card-header">Data Entry: Viral Sequenece Data</div>
-                                <div class="card-body">
-                                        <form action="" method="POST" enctype="multipart/form-data">
-                                                <div class="form-group">
-                                                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                                                        <label for="InputCSV">File input</label>
-                                                        <input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="ViralSequence">
-                                                        <small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa sequence data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="">template</a>. For a detailed desciption of the data fields, see <a download href="">here</a>.</small>
-                                                        <input type="submit" value="Upload File" name="submit2">
-                                                </div>
-                                        </form>
-                                        {% if seq_message  %}
-                                                <div class="alert alert-dismissible alert-success">
-                                                        <strong>{{seq_message}}</strong>
-                                                <div>
-                                        {% endif  %}
-                                        {% if seq_error  %}
-                                                <div class="alert alert-dismissible alert-danger">
-                                                        <strong>{{seq_error}}</strong>
-                                                </div>
-                                        {% endif  %}
-                                </div>
-                        </div>
+				<div class="card border-secondary mb-3">
+					<div class="card-header">Data Entry: Viral Sequenece Data</div>
+					<div class="card-body">
+						<form action="" method="POST" enctype="multipart/form-data">
+							<div class="form-group">
+								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+								<label for="InputCSV">File input</label>
+								<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="ViralSequence">
+								<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa sequence data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="">template</a>. For a detailed desciption of the data fields, see <a download href="">here</a>.</small>
+								<input type="submit" value="Upload File" name="submit2">
+							</div>
+						</form>
+						{% if seq_message  %}
+						<div class="alert alert-dismissible alert-success">
+							<strong>{{seq_message}}</strong>
+						<div>
+						{% endif  %}
+						{% if seq_error  %}
+						<div class="alert alert-dismissible alert-danger">
+							<strong>{{seq_error}}</strong>
+						</div>
+						{% endif  %}
+					</div>
+				</div>
 			</div>
 		</div>
-	</div>
 	</body>
 </html>
