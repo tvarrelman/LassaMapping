@@ -127,7 +127,7 @@ def admin():
         if 'ViralSequence' in request.files:
             seqFile = request.files['ViralSequence']
             if seqFile and allowed_file(seqFile.filename):
-                seq_str_data = str(infFile.read(), 'utf-8')
+                seq_str_data = str(seqFile.read(), 'utf-8')
                 seq_data = StringIO(seq_str_data)
                 seq_data_df = pd.read_csv(seq_data)
                 seq_columns = ["UniqueID", "gbAccession", "gbDefinition", "gbLength", 
@@ -136,28 +136,32 @@ def admin():
                                "gbPubMedID", "gbJournal", "PubYear", "GenomeCompleteness", "Tissue", 
                                "Strain", "gbProduct", "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", 
                                "Sequence", "Reference", "Notes", "HostBin", "Loc_Verif", "ID_method"]
-                if len(seq_data_df.columns)==26 and sum(seq_data_df.columns == seq_columns)==26:
-                    seq_dtype_errors = seq_check_data_types(seq_data_df)
-                    if len(seq_dtype_errors) > 0 :
-                        return render_template('admin.html', seq_error=seq_dtype_errors)
-                    else:
-                        seq_data_df2, seq_latlonError = lat_lon_check(seq_data_df)
-                        if seq_latlonError==None:
-                            seq_ref_df = seq_ref_id_mapper(seq_data_df2)
-                            seq_country_df, seq_country_error = country_id_mapper(seq_data_df2)
-                            if seq_country_error:
-                                return render_template('admin.html', seq_error=seq_country_error)
-                            else:
-                                seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
-                                seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
-                                #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                                #seq_final_df.to_sql('test_seq_data', con=engine, if_exists='append', index=False)
-                                seq_message = "Successfully imported data"
-                                return render_template('admin.html', seq_message=seq_message)
+                if len(seq_data_df.columns)==34:
+                    if sum(seq_data_df.columns == seq_columns)==34:
+                        seq_dtype_errors = seq_check_data_types(seq_data_df)
+                        if len(seq_dtype_errors) > 0 :
+                            return render_template('admin.html', seq_error=seq_dtype_errors)
                         else:
-                            return render_template('admin.html', seq_error=seq_latlonError)
+                            seq_data_df2, seq_latlonError = lat_lon_check(seq_data_df)
+                            if seq_latlonError==None:
+                                seq_ref_df = seq_ref_id_mapper(seq_data_df2)
+                                seq_country_df, seq_country_error = country_id_mapper(seq_data_df2)
+                                if seq_country_error:
+                                    return render_template('admin.html', seq_error=seq_country_error)
+                                else:
+                                    seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
+                                    seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
+                                    #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                                    #seq_final_df.to_sql('test_seq_data', con=engine, if_exists='append', index=False)
+                                    seq_message = "Successfully imported data"
+                                    return render_template('admin.html', seq_message=seq_message)
+                            else:
+                                return render_template('admin.html', seq_error=seq_latlonError)
+                    else:
+                        seq_col_error = "Inconsistent column names"
+                        return render_template('admin.html', seq_error=seq_col_error)
                 else:
-                    seq_col_error = "Inconsistent column names"
+                    seq_col_error = "Incorrect number of columns"
                     return render_template('admin.html', seq_error=seq_col_error)
             else:
                 seq_file_error = "No file selected/incorrect file type"
