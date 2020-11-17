@@ -460,6 +460,26 @@ def source_id_mapper(data_df):
     cursor.close()
     source_df = source_df.sort_index()
     return source_df
+def seq_ref_id_mapper(data_df):
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    ref_cmd = "SELECT * FROM seq_reference;"
+    ref_result = pd.read_sql(ref_cmd, cnx)
+    reference_df = pd.DataFrame(columns=['reference_id'])
+    for i in range(0, len(data_df)):
+        ref = data_df['Reference'][i]
+        if ref in list(ref_result['Reference']):
+            ref_id = ref_result[ref_result['Reference']==ref]['reference_id'].iloc[0]
+            ref_ind = ref_result[ref_result['Reference']==ref]['reference_id'].index[0]
+            reference_df.loc[ref_ind] = ref_id
+        else:
+            insert_cmd = """INSERT INTO test_seq_reference (Reference) VALUES ('{0}')""".format(ref)
+            cursor.execute(insert_cmd)
+            cnx.commit()
+            #return seq_ref_id_mapper()
+    cursor.close()
+    reference_df = reference_df.sort_index()
+    return reference_df
 def country_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -536,7 +556,55 @@ def check_data_types(data_df):
                         error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
                         error_list.append(error)
     return error_list
-
+def seq_check_data_types(data_df):
+    error_list = []
+    for index, row in data_df.iterrows():
+        col_list = ["UniqueID", "gbAccession", "gbDefinition", "gbLength", "gbHost", 
+                    "LocVillage", "LocState", "Country", "gbCollectDate", "CollectionMonth", 
+                    "gbCollectYear", "Lat", "Long", "Hospital", "gbPubMedID", "gbJournal", 
+                    "PubYear", "GenomeCompleteness", "Tissue", "Strain", "gbProduct", 
+                    "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", "Sequence", "Reference", 
+                    "Notes", "HostBin", "Loc_Verif", "ID_method"]
+        type_list = [int, str, str, int, str, str, str, str, datetime.datetime, str, int, float, float,
+                     str, float, str, int, str, str, str, str, str, int, int, int, int, int,
+                     int, str, str, str, str, str, str]
+        for i in range(0, len(col_list)):
+            col = col_list[i]
+            dtype = type_list[i]
+            if col == 'PubYear' or col == 'gbCollectYear' or col == 'S' or col == 'L' or col == 'GPC' or col == 'NP'\
+            or col == 'Pol' or col == 'Z' or col == 'NumTestAg' or col == 'UniqueID':
+                if pd.notnull(row[col]):
+                    # print(row[col])
+                    if isinstance(row[col], int) or isinstance(row[col], float):
+                        continue
+                    else:
+                        error_data_t = type(row[col])
+                        error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                        error_list.append(error)
+            if col == 'gbCollectDate':
+                if pd.notnull(row[col]):
+                    if isinstance(row[col], datetime.datetime) or isinstance(row[col], int):
+                        continue
+                    else:
+                        error_data_t = type(row[col])
+                        error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                        error_list.append(error)
+            if col == 'Strain':
+                if pd.notnull(row[col]):
+                    if isinstance(row[col], str) or isinstance(row[col], int):
+                        continue
+                    else:
+                        error_data_t = type(row[col])
+                        error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                        error_list.append(error)                        
+            if pd.notnull(row[col]):
+                if isinstance(row[col], dtype):
+                    continue
+                else:
+                    error_data_t = type(row[col])
+                    error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
+                    error_list.append(error)
+    return error_list  
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
     #print(rodent_year_data())
