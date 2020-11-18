@@ -116,22 +116,24 @@ function lassaBarChart(host){
                                 propAbPos.push(dataGroupByDiagMethod[key][i].propAbPos);
 				propAgPos.push(dataGroupByDiagMethod[key][i].propAgPos);
                         };
+			var t1name = 'Arenavirus: '.concat(key);
+			var t2name = 'Lassa virus: '.concat(key);
                         var trace1 = {
                                 x: Ab_year,
                                 y: propAbPos,
-                                name: key,
+                                name: t1name,
                                 type: 'bar',
                                 barmode: 'group',
                         };
                         var trace2 = {
                                 x: Ag_year,
                                 y: propAgPos,
-                                name: key,
+                                name: t2name,
                                 type: 'bar',
                                 barmode: 'group',
                         }; 
                         data2.push(trace1, trace2);
-                };
+                };		
 		let AbTime = [];
 		let AbProp = [];
 		for (var i in propAb){
