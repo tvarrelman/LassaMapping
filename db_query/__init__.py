@@ -467,15 +467,16 @@ def source_id_mapper(data_df):
         source = data_df['Source'][i]
         doi = data_df['DOI'][i]
         bibtex = data_df['Bibtex'][i]
-        if cite in list(source_result['Citation']):
-            source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
-            source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
-            source_df.loc[source_ind] = source_id
-        else:
-            insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
-            cursor.execute(insert_cmd)
-            cnx.commit()
-            #return source_id_mapper()
+        if pd.notnull(cite) or pd.notnull(source) or pd.notnull(doi) or pd.notnull(bibtex):
+            if cite in list(source_result['Citation']):
+                source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
+                source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
+                source_df.loc[source_ind] = source_id
+            else:
+                insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
+                cursor.execute(insert_cmd)
+                cnx.commit()
+                #return source_id_mapper()
     cursor.close()
     source_df = source_df.sort_index()
     return source_df
@@ -514,11 +515,14 @@ def country_id_mapper(data_df):
                 country_error = None
             else:
                 country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
+        else:
+            country_error = 'Missing country name'
     cursor.close()
     country_df = country_df.sort_index()
     return country_df, country_error
 def lat_lon_check(data_df):
     check_list = []
+    latlonError = None
     for i in range(0, len(data_df)):
         lat = data_df['Latitude'][i]
         lon = data_df['Longitude'][i]
@@ -547,7 +551,7 @@ def check_data_types(data_df):
         col_list = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
                     "NumPosVirus", "NumTestVirus", "PropVirus", "Virus_Diagnostic_Method", "NumPosAb", 
                     "NumTestAb", "PropAb", "Ab_Diagnostic_Method", "Antibody_Target", "Genus", "Species", 
-                    "lat-lon-source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
+                    "lat_lon_source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
                     "start_year", "end_year"]
         type_list = [str, str, float, float, str, int, int, float, str, int, int , float, 
                      str, str, str, str, str, str, str, str, str, str, str, int, int]
