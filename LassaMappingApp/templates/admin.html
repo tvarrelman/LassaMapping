@@ -34,7 +34,7 @@
 								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 								<label for="InputCSV">File input</label>
 								<input type="file" class="form-control-file" id="InputCSV" aria-describedby="fileHelp" name="ViralInfection">
-								<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa infection data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/LassaDataTemplate.csv">template</a>. For a detailed desciption of the data fields, see <a download href="/static/LassaDataDescription.txt">here</a>.</small>
+								<small id="fileHelp" class="form-text text-muted">Attach a .csv file with the Lassa infection data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/Viral_Infection_Template.csv">template</a>. For a detailed desciption of the data fields, see <a download href="/static/LassaDataDescription.txt">here</a>.</small>
 								<input type="submit" value="Upload File" name="submit1">
 							</div>
 						</form>
@@ -62,7 +62,7 @@
 								<input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 								<label for="InputSeqCSV">File input</label>
 								<input type="file" class="form-control-file" id="InputSeqCSV" aria-describedby="SeqfileHelp" name="ViralSequence">
-								<small id="SeqfileHelp" class="form-text text-muted">Attach a .csv file with the Lassa sequence data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="">template</a>. For a detailed desciption of the data fields, see <a download href="">here</a>.</small>
+								<small id="SeqfileHelp" class="form-text text-muted">Attach a .csv file with the Lassa sequence data that should be added to the database. For a successful upload, the input data should be formatted according to the example <a download  href="/static/Viral_Sequence_Template.csv">template</a>. For a detailed desciption of the data fields, see <a download href="">here</a>.</small>
 								<input type="submit" value="Upload File" name="submit2">
 							</div>
 						</form>
