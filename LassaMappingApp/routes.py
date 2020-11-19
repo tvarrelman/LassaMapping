@@ -96,28 +96,32 @@ def admin():
                 entry_columns = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
                                  "NumPosVirus", "NumTestVirus", "PropVirus", "Virus_Diagnostic_Method", "NumPosAb", 
                                  "NumTestAb", "PropAb", "Ab_Diagnostic_Method", "Antibody_Target", "Genus", "Species", 
-                                 "lat-lon-source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
+                                 "lat_lon_source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
                                  "start_year", "end_year"]
-                if len(data_df.columns)==26 and sum(data_df.columns == entry_columns)==26:
-                    dtype_errors = check_data_types(data_df)
-                    if len(dtype_errors) > 0 :
-                        return render_template('admin.html', error=dtype_errors)
-                    else:
-                        data_df2, latlonError = lat_lon_check(data_df)
-                        if latlonError==None:
-                            source_df = source_id_mapper(data_df2)
-                            country_df, country_error = country_id_mapper(data_df2)
-                            if country_error:
-                                return render_template('admin.html', error=country_error)
-                            else:
-                                data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Bibtex', 'Country'], axis=1)
-                                final_df = pd.concat([data_df2, country_df, source_df], axis=1)
-                                #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                                #final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
-                                message = "Successfully imported data"
-                                return render_template('admin.html', message=message)
+                if len(data_df.columns)==25 and sum(data_df.columns == entry_columns)==25:
+                    if len(data_df) > 0:
+                        dtype_errors = check_data_types(data_df)
+                        if len(dtype_errors) > 0 :
+                            return render_template('admin.html', error=dtype_errors)
                         else:
-                            return render_template('admin.html', error=latlonError)
+                            data_df2, latlonError = lat_lon_check(data_df)
+                            if latlonError==None:
+                                source_df = source_id_mapper(data_df2)
+                                country_df, country_error = country_id_mapper(data_df2)
+                                if country_error:
+                                    return render_template('admin.html', error=country_error)
+                                else:
+                                    data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Bibtex', 'Country'], axis=1)
+                                    final_df = pd.concat([data_df2, country_df, source_df], axis=1)
+                                    #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                                    #final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
+                                    message = "Successfully imported data"
+                                    return render_template('admin.html', message=message)
+                            else:
+                                return render_template('admin.html', error=latlonError)
+                    else:
+                        nodataerror = "No data in file"
+                        return render_template('admin.html', error=nodataerror)
                 else:
                     error = "Inconsistent column names"
                     return render_template('admin.html', error=error)
