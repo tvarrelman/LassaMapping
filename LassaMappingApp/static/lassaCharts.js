@@ -95,27 +95,22 @@ function lassaBarChart(host){
 				"orientation": "h"
 			}
 		};
-		//var propPos = [].concat(propAb, propAg);
 		var AbMethod = {};
 		var VirusMethod = {};
-		console.log(propAb);
-		console.log(propAg);
                 for (var i in propAb){
                         var AbDiagMethod = propAb[i].AbDiagnosticMethod;
-                        if (!AbMethod[DiagMethod]){
-                                AbMethod[DiagMethod] = [];
+                        if (!AbMethod[AbDiagMethod]){
+                                AbMethod[AbDiagMethod] = [];
                         };
-                        AbMethod[DiagMethod].push(propAb[i]);
+                        AbMethod[AbDiagMethod].push(propAb[i]);
                 };
                 for (var i in propAg){
                         var VirusDiagMethod = propAg[i].VirusDiagnosticMethod;
-                        if (!VirusMethod[DiagMethod]){
-                                VirusMethod[DiagMethod] = [];
+                        if (!VirusMethod[VirusDiagMethod]){
+                                VirusMethod[VirusDiagMethod] = [];
                         };
-                        VirusMethod[DiagMethod].push(propAg[i]);
+                        VirusMethod[VirusDiagMethod].push(propAg[i]);
                 };
-		console.log(AbMethod);
-		console.log(VirusMethod);
                 data2 = [];
                 for (var key in AbMethod){
                         Ab_year = [];
