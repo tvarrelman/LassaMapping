@@ -22,7 +22,7 @@ def initial_year_lists(host):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host=='human':
-        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
+        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data2 WHERE start_year IS NOT NULL AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL ORDER BY start_year;"
         cursor.execute(cmd)
         year_lists = cursor.fetchall()
         init_start_year_list = []
@@ -33,7 +33,7 @@ def initial_year_lists(host):
         cursor.close()
         return init_start_year_list, init_end_year_list
     if host=='rodent':
-        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY start_year;"
+        cmd = "SELECT DISTINCT start_year, end_year FROM lassa_data2 WHERE (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (start_year IS NOT NULL AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropVirus IS NOT NULL) ORDER BY start_year;"
         cursor.execute(cmd)
         year_lists = cursor.fetchall()
         init_start_year_list = []
@@ -56,9 +56,9 @@ def initial_year_lists(host):
         return init_start_year_list, init_end_year_list
 def end_year_list(start_year, host):
     if host=='human':
-        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
+        cmd = """SELECT DISTINCT end_year FROM lassa_data2 WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
     if host=='rodent':
-        cmd = """SELECT DISTINCT end_year FROM lassa_data WHERE (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAg IS NOT NULL) ORDER BY end_year;""".format(start_year)
+        cmd = """SELECT DISTINCT end_year FROM lassa_data2 WHERE (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropVirus IS NOT NULL) ORDER BY end_year;""".format(start_year)
     if host=='sequence':
         cmd = """SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear>={0} AND Latitude IS NOT NULL AND Longitude IS NOT NULL) ORDER BY gbCollectYear;""".format(start_year)
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
@@ -72,10 +72,10 @@ def end_year_list(start_year, host):
 def filtered_year_list(host, country_list):
     if host == 'human':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.start_year, lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY start_year;"
         for country in country_list:
-            ext = " (start_year IS NOT NULL AND Genus='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext = " (start_year IS NOT NULL AND Genus='Homo' AND lassa_data2.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -85,10 +85,10 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end 
     if host == 'rodent':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.start_year, lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY start_year;"
         for country in country_list:
-            ext = " (start_year IS NOT NULL AND Genus!='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext = " (start_year IS NOT NULL AND Genus!='Homo' AND lassa_data2.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -98,10 +98,10 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'both':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.start_year, lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.start_year, lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY start_year;"
         for country in country_list:
-            ext = " (start_year IS NOT NULL AND lassa_data.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
+            ext = " (start_year IS NOT NULL AND lassa_data2.country_id=countries.country_id AND countries.country_name='{0}') ".format(country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -141,10 +141,10 @@ def filtered_year_list(host, country_list):
 def filtered_end_year_list(host, start_year, country_list):
     if host == 'human':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY end_year;"
         for country in country_list:
-            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus='Homo' AND lassa_data2.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -154,10 +154,10 @@ def filtered_end_year_list(host, start_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'rodent':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY end_year;"
         for country in country_list:
-            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus!='Homo' AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND Genus!='Homo' AND lassa_data2.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -167,10 +167,10 @@ def filtered_end_year_list(host, start_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'both':
         ext_list = []
-        sel_start = "SELECT DISTINCT lassa_data.end_year FROM lassa_data, countries WHERE"
+        sel_start = "SELECT DISTINCT lassa_data2.end_year FROM lassa_data2, countries WHERE"
         sel_end = "ORDER BY end_year;"
         for country in country_list:
-            ext = " (end_year>={0} AND end_year IS NOT NULL AND lassa_data.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
+            ext = " (end_year>={0} AND end_year IS NOT NULL AND lassa_data2.country_id=countries.country_id AND countries.country_name='{1}') ".format(start_year, country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -204,7 +204,7 @@ def mapper(host, start_year, end_year):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == 'human':
-        cmd = """SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.PropAb, data_source.Citation, data_source.DOI, lassa_data.source_id, data_source.source_id FROM lassa_data, data_source WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id;""".format(start_year, end_year)
+        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, data_source2.Citation, data_source2.DOI, lassa_data2.source_id, data_source2.source_id FROM lassa_data2, data_source2 WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id;""".format(start_year, end_year)
         cursor.execute(cmd)
         human_data  = cursor.fetchall()
         human_headers = [x[0] for x in cursor.description]
@@ -226,7 +226,7 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_human_data
     if host == 'rodent':
-        cmd = """SELECT lassa_data.Latitude, lassa_data.Longitude, lassa_data.PropAb, lassa_data.PropAg, data_source.Citation, data_source.DOI FROM lassa_data, data_source WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAg IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source.source_id=lassa_data.source_id);""".format(start_year, end_year)
+        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, lassa_data2.PropVirus, data_source2.Citation, data_source2.DOI FROM lassa_data2, data_source2 WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropVirus IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id);""".format(start_year, end_year)
         cursor.execute(cmd)
         rodent_data = cursor.fetchall()
         rodent_headers = [x[0] for x in cursor.description]
@@ -283,13 +283,13 @@ def country_list(host):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == "human":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.Genus='Homo' AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "rodent":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.Genus!='Homo' AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.Genus!='Homo' AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "sequence":
         cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL ORDER BY countries.country_name;"
     if host == "both":
-        cmd = "SELECT DISTINCT lassa_data.country_id, countries.country_name FROM lassa_data, countries WHERE countries.country_id=lassa_data.country_id AND lassa_data.start_year IS NOT NULL AND lassa_data.end_year IS NOT NULL ORDER BY countries.country_name;"
+        cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
     cursor.execute(cmd)
     country_headers = [x[0] for x in cursor.description]
     country_list = cursor.fetchall()
@@ -301,13 +301,13 @@ def db_summary():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     #Get the number of countries represented in our dataset
-    country_cmd = "SELECT COUNT(countryCount) FROM (SELECT DISTINCT country_id AS countryCount FROM lassa_data UNION SELECT DISTINCT country_id AS countryCount FROM seq_data) AS final;"
+    country_cmd = "SELECT COUNT(countryCount) FROM (SELECT DISTINCT country_id AS countryCount FROM lassa_data2 UNION SELECT DISTINCT country_id AS countryCount FROM seq_data) AS final;"
     #Get the number of studies that our project documents
-    source_cmd = "SELECT COUNT(*) FROM data_source;"
+    source_cmd = "SELECT COUNT(*) FROM data_source2;"
     #Number of point samples from rodents
-    rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus!='Homo';"
+    rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data2 WHERE Genus!='Homo';"
     #Number of point samples from humans
-    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data WHERE Genus='Homo' AND PropAb IS NOT NULL;"
+    human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data2 WHERE Genus='Homo' AND PropAb IS NOT NULL;"
     #Number of sequences    
     seq_sample_cmd = "SELECT COUNT(Sequence) FROM seq_data WHERE Sequence IS NOT NULL;"
     cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd, seq_sample_cmd]
@@ -321,7 +321,7 @@ def db_summary():
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb), DiagnosticMethod FROM lassa_data WHERE Genus='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, SUM(NumPosAb), SUM(NumTestAb), Ab_Diagnostic_Method FROM lassa_data2 WHERE Genus='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     human_year_data = cursor.fetchall()
     cursor.close()
@@ -336,7 +336,7 @@ def human_year_data():
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosAg), SUM(NumTestAg), DiagnosticMethod FROM lassa_data WHERE Genus!='Homo' GROUP BY (start_year);"
+    cmd = "SELECT start_year, Sum(NumPosAb), SUM(NumTestAb), SUM(NumPosVirus), SUM(NumTestVirus), Ab_Diagnostic_Method, Virus_Diagnostic_Method FROM lassa_data2 WHERE Genus!='Homo' GROUP BY (start_year);"
     cursor.execute(cmd)
     rodent_year_data = cursor.fetchall()
     cursor.close()
@@ -345,13 +345,13 @@ def rodent_year_data():
     for entry in rodent_year_data:
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
-                AbHeader = ("Ab_year", "propAbPos", "DiagnosticMethod")
-                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[5])
+                AbHeader = ("Ab_year", "propAbPos", "AbDiagnosticMethod", "VirusDiagnosticMethod")
+                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[5], entry[6])
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))
         if entry[0]!= None and entry[3]!=None and entry[4]!=None:
             if entry[3]!=0 and entry[4]!=0:
-                AgHeader = ("Ag_year", "propAgPos", "DiagnosticMethod")
-                AgRow = (entry[0], int(entry[3])/int(entry[4]), entry[5])
+                AgHeader = ("Ag_year", "propAgPos", "AbDiagnosticMethod", "VirusDiagnosticMethod")
+                AgRow = (entry[0], int(entry[3])/int(entry[4]), entry[5], entry[6])
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
 def sequence_year_data():

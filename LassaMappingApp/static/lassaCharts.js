@@ -95,29 +95,36 @@ function lassaBarChart(host){
 				"orientation": "h"
 			}
 		};
-		var propPos = [].concat(propAb, propAg);
-		var dataGroupByDiagMethod = {};
-                for (var i in propPos){
-                        var DiagMethod = propPos[i].DiagnosticMethod;
-                        if (!dataGroupByDiagMethod[DiagMethod]){
-                                dataGroupByDiagMethod[DiagMethod] = [];
+		//var propPos = [].concat(propAb, propAg);
+		var AbMethod = {};
+		var VirusMethod = {};
+		console.log(propAb);
+		console.log(propAg);
+                for (var i in propAb){
+                        var AbDiagMethod = propAb[i].AbDiagnosticMethod;
+                        if (!AbMethod[DiagMethod]){
+                                AbMethod[DiagMethod] = [];
                         };
-                        dataGroupByDiagMethod[DiagMethod].push(propPos[i]);
+                        AbMethod[DiagMethod].push(propAb[i]);
                 };
+                for (var i in propAg){
+                        var VirusDiagMethod = propAg[i].VirusDiagnosticMethod;
+                        if (!VirusMethod[DiagMethod]){
+                                VirusMethod[DiagMethod] = [];
+                        };
+                        VirusMethod[DiagMethod].push(propAg[i]);
+                };
+		console.log(AbMethod);
+		console.log(VirusMethod);
                 data2 = [];
-                for (var key in dataGroupByDiagMethod){
+                for (var key in AbMethod){
                         Ab_year = [];
-			Ag_year = [];
                         propAbPos = [];
-			propAgPos = [];
-                        for (var i in dataGroupByDiagMethod[key]){
-                                Ab_year.push(dataGroupByDiagMethod[key][i].Ab_year);
-				Ag_year.push(dataGroupByDiagMethod[key][i].Ag_year);
-                                propAbPos.push(dataGroupByDiagMethod[key][i].propAbPos);
-				propAgPos.push(dataGroupByDiagMethod[key][i].propAgPos);
+                        for (var i in AbMethod[key]){
+                                Ab_year.push(AbMethod[key][i].Ab_year);
+                                propAbPos.push(AbMethod[key][i].propAbPos);
                         };
 			var t1name = 'Arenavirus: '.concat(key);
-			var t2name = 'Lassa virus: '.concat(key);
                         var trace1 = {
                                 x: Ab_year,
                                 y: propAbPos,
@@ -125,15 +132,25 @@ function lassaBarChart(host){
                                 type: 'bar',
                                 barmode: 'group',
                         };
+                        data2.push(trace1);
+                };
+                for (var key in VirusMethod){
+                        Ag_year = [];
+                        propAgPos = [];
+                        for (var i in VirusMethod[key]){
+                                Ag_year.push(VirusMethod[key][i].Ag_year);
+                                propAgPos.push(VirusMethod[key][i].propAgPos);
+                        };
+                        var t2name = 'Lassa virus: '.concat(key);
                         var trace2 = {
                                 x: Ag_year,
                                 y: propAgPos,
                                 name: t2name,
                                 type: 'bar',
                                 barmode: 'group',
-                        }; 
-                        data2.push(trace1, trace2);
-                };		
+                        };
+                        data2.push(trace2);
+                };     		
 		let AbTime = [];
 		let AbProp = [];
 		for (var i in propAb){
