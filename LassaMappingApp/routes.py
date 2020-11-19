@@ -43,12 +43,24 @@ def rodent_mapping():
         return jsonify([jsonPropAb, jsonPropAg])
     if visual == 'map':
         return jsonify(jsonYears)
-@app.route('/LassaSequence')
-def sequence_mapping():
+@app.route('/LassaSequenceRodents')
+def sequence_rodent_mapping():
     visual = request.args.get('visual', 'default_if_none')
     data_summary = db_summary()
-    jsonSeq = sequence_year_data()
-    host = 'sequence'
+    jsonSeq = sequence_rodent_year_data()
+    host = 'sequence rodent'
+    StartYearList, EndYearList = initial_year_lists(host)
+    jsonYears = dict(zip(('host', 'start_year', 'end_year'), (host, StartYearList, EndYearList)))
+    if visual == 'chart':
+        return jsonify(jsonSeq)
+    if visual == 'map':
+        return jsonify(jsonYears)
+@app.route('/LassaSequenceHumans')
+def sequence_human_mapping():
+    visual = request.args.get('visual', 'default_if_none')
+    data_summary = db_summary()
+    jsonSeq = sequence_human_year_data()
+    host = 'sequence human'
     StartYearList, EndYearList = initial_year_lists(host)
     jsonYears = dict(zip(('host', 'start_year', 'end_year'), (host, StartYearList, EndYearList)))
     if visual == 'chart':
@@ -134,14 +146,14 @@ def admin():
                 seq_str_data = str(seqFile.read(), 'utf-8')
                 seq_data = StringIO(seq_str_data)
                 seq_data_df = pd.read_csv(seq_data)
-                seq_columns = ["UniqueID", "gbAccession", "gbDefinition", "gbLength", 
-                               "gbHost", "LocVillage", "LocState", "Country", "gbCollectDate", 
-                               "CollectionMonth", "gbCollectYear", "Latitude", "Longitude", "Hospital", 
-                               "gbPubMedID", "gbJournal", "PubYear", "GenomeCompleteness", "Tissue", 
-                               "Strain", "gbProduct", "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", 
-                               "Sequence", "Reference", "Notes", "HostBin", "Loc_Verif", "ID_method"]
-                if len(seq_data_df.columns)==34:
-                    if sum(seq_data_df.columns == seq_columns)==34:
+                seq_columns = ["gbAccession", "gbDefinition", "gbLength", "gbHost",
+                               "LocVillage", "LocState", "Country", "gbCollectDate", "CollectionMonth",
+                               "gbCollectYear", "Latitude", "Longitude", "Hospital", "gbPubMedID", "gbJournal",
+                               "PubYear", "GenomeCompleteness", "Tissue", "Strain", "gbProduct",
+                               "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", "Sequence", "Reference",
+                               "Notes"]
+                if len(seq_data_df.columns)==len(seq_columns):
+                    if sum(seq_data_df.columns == seq_columns)==len(seq_columns):
                         seq_dtype_errors = seq_check_data_types(seq_data_df)
                         if len(seq_dtype_errors) > 0 :
                             return render_template('admin.html', seq_error=seq_dtype_errors)
@@ -155,8 +167,8 @@ def admin():
                                 else:
                                     seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
                                     seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
-                                    #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                                    #seq_final_df.to_sql('test_seq_data', con=engine, if_exists='append', index=False)
+                                    engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
+                                    seq_final_df.to_sql('seq_data2', con=engine, if_exists='append', index=False)
                                     seq_message = "Successfully imported data"
                                     return render_template('admin.html', seq_message=seq_message)
                             else:

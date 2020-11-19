@@ -69,6 +69,9 @@ function lassaBarChart(host){
 		myPlot.on('plotly_doubleclick', function(){
 			Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
 		});
+                myPlot.on('plotly_click', function(){
+                        Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                });
 	};
 	if (host == "rodent"){
 		var myPlot = document.getElementById('myDiv');
@@ -182,8 +185,8 @@ function lassaBarChart(host){
                 });
 	};
 	
-	if (host=="sequence"){
-		var finalTitle = "Viral Sequences";
+	if (host=="sequence rodent"){
+		var finalTitle = "Viral Sequences: Rodents";
 		let seqYear = [];
 		let seqCount = [];
 		for (var i in seqData){
@@ -222,5 +225,45 @@ function lassaBarChart(host){
 		let modeBarButtons = [["toImage", "lasso2d"]];
 		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
 	};
+        if (host=="sequence human"){
+                var finalTitle = "Viral Sequences: Humans";
+                let seqYear = [];
+                let seqCount = [];
+                for (var i in seqData){
+                        seqYear.push(seqData[i].seq_year);
+                        seqCount.push(seqData[i].seq_count);
+                };
+                var data = [{
+                        x: seqYear,
+                        y: seqCount,
+                        name: 'Numer of Sequences',
+                        type: 'bar',
+                        marker: {color: '#f0ad4e'}
+                }];
+                var layout = { 
+                        title: finalTitle,
+                        font: {color:'#1a1a1a'},
+                        autosize: true,
+                        automargin: false,
+                        margin: {
+                                l: 55,
+                                r: 10,
+                                b: 50,
+                                t: 50,
+                                pad: 4
+                        },
+                        xaxis:{title: {text: 'Year'}},
+                        yaxis:{title: {text: 'Number of Sequences'}},
+                        showlegend: true,
+                        legend: {
+                                x: 0.45,
+                                xanchor: 'center',
+                                y: 1,
+                                "orientation": "h"
+                        }
+                };
+                let modeBarButtons = [["toImage", "lasso2d"]];
+                Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
+        };
 };
 

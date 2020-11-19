@@ -9,7 +9,7 @@ from decimal import Decimal
 import pandas as pd
 import geopandas as gpd 
 from shapely.geometry import shape, Point
-
+import datetime
 # finds the absolute path of this file
 basedir = path.abspath(path.dirname(__file__))
 # reads the key value from .env, and adds it to the environment variable
@@ -43,8 +43,19 @@ def initial_year_lists(host):
             init_end_year_list.append(year_lists[i][1])
         cursor.close()
         return init_start_year_list, init_end_year_list
-    if host=='sequence':
-        cmd = "SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL) ORDER BY gbCollectYear;"
+    if host=='sequence rodent':
+        cmd = "SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost!='Human' AND gbHost!='Homo sapiens') ORDER BY gbCollectYear;"
+        cursor.execute(cmd)
+        year_lists = cursor.fetchall()
+        init_start_year_list = []
+        init_end_year_list = []
+        for i in range(0, len(year_lists)):
+            init_start_year_list.append(year_lists[i][0])
+            init_end_year_list.append(year_lists[i][0])
+        cursor.close()
+        return init_start_year_list, init_end_year_list
+    if host=='sequence human':
+        cmd = "SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost='Human') OR (gbCollectYear IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost='Homo sapiens') ORDER BY gbCollectYear;"
         cursor.execute(cmd)
         year_lists = cursor.fetchall()
         init_start_year_list = []
@@ -59,8 +70,10 @@ def end_year_list(start_year, host):
         cmd = """SELECT DISTINCT end_year FROM lassa_data2 WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
     if host=='rodent':
         cmd = """SELECT DISTINCT end_year FROM lassa_data2 WHERE (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) OR (end_year>={0} AND Genus!='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropVirus IS NOT NULL) ORDER BY end_year;""".format(start_year)
-    if host=='sequence':
-        cmd = """SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear>={0} AND Latitude IS NOT NULL AND Longitude IS NOT NULL) ORDER BY gbCollectYear;""".format(start_year)
+    if host=='sequence rodent':
+        cmd = """SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear>={0} AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost!='Human' AND gbHost!='Homo sapiens') ORDER BY gbCollectYear;""".format(start_year)
+    if host=='sequence human':
+        cmd = """SELECT DISTINCT gbCollectYear FROM seq_data WHERE (gbCollectYear>={0} AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost='Human') OR (gbCollectYear>={0} AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND gbHost='Homo sapiens') ORDER BY gbCollectYear;""".format(start_year)
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     cursor.execute(cmd)
@@ -254,8 +267,33 @@ def mapper(host, start_year, end_year):
             json_rodent_data.append(dict(zip(rodent_headers, entry)))
         cursor.close()
         return json_rodent_data
-    if host == 'sequence':
-        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id;""".format(start_year, end_year)
+    if host == 'sequence rodent':
+        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost!='Human' AND gbHost!='Homo sapiens';""".format(start_year, end_year)
+        cursor.execute(cmd)
+        seq_data = cursor.fetchall()
+        seq_headers = [x[0] for x in cursor.description]
+        json_seq_data = []
+        for row in seq_data:
+            lat = float(row[0])
+            lon = float(row[1])
+            if row[2]!=None:
+                gbDef = row[2]
+            else:
+                gbDef = 'NaN'
+            if row[3]!=None:
+                pubMedID = row[3]
+            else:
+                pubMedID = 'NaN'
+            if row[4]!=None:
+                Ref = row[4]
+            else:
+                Ref = 'NaN'
+            entry = (lat, lon, gbDef, pubMedID, Ref)
+            json_seq_data.append(dict(zip(seq_headers, entry)))
+        cursor.close()
+        return json_seq_data
+    if host == 'sequence human':
+        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Human') OR (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Homo sapiens');""".format(start_year, end_year)
         cursor.execute(cmd)
         seq_data = cursor.fetchall()
         seq_headers = [x[0] for x in cursor.description]
@@ -354,10 +392,23 @@ def rodent_year_data():
                 AgRow = (entry[0], int(entry[3])/int(entry[4]), entry[5], entry[6])
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
-def sequence_year_data():
+def sequence_rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    cmd = "SELECT gbCollectYear, COUNT(Sequence) FROM seq_data GROUP BY (gbCollectYear);"
+    cmd = "SELECT gbCollectYear, COUNT(Sequence) FROM seq_data WHERE gbHost!='Human' AND gbHost!='Homo sapiens' GROUP BY (gbCollectYear);"
+    cursor.execute(cmd)
+    sequence_year_data = cursor.fetchall()
+    cursor.close()
+    jsonSeq = []
+    for entry in sequence_year_data:
+        seqRow = (entry[0], entry[1])
+        seqHeader = ("seq_year", "seq_count")
+        jsonSeq.append(dict(zip(seqHeader, seqRow)))
+    return jsonSeq
+def sequence_human_year_data():
+    cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+    cursor = cnx.cursor()
+    cmd = "SELECT gbCollectYear, COUNT(Sequence) FROM seq_data WHERE gbHost='Human' OR gbHost='Homo sapiens' GROUP BY (gbCollectYear);"
     cursor.execute(cmd)
     sequence_year_data = cursor.fetchall()
     cursor.close()
@@ -493,10 +544,10 @@ def seq_ref_id_mapper(data_df):
             ref_ind = ref_result[ref_result['Reference']==ref]['reference_id'].index[0]
             reference_df.loc[ref_ind] = ref_id
         else:
-            insert_cmd = """INSERT INTO test_seq_reference (Reference) VALUES ('{0}')""".format(ref)
+            insert_cmd = """INSERT INTO seq_reference (Reference) VALUES ('{0}')""".format(ref)
             cursor.execute(insert_cmd)
             cnx.commit()
-            #return seq_ref_id_mapper()
+            return seq_ref_id_mapper()
     cursor.close()
     reference_df = reference_df.sort_index()
     return reference_df
@@ -581,15 +632,15 @@ def check_data_types(data_df):
 def seq_check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
-        col_list = ["UniqueID", "gbAccession", "gbDefinition", "gbLength", "gbHost", 
+        col_list = ["gbAccession", "gbDefinition", "gbLength", "gbHost", 
                     "LocVillage", "LocState", "Country", "gbCollectDate", "CollectionMonth", 
-                    "gbCollectYear", "Lat", "Long", "Hospital", "gbPubMedID", "gbJournal", 
+                    "gbCollectYear", "Latitude", "Longitude", "Hospital", "gbPubMedID", "gbJournal", 
                     "PubYear", "GenomeCompleteness", "Tissue", "Strain", "gbProduct", 
                     "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", "Sequence", "Reference", 
-                    "Notes", "HostBin", "Loc_Verif", "ID_method"]
-        type_list = [int, str, str, int, str, str, str, str, datetime.datetime, str, int, float, float,
+                    "Notes"]
+        type_list = [str, str, int, str, str, str, str, datetime.datetime, str, int, float, float,
                      str, float, str, int, str, str, str, str, str, int, int, int, int, int,
-                     int, str, str, str, str, str, str]
+                     int, str, str, str]
         for i in range(0, len(col_list)):
             col = col_list[i]
             dtype = type_list[i]
@@ -605,7 +656,7 @@ def seq_check_data_types(data_df):
                         error_list.append(error)
             if col == 'gbCollectDate':
                 if pd.notnull(row[col]):
-                    if isinstance(row[col], datetime.datetime) or isinstance(row[col], int):
+                    if isinstance(row[col], datetime.datetime) or isinstance(row[col], int) or isinstance(row[col], str):
                         continue
                     else:
                         error_data_t = type(row[col])

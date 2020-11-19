@@ -103,8 +103,12 @@
 									<a class="nav-link" id="RodentTab" href="#LassaRodents" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Infection: Rodents</a>
 								</li>
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
-									<a class="nav-link" id="SequenceTab", href="#LassaSequence" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Sequences: Rodents</a>
+									<a class="nav-link" id="SequenceRodentTab", href="#LassaSequenceRodents" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Sequences: Rodents</a>
 								<li>
+                                                                <li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
+                                                                        <a class="nav-link" id="SequenceHumanTab", href="#LassaSequenceHumans" style="border-color: #dfdfdf; border-bottom: transparent; flex: 1;">Viral Sequences: Rodents</a>
+                                                                <li>
+
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
@@ -129,9 +133,12 @@
 								<div class="tab-pane fade in" id="LassaRodents">
 									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 								</div>
-								<div class="tab-pane fade in" id="LassaSequence">
+								<div class="tab-pane fade in" id="LassaSequenceRodents">
 									<div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
 								</div>
+                                                                <div class="tab-pane fade in" id="LassaSequenceHumans">
+                                                                        <div id="map" style="height:100%; width:100%; position: relative; z-index:1;"></div>
+                                                                </div>
 							</div>
 						</div>
 					</div>
@@ -247,15 +254,15 @@
 			propAb = propAb;
 			propAg = propAg;
 		};
-		function sequenceMap(){
+		function sequenceRodentMap(){
 			var chartPars = {visual: "chart"};
 			var mapPars = {visual: "map"};
-			$.ajax({async:false, url:"/LassaSequence", data:chartPars, dataType:"json",
+			$.ajax({async:false, url:"/LassaSequenceRodents", data:chartPars, dataType:"json",
 				success: function(data){
 					seqData = data;
 				}
 			});
-			$.ajax({async:false, url:"/LassaSequence", data:mapPars, dataType:"json",
+			$.ajax({async:false, url:"/LassaSequenceRodents", data:mapPars, dataType:"json",
 				success: function(data){
 					mapYearData = data;
 					end_year_select.empty();
@@ -271,6 +278,30 @@
 			seqData = seqData;
 			host = mapYearData.host;
 		};
+                function sequenceHumanMap(){
+                        var chartPars = {visual: "chart"};
+                        var mapPars = {visual: "map"};
+                        $.ajax({async:false, url:"/LassaSequenceHumans", data:chartPars, dataType:"json",
+                                success: function(data){
+                                        seqData = data;
+                                }
+                        });
+                        $.ajax({async:false, url:"/LassaSequenceHumans", data:mapPars, dataType:"json",
+                                success: function(data){
+                                        mapYearData = data;
+                                        end_year_select.empty();
+                                        start_year_select.empty();
+                                        for (var i in mapYearData.end_year){
+                                                end_year_select.append($('<option>', {value: mapYearData.end_year[i], text: mapYearData.end_year[i]}, '</option>'))
+                                        };
+                                        for (var j in mapYearData.start_year){
+                                                start_year_select.append($('<option>', {value: mapYearData.start_year[j], text: mapYearData.start_year[j]}, '</option>'))
+                                        }
+                                }
+                        });
+                        seqData = seqData;
+                        host = mapYearData.host;
+                };
 		$(document).ready(function(){
 			$('#HumanTab').addClass('active');
 			humanMap();
@@ -286,7 +317,8 @@
 		});
 		$('#HumanTab').on('click', function(){
                         $('#RodentTab').removeClass('active');
-			$('#SequenceTab').removeClass('active');
+                        $('#SequenceRodentTab').removeClass('active');
+                        $('#SequenceHumanTab').removeClass('active');
 			$('#HumanTab').addClass('active');
                         humanMap();
                         lassaBarChart(host);
@@ -301,7 +333,8 @@
 		});
 		$('#RodentTab').on('click', function(){
                         $('#HumanTab').removeClass('active');
-                        $('#SequenceTab').removeClass('active');
+                        $('#SequenceRodentTab').removeClass('active');
+			$('#SequenceHumanTab').removeClass('active');
 			$('#RodentTab').addClass('active');
                         rodentMap();
                         lassaBarChart(host);
@@ -314,11 +347,12 @@
                         var coords = GetFilteredPoints(startYear, endYear, host);
                         MapPoints(coords, host, map);
 		});
-		$('#SequenceTab').on('click', function(){
+		$('#SequenceRodentTab').on('click', function(){
                         $('#RodentTab').removeClass('active');
                         $('#HumanTab').removeClass('active');
-			$('#SequenceTab').addClass('active');
-                        sequenceMap();
+			$('#SequenceHumanTab').removeClass('active');
+			$('#SequenceRodentTab').addClass('active');
+                        sequenceRodentMap();
                         lassaBarChart(host);
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
@@ -329,6 +363,22 @@
                         var coords = GetFilteredPoints(startYear, endYear, host);
                         MapPoints(coords, host, map);
 		});
+                $('#SequenceHumanTab').on('click', function(){
+                        $('#RodentTab').removeClass('active');
+                        $('#HumanTab').removeClass('active');
+                        $('#SequenceRodentTab').removeClass('active');
+                        $('#SequenceHumanTab').addClass('active');
+                        sequenceHumanMap();
+                        lassaBarChart(host);
+                        var SY = document.getElementById("StartYear");
+                        SY.options[0].selected = true;
+                        var EY = document.getElementById("EndYear");
+                        EY.options[EY.options.length - 1].selected = true;
+                        var startYear = $('#StartYear').find(":selected").text();
+                        var endYear = $('#EndYear').find(":selected").text();
+                        var coords = GetFilteredPoints(startYear, endYear, host);
+                        MapPoints(coords, host, map);
+                });
 		start_year_select.on('change', function(){
 			getUpdatedEndYear(start_year_select.val(), host);
 			var startYear = $('#StartYear').find(":selected").text();
