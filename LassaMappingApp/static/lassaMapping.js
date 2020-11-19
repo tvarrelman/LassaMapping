@@ -1,7 +1,7 @@
 if(window.matchMedia("(max-width: 767px)").matches){
 	var mapOptions = {center: [9.531665, 4.460415], zoom:3};
 } else {
-	var mapOptions = {center: [9.531665, 4.460415], zoom:4};
+	var mapOptions = {center: [10.531665, 0], zoom:5};
 };
 var map = new L.map("map", mapOptions);
 var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
@@ -76,7 +76,7 @@ function MapPoints(NewCoords, host, map){
 				iconSize: [35,35]
 			});
 			var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
-                        var Aglabel="<b>Proportion Lassa virus positive:</b> " + coordPair.PropAg;
+                        var Aglabel="<b>Proportion Lassa virus positive:</b> " + coordPair.PropVirus;
                         var Citation = "<b> Citation:</b> " + coordPair.Citation;
                         if (coordPair.DOI == "NaN"){
                                 DOI = "<b>DOI:</b> NaN";
