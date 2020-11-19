@@ -373,10 +373,16 @@ def filtered_download(host, start_year, end_year, country_list):
     
     if host == 'human':
         ext_list = []
-        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+                       lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
+                       lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
+                       lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
+                       lassa_data2.PropAb, lassa_data2.Ab_Diagnostic_Method, lassa_data2.Antibody_Target, 
+                       lassa_data2.Genus, lassa_data2.Species, lassa_data2.lat_lon_source, data_source2.Source, 
+                       data_source2.Citation, data_source2.DOI FROM lassa_data2, countries,data_source2 WHERE"""
         sel_end = "ORDER BY start_year;"
         for country in country_list:    
-            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext = """ (lassa_data2.country_id=countries.country_id AND lassa_data2.source_id=data_source2.source_id AND Genus='Homo' AND lassa_data2.start_year AND lassa_data2.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -387,10 +393,16 @@ def filtered_download(host, start_year, end_year, country_list):
         
     if host == 'rodent':
         ext_list = []
-        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+                       lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
+                       lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
+                       lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
+                       lassa_data2.PropAb, lassa_data2.Ab_Diagnostic_Method, lassa_data2.Antibody_Target, 
+                       lassa_data2.Genus, lassa_data2.Species, lassa_data2.lat_lon_source, data_source2.Source, 
+                       data_source2.Citation, data_source2.DOI FROM lassa_data2, countries,data_source2 WHERE"""
         sel_end = "ORDER BY start_year;"
         for country in country_list:    
-            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND Genus!='Homo' AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext = """ (lassa_data2.country_id=countries.country_id AND lassa_data2.source_id=data_source2.source_id AND Genus!='Homo' AND lassa_data2.start_year AND lassa_data2.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -401,10 +413,16 @@ def filtered_download(host, start_year, end_year, country_list):
         
     if host == 'both':
         ext_list = []
-        sel_start = "SELECT lassa_data.Town_Region, lassa_data.Village, lassa_data.Month, lassa_data.Day, lassa_data.start_year, lassa_data.end_year, lassa_data.Latitude, lassa_data.Longitude, lassa_data.Status, lassa_data.NumPosAg, lassa_data.NumTestAg, lassa_data.PropAg, lassa_data.NumPosAb, lassa_data.NumTestAb, lassa_data.PropAb, lassa_data.Genus, lassa_data.Species, lassa_data.DiagnosticMethod, lassa_data.Target, lassa_data.lat_lon_source, lassa_data.Human_Random_Survey, countries.country_name, data_source.Citation, data_source.DOI FROM lassa_data, countries,data_source WHERE" 
+        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+                       lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
+                       lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
+                       lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
+                       lassa_data2.PropAb, lassa_data2.Ab_Diagnostic_Method, lassa_data2.Antibody_Target, 
+                       lassa_data2.Genus, lassa_data2.Species, lassa_data2.lat_lon_source, data_source2.Source, 
+                       data_source2.Citation, data_source2.DOI FROM lassa_data2, countries,data_source2 WHERE""" 
         sel_end = "ORDER BY start_year;"
         for country in country_list:    
-            ext = """ (lassa_data.country_id=countries.country_id AND lassa_data.source_id=data_source.source_id AND lassa_data.start_year AND lassa_data.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
+            ext = """ (lassa_data2.country_id=countries.country_id AND lassa_data2.source_id=data_source2.source_id AND lassa_data2.start_year AND lassa_data2.end_year BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)   
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -441,19 +459,20 @@ def filtered_download(host, start_year, end_year, country_list):
 def source_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    source_cmd = "SELECT * FROM data_source;"
+    source_cmd = "SELECT * FROM data_source2;"
     source_result = pd.read_sql(source_cmd, cnx)
     source_df = pd.DataFrame(columns=['source_id'])
     for i in range(0, len(data_df)):
         cite = data_df['Citation'][i]
         source = data_df['Source'][i]
         doi = data_df['DOI'][i]
+        bibtex = data_df['Bibtex'][i]
         if cite in list(source_result['Citation']):
             source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
             source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
             source_df.loc[source_ind] = source_id
         else:
-            insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI) VALUES ('{0}', '{1}', '{2}')""".format(cite, source, doi)
+            insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
             cursor.execute(insert_cmd)
             cnx.commit()
             #return source_id_mapper()
@@ -525,20 +544,19 @@ def lat_lon_check(data_df):
 def check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
-        col_list = ['Town_Region', 'Village', 'Month', 'Day', 'Year', 'Latitude',
-                'Longitude', 'Country', 'Confidence', 'Status', 'NumPosAg', 'NumTestAg',
-                'PropAg', 'NumPosAb', 'NumTestAb', 'PropAb', 'Genus', 'Species',
-                'DiagnosticMethod', 'Target', 'lat-lon-source', 'Source', 'Citation',
-                'DOI', 'Human_Random_Survey', 'Notes']
-        type_list = [str, str, int, int, int, float, float, str, str, str, int, 
-                     int, float, int, int, float, str, str, str, str, str, str,
-                     str, str, str, str]
+        col_list = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
+                    "NumPosVirus", "NumTestVirus", "PropVirus", "Virus_Diagnostic_Method", "NumPosAb", 
+                    "NumTestAb", "PropAb", "Ab_Diagnostic_Method", "Antibody_Target", "Genus", "Species", 
+                    "lat-lon-source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
+                    "start_year", "end_year"]
+        type_list = [str, str, float, float, str, int, int, float, str, int, int , float, 
+                     str, str, str, str, str, str, str, str, str, str, str, int, int]
         for i in range(0, len(col_list)):
             col = col_list[i]
             dtype = type_list[i]
-            if col == 'Month' or col == 'Day' or col == 'Year' or col == 'NumPosAb' or \
-                col == 'NumPosAg' or col == 'NumTestAb' or col == 'NumTestAg' or \
-                col == 'PropAb' or col == 'PropAg':
+            if col == 'start_year' or col == 'end_year' or col == 'NumPosAb' or \
+                col == 'NumPosVirus' or col == 'NumTestAb' or col == 'NumTestVirus' or \
+                col == 'PropAb' or col == 'PropVirus':
                 if pd.notnull(row[col]):
                     # print(row[col])
                     if isinstance(row[col], int) or isinstance(row[col], float):
