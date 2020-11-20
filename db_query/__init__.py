@@ -539,7 +539,12 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end    
     if host == 'sequence rodent':
         ext_list = []
-        sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
+        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+                       seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
+                       seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
+                       seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
+                       seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, 
+                       seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_reference.Reference, seq_data.Notes FROM seq_data, countries, seq_reference WHERE"""
         sel_end = "ORDER BY gbCollectYear"
         for country in country_list:
             ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost!='Human' AND gbHost!='Homo sapiens') """.format(start_year, end_year, country)
@@ -552,7 +557,12 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'sequence human':
         ext_list = []
-        sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
+        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+                       seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
+                       seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
+                       seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
+                       seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, 
+                       seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_reference.Reference, seq_data.Notes FROM seq_data, countries, seq_reference WHERE"""
         sel_end = "ORDER BY gbCollectYear"
         for country in country_list:
             ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost='Human') OR (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost!='Homo sapiens') """.format(start_year, end_year, country)
@@ -565,7 +575,12 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
      if host == 'sequence both':
         ext_list = []
-        sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
+        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+                       seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
+                       seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
+                       seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
+                       seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, 
+                       seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_reference.Reference, seq_data.Notes FROM seq_data, countries, seq_reference WHERE"""
         sel_end = "ORDER BY gbCollectYear"
         for country in country_list:
             ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}') """.format(start_year, end_year, country)
