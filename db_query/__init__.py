@@ -320,7 +320,7 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_rodent_data
     if host == 'sequence rodent':
-        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost!='Human' AND gbHost!='Homo sapiens';""".format(start_year, end_year)
+        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost!='Human' AND gbHost!='Homo sapiens') UNION SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_data.reference_id FROM seq_data WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NULL AND gbHost!='Human' AND gbHost!='Homo sapiens');""".format(start_year, end_year)
         cursor.execute(cmd)
         seq_data = cursor.fetchall()
         seq_headers = [x[0] for x in cursor.description]
@@ -345,7 +345,7 @@ def mapper(host, start_year, end_year):
         cursor.close()
         return json_seq_data
     if host == 'sequence human':
-        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Human') OR (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Homo sapiens');""".format(start_year, end_year)
+        cmd = """SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_reference.Reference FROM seq_data, seq_reference WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Human') OR (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NOT NULL AND seq_data.reference_id=seq_reference.reference_id AND gbHost='Homo sapiens') UNION SELECT seq_data.Latitude, seq_data.Longitude, seq_data.gbDefinition, seq_data.gbPubMedID, seq_data.reference_id FROM seq_data WHERE (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NULL AND gbHost='Human') OR (seq_data.gbCollectYear BETWEEN {0} AND {1} AND seq_data.Latitude IS NOT NULL AND seq_data.Longitude IS NOT NULL AND seq_data.reference_id IS NULL AND gbHost='Homo sapiens');""".format(start_year, end_year)
         cursor.execute(cmd)
         seq_data = cursor.fetchall()
         seq_headers = [x[0] for x in cursor.description]
