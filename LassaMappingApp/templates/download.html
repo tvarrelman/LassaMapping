@@ -80,9 +80,9 @@
 			country_select = $('#CountryList')
 			var checkHuman = $('#human'),
 			checkRodent = $('#rodent'),
-			checkSequence = $('#viralSeq');
+			checkSequence = $('#viralSeq'),
 			checkInfection = $('#viralInf');
-			$("#checkBoxes").hide();
+			//$("#checkBoxes").hide();
 			$('#dwnBtn').addClass("disabled").attr("aria-disabled", "true");
 			$('#dwnBtn').prop('disabled', true);
 			checkSequence.on('change', function(){
@@ -93,7 +93,45 @@
 				$("#checkBoxes").hide();
 				start_year_select.empty();
 				end_year_select.empty();
-				countries('sequence');
+				//countries('sequence');
+				checkHuman.on('click', function(){
+					var map = {};
+					$('#checkBoxes').find('.form-check-input:checked').each(function(){
+						map[$(this).attr("name")] = $(this).val();
+					});
+					if (Object.keys(map).length == 0){
+						country_select.empty();
+					};
+					if (Object.keys(map).length == 1){
+						var host = $('#checkBoxes').find('.form-check-input:checked').val();
+						var hostSel'sequence '.concat(host)
+						countries(hostSel);
+					};
+					if (Object.keys(map).length == 2){
+						countries('sequence both');
+					};
+					start_year_select.empty();
+					end_year_select.empty();
+				});
+				checkRodent.on('click', function(){
+					var map = {};
+					$('#checkBoxes').find('.form-check-input:checked').each(function(){
+						map[$(this).attr("name")] = $(this).val();
+					});
+					if (Object.keys(map).length == 0){
+						country_select.empty();
+					};
+					if (Object.keys(map).length == 1){
+						var host = $('#checkBoxes').find('.form-check-input:checked').val();
+						var hostSel'sequence '.concat(host)
+						countries(hostSel);
+					};
+					if (Object.keys(map).length == 2){
+						countries('sequence both');
+					};
+                          	    	start_year_select.empty();
+                        	        end_year_select.empty();
+				});				
 			});
 			checkInfection.on('change', function(){
 				$('#dwnBtn').prop('disabled', true);
