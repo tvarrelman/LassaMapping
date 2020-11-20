@@ -91,9 +91,9 @@
 		</div>
 		<div class="container-fluid" id="MainContain">
 			<div class="row">
-				<div class="col-lg-8" style="display: flex; flex-direction: column;">
-					<div class="card" style="height: 75vh" id="mapCard">
-						<div class="card-body">
+				<div class="col-lg-8">
+					<div class="card" style="height: 75vh;" id="mapCard">
+						<div class="card-body" style="overflow: auto">
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping.</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
@@ -112,7 +112,7 @@
 							</ul>
 							<div class="tab-content" id="myTabContent">
   								<div class="tab-pane fade in show active" id="LassaHumans">
-									<div id="MapWrapper" style="height: 77%; width:100%; margin:auto">
+									<div id="MapWrapper" style="height: 77%; width:100%; margin:auto;">
                                                                         	<div class="row" style="position: absolute; z-index:2; left:65px; bottom:315px;" id="yearFilter">
 											<div class="col" style="margin-right: 2px; width:65px;">
                                                                                 		<div class="form-group">
@@ -143,7 +143,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-lg-4" style="display: flex; flex-direction: column;">
+				<div class="col-lg-4">
 					<div class="card" style="height: 75vh">
 						<div class="card-body">
 							<p style="text-align: center; color: #1a1a1a"><b>Double click for diagnostic method.</b> </p>
@@ -181,15 +181,15 @@
 	<script src = "/static/lassaCharts.js" type="text/javascript"></script>
 	<script>
 		$(window).on("resize", function(){
-                        var filterTop = $('#map').position().top + 4;
-                        var filterLeft = $('#map').position().left + 55;
-                        $('#yearFilter').css({'top': filterTop, 'left':filterLeft});
+			var filterTop = $('#map').position().top + 4;
+			var filterLeft = $('#map').position().left + 55;
+			$('#yearFilter').css({'top': filterTop, 'left':filterLeft});
 		});
 		var mapOptions = {};
 		$(document).ready(function(){
     			if(window.matchMedia("(max-width: 767px)").matches){
         		// The viewport is less than 768 pixels wide
-				var newMapHeight = $('#map').height() - 44;
+				var newMapHeight = $('#map').height() - 50;
 				$('#map').css({'height': newMapHeight});
     			} else{
         		// The viewport is at least 768 pixels wide
