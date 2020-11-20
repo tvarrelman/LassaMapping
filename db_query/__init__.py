@@ -122,7 +122,33 @@ def filtered_year_list(host, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    if host=='sequence':
+    if host=='sequence rodent':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{0}' AND gbHost!='Human' AND gbHost!='Homo sapiens') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+     if host=='sequence human':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{0}' AND gbHost='Human') OR (gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{0}' AND gbHost='Homo sapiens') ".format(country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+     if host=='sequence both':
         ext_list = []
         sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
         sel_end = "ORDER BY gbCollectYear;"
@@ -191,7 +217,33 @@ def filtered_end_year_list(host, start_year, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-    if host == 'sequence':
+    if host == 'sequence rodent':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear>={0} AND gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{1}' AND gbHost!='Human' AND gbHost!='Homo sapiens') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+     if host == 'sequence human':
+        ext_list = []
+        sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
+        sel_end = "ORDER BY gbCollectYear;"
+        for country in country_list:
+            ext = " (gbCollectYear>={0} AND gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{1}' AND gbHost='Human') OR (gbCollectYear>={0} AND gbCollectYear IS NOT NULL AND seq_data.country_id=countries.country_id AND countries.country_name='{1}' AND gbHost='Homo sapiens') ".format(start_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'sequence both':
         ext_list = []
         sel_start = "SELECT DISTINCT seq_data.gbCollectYear FROM seq_data, countries WHERE"
         sel_end = "ORDER BY gbCollectYear;"
@@ -324,10 +376,14 @@ def country_list(host):
         cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.Genus='Homo' AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
     if host == "rodent":
         cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.Genus!='Homo' AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
-    if host == "sequence":
-        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL ORDER BY countries.country_name;"
+    if host == "sequence rodent":
+        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL AND gbHost!='Human' AND gbHost!='Homo sapiens' ORDER BY countries.country_name;"
+     if host == "sequence human":
+        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE (countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL AND gbHost='Human') OR (countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL AND gbHost='Homo sapiens') ORDER BY countries.country_name;"
     if host == "both":
         cmd = "SELECT DISTINCT lassa_data2.country_id, countries.country_name FROM lassa_data2, countries WHERE countries.country_id=lassa_data2.country_id AND lassa_data2.start_year IS NOT NULL AND lassa_data2.end_year IS NOT NULL ORDER BY countries.country_name;"
+     if host == "sequence both":
+        cmd = "SELECT DISTINCT seq_data.country_id, countries.country_name FROM seq_data, countries WHERE (countries.country_id=seq_data.country_id AND seq_data.gbCollectYear IS NOT NULL) ORDER BY countries.country_name;"
     cursor.execute(cmd)
     country_headers = [x[0] for x in cursor.description]
     country_list = cursor.fetchall()
@@ -481,7 +537,33 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end    
-    if host == 'sequence':
+    if host == 'sequence rodent':
+        ext_list = []
+        sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
+        sel_end = "ORDER BY gbCollectYear"
+        for country in country_list:
+            ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost!='Human' AND gbHost!='Homo sapiens') """.format(start_year, end_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+    if host == 'sequence human':
+        ext_list = []
+        sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
+        sel_end = "ORDER BY gbCollectYear"
+        for country in country_list:
+            ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost='Human') OR (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost!='Homo sapiens') """.format(start_year, end_year, country)
+            ext_list.append(ext)
+        if len(country_list)>1:
+            separator = 'OR'
+            ext_list2 = separator.join(ext_list)
+            final_cmd = sel_start + ext_list2 + sel_end
+        else:
+            final_cmd = sel_start + ext_list[0] + sel_end
+     if host == 'sequence both':
         ext_list = []
         sel_start = "SELECT seq_data.UniqueID, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, seq_data.LocVillage, seq_data.LocState, seq_data.gbCollectYear, seq_data.Latitude, seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, seq_data.gbProduct, seq_data.gbGene, seq_data.S, seq_data.L, seq_data.GPC, seq_data.NP, seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_data.Notes, seq_data.HostBin, seq_data.Loc_Verif, seq_data.ID_method, countries.country_name, seq_reference.Reference FROM seq_data, countries, seq_reference WHERE"
         sel_end = "ORDER BY gbCollectYear"
