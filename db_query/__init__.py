@@ -777,6 +777,7 @@ def seq_check_data_types(data_df):
     return error_list  
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
+    #print(filtered_download('sequence both', 2000, 2016, ['Nigeria']))
     #print(rodent_year_data())
     #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
     #print(lat_lon_check())
