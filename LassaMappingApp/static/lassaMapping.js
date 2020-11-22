@@ -66,7 +66,7 @@ function MapPoints(NewCoords, host, map){
                         if (coordPair.DOI == "NaN"){
                                 DOI = "<b>DOI:</b> NaN";
                         } else {
-                                var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+                                var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"' target='_blank'>link</a>";
                         }
                         title = Ablabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
                 }
@@ -81,7 +81,7 @@ function MapPoints(NewCoords, host, map){
                         if (coordPair.DOI == "NaN"){
                                 DOI = "<b>DOI:</b> NaN";
                         } else {
-                                var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"'>link</a>";
+                                var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"' target='_blank'>link</a>";
                         }
                         title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI
                 }
@@ -95,7 +95,7 @@ function MapPoints(NewCoords, host, map){
                         if (coordPair.gbPubMedID == "NaN"){
                                 PubMedID = "<b>PubMed:</b> NaN";
                         } else {
-                                var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"'>link</a>";
+                                var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"' target='_blank'>link</a>";
                         }
                         title = gbDef + "<br> <br>" + ref + "<br> <br>" + PubMedID ;
                 }
@@ -109,7 +109,7 @@ function MapPoints(NewCoords, host, map){
                         if (coordPair.gbPubMedID == "NaN"){
                                 PubMedID = "<b>PubMed:</b> NaN";
                         } else {
-                                var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"'>link</a>";
+                                var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"' target='_blank'>link</a>";
                         }
                         title = gbDef + "<br> <br>" + ref + "<br> <br>" + PubMedID ;
                 }
