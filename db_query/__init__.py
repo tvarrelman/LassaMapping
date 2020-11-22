@@ -10,6 +10,9 @@ import pandas as pd
 import geopandas as gpd 
 from shapely.geometry import shape, Point
 import datetime
+from itertools import compress
+import itertools 
+
 # finds the absolute path of this file
 basedir = path.abspath(path.dirname(__file__))
 # reads the key value from .env, and adds it to the environment variable
@@ -411,7 +414,7 @@ def db_summary():
     ref_list = ref_df['Reference'].unique()
     source_list = source_df['Citation'].unique()
     res_list = []
-    for ref in range(0, len(ref_list)):
+    for ref in ref_list:
         if pd.notnull(ref):
             ref_title = ref.split('.')
             if len(ref_title)>2:
@@ -432,7 +435,7 @@ def db_summary():
         summary = cursor.fetchall()
         summary_list.append(str(summary[0][0]))
     cursor.close()
-    summart_list.append(source_count)
+    summary_list.append(source_count)
     return summary_list
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
