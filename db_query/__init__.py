@@ -397,20 +397,42 @@ def db_summary():
     #Get the number of countries represented in our dataset
     country_cmd = "SELECT COUNT(countryCount) FROM (SELECT DISTINCT country_id AS countryCount FROM lassa_data2 UNION SELECT DISTINCT country_id AS countryCount FROM seq_data) AS final;"
     #Get the number of studies that our project documents
-    source_cmd = "SELECT COUNT(*) FROM data_source2;"
+    source_cmd = "SELECT * FROM data_source2;"
+    ref_cmd = "SELECT * FROM seq_reference;"
     #Number of point samples from rodents
     rodent_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data2 WHERE Genus!='Homo';"
     #Number of point samples from humans
     human_sample_cmd = "SELECT COUNT(Genus) FROM lassa_data2 WHERE Genus='Homo' AND PropAb IS NOT NULL;"
     #Number of sequences    
     seq_sample_cmd = "SELECT COUNT(Sequence) FROM seq_data WHERE Sequence IS NOT NULL;"
-    cmd_list = [country_cmd, source_cmd, rodent_sample_cmd, human_sample_cmd, seq_sample_cmd]
+    cmd_list = [country_cmd, rodent_sample_cmd, human_sample_cmd, seq_sample_cmd]
+    source_df = pd.read_sql(source_cmd, cnx)
+    ref_df = pd.read_sql(ref_cmd, cnx)
+    ref_list = ref_df['Reference'].unique()
+    source_list = source_df['Citation'].unique()
+    res_list = []
+    for ref in range(0, len(ref_list)):
+        if pd.notnull(ref):
+            ref_title = ref.split('.')
+            if len(ref_title)>2:
+                bin_list = source_df.Citation.str.lower().str.contains(ref_title[2].lower())
+                res = list(compress(range(len(bin_list)), bin_list))
+                if len(res) > 0:
+                    res_list.append(res)
+    common_index = list(itertools.chain.from_iterable(res_list))
+    common_cite = []
+    for ind in common_index:
+        cite = source_df['Citation'][ind]
+        common_cite.append(cite)
+    shared_citation = len(np.unique(common_cite))  
+    source_count = len(ref_list) + len(source_list) - shared_citation
     summary_list = []
     for cmd in cmd_list:
         cursor.execute(cmd)
         summary = cursor.fetchall()
         summary_list.append(str(summary[0][0]))
     cursor.close()
+    summart_list.append(source_count)
     return summary_list
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
