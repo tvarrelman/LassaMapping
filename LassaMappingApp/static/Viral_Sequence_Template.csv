@@ -1,1 +1,1 @@
-﻿UniqueID,gbAccession,gbDefinition,gbLength,gbHost,LocVillage,LocState,Country,gbCollectDate,CollectionMonth,gbCollectYear,Lat,Long,Hospital,gbPubMedID,gbJournal,PubYear,GenomeCompleteness,Tissue,Strain,gbProduct,gbGene,S,L,GPC,NP,Pol,Z,Sequence,Reference,Notes,HostBin,Loc_Verif,ID_method
+﻿gbAccession,gbDefinition,gbLength,gbHost,LocVillage,LocState,Country,gbCollectDate,CollectionMonth,gbCollectYear,Lat,Long,Hospital,gbPubMedID,gbJournal,PubYear,GenomeCompleteness,Tissue,Strain,gbProduct,gbGene,S,L,GPC,NP,Pol,Z,Sequence,Reference,Notes
