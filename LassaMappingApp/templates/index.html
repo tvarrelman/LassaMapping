@@ -7,12 +7,13 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.css" integrity="sha512-RLEjtaFGdC4iQMJDbMzim/dOvAu+8Qp9sw7QE4wIMYcg2goVoivzwgSZq9CsIxp4xKAZPKh5J2f2lOko2Ze6FQ==" crossorigin="anonymous" />
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/MarkerCluster.Default.css" integrity="sha512-BBToHPBStgMiw0lD4AtkRIZmdndhB6aQbXpX7omcrXeG2PauGBl2lzq2xUZTxaLxYz5IDHlmneCZ1IJ+P3kYtQ==" crossorigin="anonymous" />
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin="anonymous"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.4.1/leaflet.markercluster.js" integrity="sha512-MQlyPV+ol2lp4KodaU/Xmrn+txc1TP15pOBF/2Sfre7MRsA/pB4Vy58bEqe9u7a7DczMLtU5wT8n7OblJepKbg==" crossorigin="anonymous"></script>
 		<script   src="https://code.jquery.com/jquery-3.5.1.js"   integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="   crossorigin="anonymous"></script>
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		 <style>a.active.nav-link{background-color: #f0ad4e!important;}</style>
+		<style>a.active.nav-link{background-color: #f0ad4e!important;}</style>
 	</head>
 	<nav class="navbar navbar-expand-lg navbar-light bg-light" role="navigation">
   		<a class="navbar-brand" href="{{ url_for('main_page') }}">Lassa Virus Dashboard</a>
@@ -32,11 +33,7 @@
 	</nav>
 
 	<body>
-		<!--<div class="spinner-border text-warning" role="status" id="loading">
-			<span class="sr-only">Loading...</span>
-		</div>-->
 		<div class="jumbotron">
-		<!--<h2 style="text-align: center">{{message}}</h2>-->
 		<p style="text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
 			This dashboard is designed to provide a comprehensive visualization of publicly available data on the distribution of Lassa virus across West Africa. Data was compiled from peer-reviewed publications and GenBank. The geographic distribution of the data can be visualized by zooming in on the map icons. The temporal distribution of the data can be visualized in the bar chart and the temporal distribution of diagnostic methods by toggling methods on or off.
 		</p>
@@ -197,9 +194,6 @@
                         	$('#yearFilter').css({'top': filterTop, 'left':filterLeft});
     			}
 		});
-		//$(window).load(function() {
-		//	$('#loading').hide();
-		//});
 		var host = {};
 		var propAb = {};
 		var propAg = {};
@@ -383,7 +377,6 @@
 			var startYear = $('#StartYear').find(":selected").text();
 			var endYear = $('#EndYear').find(":selected").text();
 			var NewCoords = GetFilteredPoints(startYear, endYear, host);
-			//console.log(NewCoords);
 			MapPoints(NewCoords, host, map);
 			end_year_select.on('change', function(){
 				var startYear = $('#StartYear').find(":selected").text();
