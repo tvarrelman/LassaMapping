@@ -27,7 +27,7 @@ function lassaBarChart(host){
 			var trace = {
 				x: Ab_year,
 				y: propAbPos,
-				name: key,
+				name: 'Serology: '.concat(key),
 				type: 'bar',
 				barmode: 'group',
 			};
@@ -61,7 +61,7 @@ function lassaBarChart(host){
 			x: AbTime,
 			y: AbProp,
 			type: 'bar',
-			name: 'Arenavirus positive',
+			name: 'Serology',
 			marker: {color: '#f0ad4e'}
 		}];
 		let modeBarButtons = [["toImage", "lasso2d"]];
@@ -72,6 +72,7 @@ function lassaBarChart(host){
                 myPlot.on('plotly_click', function(){
                         Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
                 });
+		myPlot.on('plotly_legendclick',function() { return false; });
 	};
 	if (host == "rodent"){
 		var myPlot = document.getElementById('myDiv');
@@ -122,7 +123,7 @@ function lassaBarChart(host){
                                 Ab_year.push(AbMethod[key][i].Ab_year);
                                 propAbPos.push(AbMethod[key][i].propAbPos);
                         };
-			var t1name = 'Arenavirus: '.concat(key);
+			var t1name = 'Serology: '.concat(key);
                         var trace1 = {
                                 x: Ab_year,
                                 y: propAbPos,
@@ -139,7 +140,7 @@ function lassaBarChart(host){
                                 Ag_year.push(VirusMethod[key][i].Ag_year);
                                 propAgPos.push(VirusMethod[key][i].propAgPos);
                         };
-                        var t2name = 'Lassa virus: '.concat(key);
+                        var t2name = key;
                         var trace2 = {
                                 x: Ag_year,
                                 y: propAgPos,
@@ -164,18 +165,18 @@ function lassaBarChart(host){
 		var trace1 = {
 			x: AbTime,
 			y: AbProp,
-			name: 'Lassa virus positive',
+			name: 'PCR',
 			type: 'bar',
 			barmode: 'group',
-			marker: {color: '#f0ad4e'}
+			marker: {color: '#7f7fff'}
 		};
 		var trace2 = {
 			x: AgTime,
 			y: AgProp,
-			name: 'Arenavirus positive',
+			name: 'Serology',
 			type: 'bar',
 			barmode: 'group',
-			marker: {color: '#7f7fff'}
+			marker: {color: '#f0ad4e'}
 		};
 		var data = [trace1, trace2];
 		let modeBarButtons = [["toImage", "lasso2d"]];
@@ -183,6 +184,7 @@ function lassaBarChart(host){
                 myPlot.on('plotly_doubleclick', function(){
                         Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
                 });
+		myPlot.on('plotly_legendclick',function() { return false; });
 	};
 	
 	if (host=="sequence rodent"){
@@ -223,7 +225,9 @@ function lassaBarChart(host){
 			}
 		};
 		let modeBarButtons = [["toImage", "lasso2d"]];
-		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
+		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		var myPlot = document.getElementById('myDiv');
+		myPlot.on('plotly_legendclick',function() { return false; });
 	};
         if (host=="sequence human"){
                 var finalTitle = "Viral Sequences: Humans";
@@ -263,7 +267,9 @@ function lassaBarChart(host){
                         }
                 };
                 let modeBarButtons = [["toImage", "lasso2d"]];
-                Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false})
+                Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		var myPlot = document.getElementById('myDiv');
+		myPlot.on('plotly_legendclick',function() { return false; });
         };
 };
 
