@@ -1,7 +1,12 @@
 
 function lassaBarChart(host){
+	// Clear the chart containers each time the function is called
+	$("#HumanDiv").html("");
+	$("#RodentDiv").html("");
+	$("#SeqHumanDiv").html("");
+	$("#SeqRodentDiv").html("");
 	if (host == "human"){
-		var myPlot = document.getElementById('myDiv');
+		var myPlot = document.getElementById('HumanDiv');
 		let AbTime = [];
 		let AbProp = [];
 		for (var i in propAb){
@@ -65,17 +70,26 @@ function lassaBarChart(host){
 			marker: {color: '#f0ad4e'}
 		}];
 		let modeBarButtons = [["toImage", "lasso2d"]];
-		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
-		myPlot.on('plotly_doubleclick', function(){
-			Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
-		});
-                myPlot.on('plotly_click', function(){
-                        Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		Plotly.newPlot('HumanDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                $('#HumanDiv').unbind("click");
+		$('#HumanDiv').on('click', function(){
+			//console.log('human click');
+                        if (document.getElementById('HumanDiv').data == data){
+                                Plotly.newPlot('HumanDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                                var myPlot = document.getElementById('HumanDiv');
+                                myPlot.on('plotly_legendclick',function() { return false; });
+                        } else {
+                                Plotly.newPlot('HumanDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                                var myPlot = document.getElementById('HumanDiv');
+                                myPlot.on('plotly_legendclick',function() { return false; });
+
+                        };
                 });
-		myPlot.on('plotly_legendclick',function() { return false; });
+                var myPlot = document.getElementById('HumanDiv');
+                myPlot.on('plotly_legendclick',function() { return false; });
 	};
 	if (host == "rodent"){
-		var myPlot = document.getElementById('myDiv');
+		var myPlot = document.getElementById('RodentDiv');
 		var finalTitle = "Viral Infection: Rodents"
 		var layout = { 
 			title: finalTitle,
@@ -180,10 +194,22 @@ function lassaBarChart(host){
 		};
 		var data = [trace1, trace2];
 		let modeBarButtons = [["toImage", "lasso2d"]];
-		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
-                myPlot.on('plotly_doubleclick', function(){
-                        Plotly.newPlot('myDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
-                });
+		Plotly.newPlot('RodentDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                $('#RodentDiv').unbind("click");
+		$('#RodentDiv').on('click', function(){
+			//console.log('rodent click');
+			if (document.getElementById('RodentDiv').data == data){
+                     		Plotly.newPlot('RodentDiv', data2, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                		var myPlot = document.getElementById('RodentDiv');
+				myPlot.on('plotly_legendclick',function() { return false; });
+			} else {
+				Plotly.newPlot('RodentDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+                                var myPlot = document.getElementById('RodentDiv');
+                                myPlot.on('plotly_legendclick',function() { return false; });
+
+			};
+		});
+		var myPlot = document.getElementById('RodentDiv');
 		myPlot.on('plotly_legendclick',function() { return false; });
 	};
 	
@@ -226,8 +252,8 @@ function lassaBarChart(host){
 			}
 		};
 		let modeBarButtons = [["toImage", "lasso2d"]];
-		Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
-		var myPlot = document.getElementById('myDiv');
+		Plotly.newPlot('SeqRodentDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		var myPlot = document.getElementById('SeqRodentDiv');
 		myPlot.on('plotly_legendclick',function() { return false; });
 	};
         if (host=="sequence human"){
@@ -269,8 +295,8 @@ function lassaBarChart(host){
                         }
                 };
                 let modeBarButtons = [["toImage", "lasso2d"]];
-                Plotly.newPlot('myDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
-		var myPlot = document.getElementById('myDiv');
+                Plotly.newPlot('SeqHumanDiv', data, layout, {modeBarButtons, responsive:true, displaylogo:false});
+		var myPlot = document.getElementById('SeqHumanDiv');
 		myPlot.on('plotly_legendclick',function() { return false; });
         };
 };
