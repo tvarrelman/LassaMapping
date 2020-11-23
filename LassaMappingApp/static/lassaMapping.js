@@ -1,5 +1,5 @@
 if(window.matchMedia("(max-width: 767px)").matches){
-	var mapOptions = {center: [9.531665, 4.460415], zoom:3};
+	var mapOptions = {center: [9.531665, 4.460415], zoom:3, tap:false};
 } else {
 	var mapOptions = {center: [10.531665, 0], zoom:5, tap:false};
 };
@@ -61,7 +61,7 @@ function MapPoints(NewCoords, host, map){
         			iconUrl: '/static/images/baseline_person_black_18dp.png',
         			iconSize: [35,35]
 			});
-                        var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
+                        var Ablabel ="<b>Serology, proportion positive:</b> " + coordPair.PropAb;
                         var Citation = "<b>Citation:</b> " + coordPair.Citation;
                         if (coordPair.DOI == "NaN"){
                                 DOI = "<b>DOI:</b> NaN";
@@ -75,8 +75,8 @@ function MapPoints(NewCoords, host, map){
 				iconUrl: '/static/images/baseline_pest_control_rodent_black_18dp.png',
 				iconSize: [35,35]
 			});
-			var Ablabel ="<b>Proportion arenavirus positive:</b> " + coordPair.PropAb;
-                        var Aglabel="<b>Proportion Lassa virus positive:</b> " + coordPair.PropVirus;
+			var Ablabel ="<b>Serology, proportion positive:</b> " + coordPair.PropAb;
+                        var Aglabel="<b>Virus detection, proportion positive:</b> " + coordPair.PropVirus;
                         var Citation = "<b> Citation:</b> " + coordPair.Citation;
                         if (coordPair.DOI == "NaN"){
                                 DOI = "<b>DOI:</b> NaN";
