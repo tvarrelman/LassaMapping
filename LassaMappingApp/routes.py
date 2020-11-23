@@ -125,8 +125,7 @@ def admin():
                                 else:
                                     data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Bibtex', 'Country'], axis=1)
                                     final_df = pd.concat([data_df2, country_df, source_df], axis=1)
-                                    #engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                                    #final_df.to_sql('test_lassa_data', con=engine, if_exists='append', index=False)
+                                    final_df.to_sql('lassa_data_test', con=app, if_exists='append', index=False)
                                     message = "Successfully imported data"
                                     return render_template('admin.html', message=message)
                             else:
@@ -167,8 +166,7 @@ def admin():
                                 else:
                                     seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
                                     seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
-                                    engine = create_engine('mysql+mysqlconnector://tanner:atgh-klpM-cred5@localhost/lassa_tanner')
-                                    seq_final_df.to_sql('seq_data2', con=engine, if_exists='append', index=False)
+                                    seq_final_df.to_sql('seq_data_test', con=app, if_exists='append', index=False)
                                     seq_message = "Successfully imported data"
                                     return render_template('admin.html', seq_message=seq_message)
                             else:
