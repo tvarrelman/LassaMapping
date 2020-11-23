@@ -631,33 +631,35 @@ def filtered_download(host, start_year, end_year, country_list):
     return jsonDump
 def source_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-    cursor = cnx.cursor()
     source_cmd = "SELECT * FROM data_source2;"
     source_result = pd.read_sql(source_cmd, cnx)
+    cnx.close()
     source_df = pd.DataFrame(columns=['source_id'])
     for i in range(0, len(data_df)):
         cite = data_df['Citation'][i]
         source = data_df['Source'][i]
         doi = data_df['DOI'][i]
         bibtex = data_df['Bibtex'][i]
-        if pd.notnull(cite) or pd.notnull(source) or pd.notnull(doi) or pd.notnull(bibtex):
-            if cite in list(source_result['Citation']):
-                source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
-                source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
-                source_df.loc[source_ind] = source_id
-            else:
-                insert_cmd = """INSERT INTO test_data_source (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
-                cursor.execute(insert_cmd)
-                cnx.commit()
-                #return source_id_mapper()
-    cursor.close()
+        if cite in list(source_result['Citation']):
+            source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
+            source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
+            source_df.loc[source_ind] = source_id
+        else:
+            cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+            cursor = cnx.cursor()
+            insert_cmd = """INSERT INTO data_source2 (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
+            cursor.execute(insert_cmd)
+            cnx.commit()
+            cursor.close()
+            cnx.close()
+            return source_id_mapper()
     source_df = source_df.sort_index()
     return source_df
 def seq_ref_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-    cursor = cnx.cursor()
     ref_cmd = "SELECT * FROM seq_reference;"
     ref_result = pd.read_sql(ref_cmd, cnx)
+    cnx.close()
     reference_df = pd.DataFrame(columns=['reference_id'])
     for i in range(0, len(data_df)):
         ref = data_df['Reference'][i]
@@ -666,11 +668,14 @@ def seq_ref_id_mapper(data_df):
             ref_ind = ref_result[ref_result['Reference']==ref]['reference_id'].index[0]
             reference_df.loc[ref_ind] = ref_id
         else:
+            cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+            cursor = cnx.cursor()
             insert_cmd = """INSERT INTO seq_reference (Reference) VALUES ('{0}')""".format(ref)
             cursor.execute(insert_cmd)
             cnx.commit()
+            cursor.close()
+            cnx.close()
             return seq_ref_id_mapper()
-    cursor.close()
     reference_df = reference_df.sort_index()
     return reference_df
 def country_id_mapper(data_df):
