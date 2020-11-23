@@ -427,8 +427,9 @@ def db_summary():
     for ind in common_index:
         cite = source_df['Citation'][ind]
         common_cite.append(cite)
-    shared_citation = len(np.unique(common_cite))  
-    source_count = len(ref_list) + len(source_list) - shared_citation
+    shared_citation = len(np.unique(common_cite)) 
+    # Find the length of both source tables, subtract common refs, and remove 2 from the count as each table has a null row 
+    source_count = len(ref_list) + len(source_list) - shared_citation - 2
     summary_list = []
     for cmd in cmd_list:
         cursor.execute(cmd)
