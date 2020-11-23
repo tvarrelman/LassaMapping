@@ -140,7 +140,7 @@ function lassaBarChart(host){
                                 Ag_year.push(VirusMethod[key][i].Ag_year);
                                 propAgPos.push(VirusMethod[key][i].propAgPos);
                         };
-                        var t2name = key;
+                        var t2name = 'Virus detection: '.concat(key);
                         var trace2 = {
                                 x: Ag_year,
                                 y: propAgPos,
@@ -165,7 +165,7 @@ function lassaBarChart(host){
 		var trace1 = {
 			x: AbTime,
 			y: AbProp,
-			name: 'PCR',
+			name: 'Virus detection',
 			type: 'bar',
 			barmode: 'group',
 			marker: {color: '#7f7fff'}
@@ -218,6 +218,7 @@ function lassaBarChart(host){
 			yaxis:{title: {text: 'Number of Sequences'}},
 			showlegend: true,
 			legend: {
+	 			bgcolor: 'rgba(0,0,0,0)',
 				x: 0.45,
 				xanchor: 'center',
 				y: 1,
@@ -260,6 +261,7 @@ function lassaBarChart(host){
                         yaxis:{title: {text: 'Number of Sequences'}},
                         showlegend: true,
                         legend: {
+				bgcolor: 'rgba(0,0,0,0)',
                                 x: 0.45,
                                 xanchor: 'center',
                                 y: 1,
