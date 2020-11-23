@@ -90,7 +90,7 @@
 				<div class="col-lg-8">
 					<div class="card" style="height: 88vh;" id="mapCard">
 						<div class="card-body" style="overflow: auto">
-							<p style="text-align: left; color: #1a1a1a; margin-top:10px">Here we map the spatial location of the Lassa virus and arenavirus samples in our data set. We include general arenavirus samples, as often times the diagnostic method does not allow for specific virus identification. Data points can be viewed by clicking on the clusters until individual icons appear (human icon, rodent icon, or sequence icon). Further, the visualized data can be filtered according to a range of years, found in the top left corner of the map.</p>
+							<p style="text-align: left; color: #1a1a1a; margin-top:10px">The spatial location of Lassa virus samples in the available published data. Data points can be viewed by clicking on the clusters until individual icons appear (human icon, rodent icon, or sequence icon). Mapped data can be filtered by a range of years, found in the top left corner of the map.</p>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping.</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
@@ -299,6 +299,11 @@
 		$(document).ready(function(){
 			$('#HumanTab').addClass('active');
 			humanMap();
+			if(window.matchMedia("(max-width: 767px)").matches){
+				map.setView([9.531665, 4.460415], 3);
+			} else {
+				map.setView([10.531665, 0], 5);
+			};
 			lassaBarChart(host);
 			var SY = document.getElementById("StartYear");
 			SY.options[0].selected = true;
@@ -315,6 +320,11 @@
                         $('#SequenceHumanTab').removeClass('active');
 			$('#HumanTab').addClass('active');
                         humanMap();
+			if(window.matchMedia("(max-width: 767px)").matches){
+				map.setView([9.531665, 4.460415], 3);
+			} else {
+				map.setView([10.531665, 0], 5);
+			};
                         lassaBarChart(host);
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
@@ -331,6 +341,11 @@
 			$('#SequenceHumanTab').removeClass('active');
 			$('#RodentTab').addClass('active');
                         rodentMap();
+                        if(window.matchMedia("(max-width: 767px)").matches){
+                                map.setView([9.531665, 4.460415], 3);
+                        } else {
+                                map.setView([10.531665, 0], 5);
+                        };
                         lassaBarChart(host);
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
@@ -347,6 +362,11 @@
 			$('#SequenceHumanTab').removeClass('active');
 			$('#SequenceRodentTab').addClass('active');
                         sequenceRodentMap();
+                        if(window.matchMedia("(max-width: 767px)").matches){
+                                map.setView([9.531665, 4.460415], 3);
+                        } else {
+                                map.setView([10.531665, 0], 5);
+                        };
                         lassaBarChart(host);
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
@@ -363,6 +383,11 @@
                         $('#SequenceRodentTab').removeClass('active');
                         $('#SequenceHumanTab').addClass('active');
                         sequenceHumanMap();
+                        if(window.matchMedia("(max-width: 767px)").matches){
+                                map.setView([9.531665, 4.460415], 3);
+                        } else {
+                                map.setView([10.531665, 0], 5);
+                        };
                         lassaBarChart(host);
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
