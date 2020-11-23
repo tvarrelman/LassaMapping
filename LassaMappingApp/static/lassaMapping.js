@@ -1,7 +1,7 @@
 if(window.matchMedia("(max-width: 767px)").matches){
 	var mapOptions = {center: [9.531665, 4.460415], zoom:3};
 } else {
-	var mapOptions = {center: [10.531665, 0], zoom:5};
+	var mapOptions = {center: [10.531665, 0], zoom:5, tap:false};
 };
 var map = new L.map("map", mapOptions);
 var layer = new L.TileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
