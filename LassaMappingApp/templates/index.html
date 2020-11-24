@@ -35,7 +35,7 @@
 	<body>
 		<div class="jumbotron">
 		<p style="text-align: left; max-width: 800px; margin-left: auto; margin-right: auto;">
-			This dashboard is designed to provide a comprehensive visualization of publicly available data on the distribution of Lassa virus across West Africa. Data was compiled from peer-reviewed publications and GenBank. The geographic distribution of the data can be visualized by zooming in on the map icons. The temporal distribution of the data can be visualized in the bar chart and the temporal distribution of diagnostic methods by toggling methods on or off.
+			This dashboard is designed to provide a comprehensive visualization of publicly available data on the distribution of Lassa virus across West Africa. Data was compiled from peer-reviewed publications and GenBank. The geographic distribution of the data can be visualized by zooming in on the map icons. The temporal distribution of the data can be visualized in the bar chart.
 		</p>
 		</div>
 		<div class="row justify-content-center">
@@ -90,7 +90,7 @@
 				<div class="col-lg-8">
 					<div class="card" style="height: 88vh;" id="mapCard">
 						<div class="card-body" style="overflow: auto">
-							<p style="text-align: left; color: #1a1a1a; margin-top:10px">The spatial location of Lassa virus samples in the available published data. Data points can be viewed by clicking on the clusters until individual icons appear (human icon, rodent icon, or sequence icon). Mapped data can be filtered by a range of years, found in the top left corner of the map.</p>
+							<p style="text-align: left; color: #1a1a1a; margin-top:10px">The spatial distribution of Lassa virus samples in the available published data. Data points can be viewed by clicking on the clusters until individual icons appear (human icon, rodent icon, or sequence icon). Mapped data can be filtered by a range of years, found in the top left corner of the map.</p>
 							<p style="text-align: center; color: #1a1a1a"><b>Select a tab below to begin mapping.</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
@@ -142,8 +142,8 @@
 				</div>
 				<div class="col-lg-4">
 					<div class="card" style="height: 88vh">
-						<div class="card-body" style="overflow: auto">
-							<p style="text-align: left; color: #1a1a1a; margin-top:10px;">For viral infection data, double click to view the diagnostic method used for virus identification. Note that the number of sequences displayed in the map may differ from chart statistics, as some sequences do not have an associated Latitude and Longitude.</p>
+						<div class="card-body" style="overflow: auto" id="ChartCard">
+							<p style="text-align: left; color: #1a1a1a; margin-top:10px;">To view the diagnostic methods that were used to identify the viral infection data, click on the chart legend. Note that the number of sequences displayed on the map may differ from chart statistics, as some sequences do not have an associated Latitude and Longitude.</p>
 							<div id='HumanDiv' style="width:100%"></div>
 							<div id='RodentDiv' style="width:100%"></div>
 							<div id='SeqHumanDiv' style="width:100%"></div>
@@ -300,6 +300,7 @@
                         host = mapYearData.host;
                 };
 		$(document).ready(function(){
+			$('#SerologyWarn').remove();
 			$('#HumanTab').addClass('active');
 			humanMap();
 			if(window.matchMedia("(max-width: 767px)").matches){
@@ -308,6 +309,7 @@
 				map.setView([10.531665, 0], 5);
 			};
 			lassaBarChart(host);
+			$('#ChartCard').append( "<small id='SerologyWarn' class='form-text text-muted'>*Serology is ambiguous to arenaviruses, making it difficult to differentiate Lassa virus from other viruses in the same family.</small>" );
 			var SY = document.getElementById("StartYear");
 			SY.options[0].selected = true;
 			var EY = document.getElementById("EndYear");
@@ -318,6 +320,7 @@
                         MapPoints(coords, host, map);
 		});
 		$('#HumanTab').on('click', function(){
+			$('#SerologyWarn').remove();
                         $('#RodentTab').removeClass('active');
                         $('#SequenceRodentTab').removeClass('active');
                         $('#SequenceHumanTab').removeClass('active');
@@ -329,6 +332,7 @@
 				map.setView([10.531665, 0], 5);
 			};
                         lassaBarChart(host);
+			$('#ChartCard').append( "<small id='SerologyWarn' class='form-text text-muted'>*Serology can be ambiguous for arenaviruses.</small>" );
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
                         var EY = document.getElementById("EndYear");
@@ -339,6 +343,7 @@
                         MapPoints(coords, host, map);
 		});
 		$('#RodentTab').on('click', function(){
+			$('#SerologyWarn').remove();
                         $('#HumanTab').removeClass('active');
                         $('#SequenceRodentTab').removeClass('active');
 			$('#SequenceHumanTab').removeClass('active');
@@ -350,6 +355,7 @@
                                 map.setView([10.531665, 0], 5);
                         };
                         lassaBarChart(host);
+			$('#ChartCard').append( "<small id='SerologyWarn' class='form-text text-muted'>*Serology can be ambiguous for arenaviruses.</small>" );
                         var SY = document.getElementById("StartYear");
                         SY.options[0].selected = true;
                         var EY = document.getElementById("EndYear");
@@ -360,6 +366,7 @@
                         MapPoints(coords, host, map);
 		});
 		$('#SequenceRodentTab').on('click', function(){
+			$('#SerologyWarn').remove();
                         $('#RodentTab').removeClass('active');
                         $('#HumanTab').removeClass('active');
 			$('#SequenceHumanTab').removeClass('active');
@@ -381,6 +388,7 @@
                         MapPoints(coords, host, map);
 		});
                 $('#SequenceHumanTab').on('click', function(){
+			$('#SerologyWarn').remove();
                         $('#RodentTab').removeClass('active');
                         $('#HumanTab').removeClass('active');
                         $('#SequenceRodentTab').removeClass('active');
