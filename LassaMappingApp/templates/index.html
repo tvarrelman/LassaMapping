@@ -89,7 +89,7 @@
 			<div class="row">
 				<div class="col-lg-8">
 					<div class="card" style="height: 88vh;" id="mapCard">
-						<div class="card-body" style="overflow: auto">
+						<div class="card-body" style="overflow: auto;">
 							<p style="text-align: left; color: #1a1a1a; margin-top:10px">The spatial distribution of Lassa virus samples in the available published data. Data points can be viewed by clicking on the clusters until individual icons appear (human icon, rodent icon, or sequence icon). Mapped data can be filtered by a range of years, found in the top left corner of the map. <b>Select a tab below to begin mapping.</b> </p>
 							<ul class="nav nav-tabs nav-justified" id="myTabs">
 								<li class="nav-item" style="margin-left:0px;margin-right:0px; display: flex; flex: 1;">
@@ -106,17 +106,17 @@
                                                                 <li>
 
 							</ul>
-							<div class="tab-content" id="myTabContent">
+							<div class="tab-content" id="myTabContent" style="position: sticky">
   								<div class="tab-pane fade in show active" id="LassaHumans">
 									<div id="MapWrapper" style="height: 77%; width:100%; margin:auto;">
-                                                                        	<div class="row" style="position: absolute; z-index:2; left:65px; bottom:315px; height:30px;" id="yearFilter">
-											<div class="col" style="margin-right: 2px; width:65px; height:30px;">
+                                                                        	<div class="row" style="position: absolute; z-index:2; width: 150px; left:50px; bottom:315px" id="yearFilter">
+											<div class="col" style="width:65px; height:30px;">
                                                                                 		<div class="form-group">
                                                                                         		<label for="StartYear"></label>
                                                                                         		<select class="form-control" style="position: absolute; z-index:3; padding: 0px;" name="StartYear" id="StartYear"></select>
                                                                                 		</div>
 											</div>
-											<div class="col" style="width:65px; height:30px;">
+											<div class="col" style="width:65px; height:30px; margin:1px">
                                                                                 		<div class="form-group">
                                                                                       	  		<label for="EndYear"></label>
                                                                                         		<select class="form-control" style="position: absolute; z-index:3; padding: 0px;" name="EndYear" id="EndYear"></select>
