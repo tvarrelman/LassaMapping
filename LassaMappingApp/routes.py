@@ -157,18 +157,28 @@ def admin():
                 if len(seq_data_df.columns)==len(seq_columns):
                     if sum(seq_data_df.columns == seq_columns)==len(seq_columns):
                         seq_dtype_errors = seq_check_data_types(seq_data_df)
+                        #print('Step 1')
                         if len(seq_dtype_errors) > 0 :
                             return render_template('admin.html', seq_error=seq_dtype_errors)
                         else:
                             seq_data_df2, seq_latlonError = lat_lon_check(seq_data_df)
+                            #print('Step 2')
                             if seq_latlonError==None:
                                 seq_ref_df = seq_ref_id_mapper(seq_data_df2)
                                 seq_country_df, seq_country_error = country_id_mapper(seq_data_df2)
+                                #print('Step 3')
                                 if seq_country_error:
                                     return render_template('admin.html', seq_error=seq_country_error)
                                 else:
                                     seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
                                     seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
+                                    for i in range(0, len(seq_final_df)):
+                                        entry = seq_final_df['gbCollectDate'][i]
+                                        if isinstance(entry, datetime.datetime):
+                                            continue
+                                        else:
+                                            seq_final_df.loc[i, 'gbCollectDate'] = np.nan
+                                    #print('Step 4')
                                     db_uri = environ.get('SQLALCHEMY_DATABASE_URI')
                                     engine = create_engine(db_uri)
                                     seq_final_df.to_sql('seq_data_test', con=engine, if_exists='append', index=False)

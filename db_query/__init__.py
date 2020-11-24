@@ -660,23 +660,28 @@ def seq_ref_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     ref_cmd = "SELECT * FROM seq_reference;"
     ref_result = pd.read_sql(ref_cmd, cnx)
+    ref_result = ref_result.fillna('No Data')
     cnx.close()
+    null_ref_id = ref_result[ref_result['Reference']=='No Data']['reference_id'].iloc[0]
     reference_df = pd.DataFrame(columns=['reference_id'])
+    rows_with_nan = np.where(data_df.Reference.isnull())
+    for ind2 in rows_with_nan[0]:
+        reference_df.loc[ind2] = null_ref_id
     for i in range(0, len(data_df)):
         ref = data_df['Reference'][i]
-        if ref in list(ref_result['Reference']):
-            ref_id = ref_result[ref_result['Reference']==ref]['reference_id'].iloc[0]
-            ref_ind = ref_result[ref_result['Reference']==ref]['reference_id'].index[0]
-            reference_df.loc[ref_ind] = ref_id
-        else:
-            cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-            cursor = cnx.cursor()
-            insert_cmd = """INSERT INTO seq_reference (Reference) VALUES ('{0}')""".format(ref)
-            cursor.execute(insert_cmd)
-            cnx.commit()
-            cursor.close()
-            cnx.close()
-            return seq_ref_id_mapper()
+        if pd.notnull(ref):
+            if ref in list(ref_result['Reference']):
+                ref_id = ref_result[ref_result['Reference']==ref]['reference_id'].iloc[0]
+                reference_df.loc[i] = ref_id
+            else:
+                cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+                cursor = cnx.cursor()
+                insert_cmd = """INSERT INTO seq_reference (Reference) VALUES ('{0}')""".format(ref)
+                cursor.execute(insert_cmd)
+                cnx.commit()
+                cursor.close()
+                cnx.close()
+                return seq_ref_id_mapper(data_df)
     reference_df = reference_df.sort_index()
     return reference_df
 def country_id_mapper(data_df):
@@ -702,15 +707,15 @@ def country_id_mapper(data_df):
 def lat_lon_check(data_df):
     check_list = []
     latlonError = None
+    dir_path = os.path.dirname(os.path.realpath(__file__))
+    africa_geo_file = os.path.join(dir_path, 'Africa.geojson')
+    africa_gdf = gpd.read_file(africa_geo_file)
+    africa_gdf = africa_gdf.replace({"CÃ´te d'Ivoire": "Ivory Coast"})
     for i in range(0, len(data_df)):
         lat = data_df['Latitude'][i]
         lon = data_df['Longitude'][i]
         country = data_df['Country'][i]
-        if pd.notnull([lat, lon]).any():
-            dir_path = os.path.dirname(os.path.realpath(__file__))
-            africa_geo_file = os.path.join(dir_path, 'Africa.geojson')
-            africa_gdf = gpd.read_file(africa_geo_file)
-            africa_gdf = africa_gdf.replace({"CÃ´te d'Ivoire": "Ivory Coast"})
+        if pd.notnull([lat, lon]).all():
             result = africa_gdf['geometry'].contains(Point(lon, lat))
             res = [j for j, val in enumerate(result) if val]
             if len(res)<1:
