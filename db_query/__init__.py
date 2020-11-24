@@ -643,8 +643,7 @@ def source_id_mapper(data_df):
         bibtex = data_df['Bibtex'][i]
         if cite in list(source_result['Citation']):
             source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
-            source_ind = source_result[source_result['Citation']==cite]['source_id'].index[0]
-            source_df.loc[source_ind] = source_id
+            source_df.loc[i] = source_id
         else:
             cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
             cursor = cnx.cursor()
