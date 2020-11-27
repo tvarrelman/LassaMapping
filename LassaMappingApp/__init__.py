@@ -18,7 +18,9 @@ def create_app():
     # creates app object that will be used throughout this proj.
     app = Flask(__name__)
     # configures the app using a development configuration from our config file
-    cfg = import_string('config.DevConfig')()
+    #cfg = import_string('config.DevConfig')()
+    # configures the app using a production config
+    cfg = import_string('config.ProdConfig')()
     app.config.from_object(cfg)
     # initialize the database w/ the app
     db.init_app(app)
