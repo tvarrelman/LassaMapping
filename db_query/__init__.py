@@ -503,7 +503,6 @@ def sequence_human_year_data():
 def filtered_download(host, start_year, end_year, country_list):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
-    
     if host == 'human':
         ext_list = []
         sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
@@ -523,7 +522,6 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-        
     if host == 'rodent':
         ext_list = []
         sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
@@ -543,7 +541,6 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list2 + sel_end
         else:
             final_cmd = sel_start + ext_list[0] + sel_end
-        
     if host == 'both':
         ext_list = []
         sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
@@ -591,7 +588,7 @@ def filtered_download(host, start_year, end_year, country_list):
                        seq_data.Pol, seq_data.Z, seq_data.Sequence, seq_reference.Reference, seq_data.Notes FROM seq_data, countries, seq_reference WHERE"""
         sel_end = "ORDER BY gbCollectYear"
         for country in country_list:
-            ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost='Human') OR (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost!='Homo sapiens') """.format(start_year, end_year, country)
+            ext = """ (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost='Human') OR (seq_data.country_id=countries.country_id AND seq_data.reference_id=seq_reference.reference_id AND seq_data.gbCollectYear BETWEEN {0} AND {1} AND countries.country_name='{2}' AND gbHost='Homo sapiens') """.format(start_year, end_year, country)
             ext_list.append(ext)
         if len(country_list)>1:
             separator = 'OR'
@@ -812,7 +809,7 @@ def seq_check_data_types(data_df):
     return error_list  
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(filtered_download('sequence both', 2000, 2016, ['Nigeria']))
+    #print(filtered_download('sequence human', 2014, 2014, ['Benin']))
     #print(rodent_year_data())
     #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
     #print(lat_lon_check())
