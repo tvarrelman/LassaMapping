@@ -92,10 +92,8 @@ def login():
             error = "Invalid username or password"
             return render_template('login.html', form=form, error=error)
     return render_template('login.html', form=form)
-ALLOWED_EXTENSIONS = {'csv'}
 def allowed_file(filename):
-    return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return filename.lower().endswith('.csv')
 @app.route('/Admin', methods=['GET', 'POST'])
 @login_required
 def admin(): 
