@@ -103,7 +103,10 @@ def admin():
         if 'ViralInfection' in request.files:
             infFile = request.files['ViralInfection']
             if infFile and allowed_file(infFile.filename):
-                str_data = str(infFile.read(), 'utf-8')
+                try:
+                    str_data = str(infFile.read(), 'utf-8')
+                except UnicodeDecodeError as e:
+                    return render_template('admin.html', error=e)
                 data = StringIO(str_data)
                 data_df = pd.read_csv(data)
                 entry_columns = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
@@ -145,7 +148,10 @@ def admin():
         if 'ViralSequence' in request.files:
             seqFile = request.files['ViralSequence']
             if seqFile and allowed_file(seqFile.filename):
-                seq_str_data = str(seqFile.read(), 'utf-8')
+                try:
+                    seq_str_data = str(seqFile.read(), 'utf-8')
+                except UnicodeDecodeError as e:
+                    return render_template('admin.html', seq_error=e)
                 seq_data = StringIO(seq_str_data)
                 seq_data_df = pd.read_csv(seq_data)
                 seq_columns = ["gbAccession", "gbDefinition", "gbLength", "gbHost",
