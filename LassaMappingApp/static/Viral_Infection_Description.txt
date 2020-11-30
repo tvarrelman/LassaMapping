@@ -1,0 +1,26 @@
+Viral Infection Template Description:
+-Town_Region: Town where the sample came from
+-Village: Village where the sample came from
+-Latitude: Latitude of the location where the sample came from
+-Longitude: Longitude of the location where the sample came from
+-Country: Country where the sample came from
+-NumPosVirus: Number that tested virus positive
+-NumTestVirus: Number that were tested for the virus
+-PropVirus: Proportion that were virus positive
+-Virus_Diagnostic_Method: Method used for virus identification
+-NumPosAb: Number that tested positive for serology
+-NumTestAb: Number that were tested for serology
+-PropAb: Proportion that were positive for serology
+-Ab_Diagnostic_Method: Method used for serology
+-Antibody_Target: Targeted antibody for test
+-Genus: Genus of the sampled host
+-Species: Species of the sampled host
+-lat_lon_source: Where the lat and lon came from
+-Source: Abbreviation of the source study (Andrew entry)
+-Citation: Source citation
+-DOI: Source DOI
+-Bibtex: Bibtext title (Andrew entry)
+-Survey_Notes: Notes about the survey
+-Housing_Notes: Notes about housing where the sample came from
+-start_year: Start year of the source study
+-end_year: End year of the source study

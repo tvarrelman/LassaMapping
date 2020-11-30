@@ -1,0 +1,31 @@
+Viral Sequence Template Description:
+-gbAccession: GenBank accession number
+-gbDefinition: GenBank definition
+-gbLength: Length of the viral sequence
+-gbHost: Host that the sequence was sampled from
+-LocVillage: Village of the sample location
+-LocState: State of the sample location
+-Country: Country of the sample location
+-gbCollectDate: Date that the sample was collected
+-CollectionMonth: Month that the sample was collected
+-gbCollectYear: Year that the sample was collected
+-Latitude: Latitude of the sample location
+-Longitude: Longitude of the sample location
+-Hospital: Did the sample come from a hospital (Yes/No)
+-gbPubMedID: GenBank PubMed ID
+-gbJournal: GenBank journal
+-PubYear: Publication year
+-GenomeCompleteness: Completeness of the genome
+-Tissue: Tissue that the virus came from
+-Strain: Strain of the virus
+-gbProduct: GenBank product
+-gbGene: GenBank gene
+-S: Whether this portion of the virus is present (0: no, 1: yes)
+-L: Whether this portion of the virus is present (0: no, 1: yes)
+-GPC: Whether this portion of the virus is present (0: no, 1: yes)
+-NP: Whether this portion of the virus is present (0: no, 1: yes)
+-Pol: Whether this portion of the virus is present (0: no, 1: yes)
+-Z: Whether this portion of the virus is present (0: no, 1: yes)
+-Sequence: Viral sequence
+-Reference: Study reference
+-Notes: Important notes
