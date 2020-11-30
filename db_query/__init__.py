@@ -505,7 +505,7 @@ def filtered_download(host, start_year, end_year, country_list):
     cursor = cnx.cursor()
     if host == 'human':
         ext_list = []
-        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+        sel_start = """SELECT lassa_data2.lassa_id, lassa_data2.Town_Region, lassa_data2.Village,  
                        lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
                        lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
                        lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
@@ -524,7 +524,7 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'rodent':
         ext_list = []
-        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+        sel_start = """SELECT lassa_data2.lassa_id, lassa_data2.Town_Region, lassa_data2.Village,  
                        lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
                        lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
                        lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
@@ -543,7 +543,7 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'both':
         ext_list = []
-        sel_start = """SELECT lassa_data2.Town_Region, lassa_data2.Village,  
+        sel_start = """SELECT lassa_data2.lassa_id, lassa_data2.Town_Region, lassa_data2.Village,  
                        lassa_data2.Latitude, lassa_data2.Longitude, countries.country_name, 
                        lassa_data2.NumPosVirus, lassa_data2.NumTestVirus, lassa_data2.PropVirus,
                        lassa_data2.Virus_Diagnostic_Method, lassa_data2.NumPosAb, lassa_data2.NumTestAb, 
@@ -728,12 +728,12 @@ def lat_lon_check(data_df):
 def check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
-        col_list = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
+        col_list = ["lassa_id", "Town_Region", "Village", "Latitude", "Longitude", "Country", 
                     "NumPosVirus", "NumTestVirus", "PropVirus", "Virus_Diagnostic_Method", "NumPosAb", 
                     "NumTestAb", "PropAb", "Ab_Diagnostic_Method", "Antibody_Target", "Genus", "Species", 
                     "lat_lon_source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
                     "start_year", "end_year"]
-        type_list = [str, str, float, float, str, int, int, float, str, int, int , float, 
+        type_list = [int, str, str, float, float, str, int, int, float, str, int, int , float, 
                      str, str, str, str, str, str, str, str, str, str, str, int, int]
         for i in range(0, len(col_list)):
             col = col_list[i]
@@ -761,20 +761,20 @@ def check_data_types(data_df):
 def seq_check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
-        col_list = ["gbAccession", "gbDefinition", "gbLength", "gbHost", 
+        col_list = ["seq_id", "gbAccession", "gbDefinition", "gbLength", "gbHost", 
                     "LocVillage", "LocState", "Country", "gbCollectDate", "CollectionMonth", 
                     "gbCollectYear", "Latitude", "Longitude", "Hospital", "gbPubMedID", "gbJournal", 
                     "PubYear", "GenomeCompleteness", "Tissue", "Strain", "gbProduct", 
                     "gbGene", "S", "L", "GPC", "NP", "Pol", "Z", "Sequence", "Reference", 
                     "Notes"]
-        type_list = [str, str, int, str, str, str, str, datetime.datetime, str, int, float, float,
+        type_list = [int, str, str, int, str, str, str, str, datetime.datetime, str, int, float, float,
                      str, float, str, int, str, str, str, str, str, int, int, int, int, int,
                      int, str, str, str]
         for i in range(0, len(col_list)):
             col = col_list[i]
             dtype = type_list[i]
             if col == 'PubYear' or col == 'gbCollectYear' or col == 'S' or col == 'L' or col == 'GPC' or col == 'NP'\
-            or col == 'Pol' or col == 'Z' or col == 'NumTestAg' or col == 'UniqueID':
+            or col == 'Pol' or col == 'Z':
                 if pd.notnull(row[col]):
                     # print(row[col])
                     if isinstance(row[col], int) or isinstance(row[col], float):
