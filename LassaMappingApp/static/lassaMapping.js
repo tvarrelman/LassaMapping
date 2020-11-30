@@ -62,13 +62,14 @@ function MapPoints(NewCoords, host, map){
         			iconSize: [35,35]
 			});
                         var Ablabel ="<b>Serology, proportion positive:</b> " + coordPair.PropAb;
+			var AbTest = "<b>Serology, number tested:</b> " + coordPair.NumTestAb;
                         var Citation = "<b>Citation:</b> " + coordPair.Citation;
-                        if (coordPair.DOI == "NaN"){
-                                DOI = "<b>DOI:</b> NaN";
+                        if (coordPair.DOI == "unspecified"){
+                                DOI = "<b>DOI:</b> unspecified";
                         } else {
                                 var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"' target='_blank'>link</a>";
                         }
-                        title = Ablabel + "<br> <br>" + Citation + "<br> <br>" + DOI ;
+                        title = Ablabel + "<br>" + AbTest + "<br> <br>"  + Citation + "<br> <br>" + DOI ;
                 }
                 if (host == "rodent"){
                         var myIcon = L.icon({
@@ -76,14 +77,16 @@ function MapPoints(NewCoords, host, map){
 				iconSize: [35,35]
 			});
 			var Ablabel ="<b>Serology, proportion positive:</b> " + coordPair.PropAb;
+			var AbTest = "<b>Serology, number tested:</b> " + coordPair.NumTestAb;
                         var Aglabel="<b>Virus detection, proportion positive:</b> " + coordPair.PropVirus;
+			var AgTest = "<b>Virus detection, number tested:</b> " + coordPair.NumTestVirus;
                         var Citation = "<b> Citation:</b> " + coordPair.Citation;
-                        if (coordPair.DOI == "NaN"){
-                                DOI = "<b>DOI:</b> NaN";
+                        if (coordPair.DOI == "unspecified"){
+                                DOI = "<b>DOI:</b> unspecified";
                         } else {
                                 var DOI = "<b>DOI:</b> <a href='https://doi.org/" + coordPair.DOI +"' target='_blank'>link</a>";
                         }
-                        title = Ablabel + "<br> <br>" + Aglabel + "<br> <br>" + Citation + "<br> <br>" + DOI
+                        title = Ablabel + "<br>" + AbTest + "<br> <br>"  + Aglabel + "<br>" + AgTest + "<br> <br>"  + Citation + "<br> <br>" + DOI
                 }
                 if (host=="sequence rodent"){
 			var myIcon = L.icon({
@@ -92,8 +95,8 @@ function MapPoints(NewCoords, host, map){
 			});
                         var gbDef =  "<b>GenBank description:</b> " + coordPair.gbDefinition;
                         var ref = "<b>Reference:</b> " + coordPair.Reference;
-                        if (coordPair.gbPubMedID == "NaN"){
-                                PubMedID = "<b>PubMed:</b> NaN";
+                        if (coordPair.gbPubMedID == "unspecified"){
+                                PubMedID = "<b>PubMed:</b> unspecified";
                         } else {
                                 var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"' target='_blank'>link</a>";
                         }
@@ -106,8 +109,8 @@ function MapPoints(NewCoords, host, map){
                         });
                         var gbDef =  "<b>GenBank description:</b> " + coordPair.gbDefinition;
                         var ref = "<b>Reference:</b> " + coordPair.Reference;
-                        if (coordPair.gbPubMedID == "NaN"){
-                                PubMedID = "<b>PubMed:</b> NaN";
+                        if (coordPair.gbPubMedID == "unspecified"){
+                                PubMedID = "<b>PubMed:</b> unspecified";
                         } else {
                                 var PubMedID = "<b>PubMed:</b> <a href='https://pubmed.ncbi.nlm.nih.gov/" + coordPair.gbPubMedID +"' target='_blank'>link</a>";
                         }
