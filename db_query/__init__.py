@@ -562,7 +562,7 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end    
     if host == 'sequence rodent':
         ext_list = []
-        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+        sel_start = """SELECT seq_data.seq_id, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
                        seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
                        seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
                        seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
@@ -580,7 +580,7 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'sequence human':
         ext_list = []
-        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+        sel_start = """SELECT seq_data.seq_id, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
                        seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
                        seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
                        seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
@@ -598,7 +598,7 @@ def filtered_download(host, start_year, end_year, country_list):
             final_cmd = sel_start + ext_list[0] + sel_end
     if host == 'sequence both':
         ext_list = []
-        sel_start = """SELECT seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
+        sel_start = """SELECT seq_data.seq_id, seq_data.gbAccession, seq_data.gbDefinition, seq_data.gbLength, seq_data.gbHost, 
                        seq_data.LocVillage, seq_data.LocState, countries.country_name, seq_data.gbCollectYear, seq_data.Latitude, 
                        seq_data.Longitude, seq_data.Hospital, seq_data.gbPubMedID, seq_data.gbJournal, 
                        seq_data.PubYear, seq_data.GenomeCompleteness, seq_data.Tissue, seq_data.Strain, 
