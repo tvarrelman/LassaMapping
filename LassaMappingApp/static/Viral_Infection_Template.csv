@@ -1,1 +1,1 @@
-﻿Town_Region,Village,Latitude,Longitude,Country,NumPosVirus,NumTestVirus,PropVirus,Virus_Diagnostic_Method,NumPosAb,NumTestAb,PropAb,Ab_Diagnostic_Method,Antibody_Target,Genus,Species,lat_lon_source,Source,Citation,DOI,Bibtex,Survey_Notes,Housing_Notes,start_year,end_year
+﻿lassa_id,Town_Region,Village,Latitude,Longitude,Country,NumPosVirus,NumTestVirus,PropVirus,Virus_Diagnostic_Method,NumPosAb,NumTestAb,PropAb,Ab_Diagnostic_Method,Antibody_Target,Genus,Species,lat_lon_source,Source,Citation,DOI,Bibtex,Survey_Notes,Housing_Notes,start_year,end_year
