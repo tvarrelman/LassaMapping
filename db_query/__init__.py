@@ -21,6 +21,7 @@ db_user = os.environ.get('user')
 db_pw = os.environ.get('password')
 db_host = os.environ.get('host')
 db_name = os.environ.get('database')
+# function for the initial year lists on the map filter
 def initial_year_lists(host):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -68,6 +69,7 @@ def initial_year_lists(host):
             init_end_year_list.append(year_lists[i][0])
         cursor.close()
         return init_start_year_list, init_end_year_list
+# Once the start year is selected, this function updates the end year (map filter)
 def end_year_list(start_year, host):
     if host=='human':
         cmd = """SELECT DISTINCT end_year FROM lassa_data2 WHERE (end_year>={0} AND Genus='Homo' AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND PropAb IS NOT NULL) ORDER BY end_year;""".format(start_year)
@@ -85,6 +87,7 @@ def end_year_list(start_year, host):
     for year in year_list:
         json_end_year.append({'end_year':year[0]})
     return json_end_year
+# Determines the year options for the download filter
 def filtered_year_list(host, country_list):
     if host == 'human':
         ext_list = []
@@ -180,6 +183,7 @@ def filtered_year_list(host, country_list):
             init_end_year_list.append(year_list[i][0])
     cursor.close()
     return init_start_year_list, init_end_year_list
+# Once the start year is selected, this fnc updates the end year options for the download filter
 def filtered_end_year_list(host, start_year, country_list):
     if host == 'human':
         ext_list = []
@@ -268,6 +272,7 @@ def filtered_end_year_list(host, start_year, country_list):
         json_end_year.append(end_year[0])
     cursor.close()
     return json_end_year
+# Function that returns the mapping data
 def mapper(host, start_year, end_year):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -381,6 +386,7 @@ def mapper(host, start_year, end_year):
             json_seq_data.append(dict(zip(seq_headers, entry)))
         cursor.close()
         return json_seq_data
+# Function returns the list of countries for a given host (used for download filter)
 def country_list(host):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -403,6 +409,7 @@ def country_list(host):
     for countryEntry in country_list:
         countryJson.append(dict(zip(country_headers, countryEntry)))
     return countryJson
+# Produces summary stats for the infographic 
 def db_summary():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -447,6 +454,7 @@ def db_summary():
     cursor.close()
     summary_list.append(source_count)
     return summary_list
+# Produces the human viral infection data for the bar chart
 def human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -466,6 +474,7 @@ def human_year_data():
                 AbRow = (entry[0], int(entry[1])/int(entry[2]), diagMethod)
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))                       
     return jsonAbPos
+# Produces the rodent viral infection data for the bar chart
 def rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -495,6 +504,7 @@ def rodent_year_data():
                 AgRow = (entry[0], int(entry[3])/int(entry[4]), seroDiagMethod, virDiagMethod)
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
+# Produces the rodent sequence data for the bar chart
 def sequence_rodent_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -508,6 +518,7 @@ def sequence_rodent_year_data():
         seqHeader = ("seq_year", "seq_count")
         jsonSeq.append(dict(zip(seqHeader, seqRow)))
     return jsonSeq
+# Produces the human sequence data for the bar chart
 def sequence_human_year_data():
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -521,6 +532,7 @@ def sequence_human_year_data():
         seqHeader = ("seq_year", "seq_count")
         jsonSeq.append(dict(zip(seqHeader, seqRow)))
     return jsonSeq
+# Returns the json data that will be downloaded, given the various filters
 def filtered_download(host, start_year, end_year, country_list):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -648,6 +660,7 @@ def filtered_download(host, start_year, end_year, country_list):
                 col_vals.append(str(data))
         jsonDump.append(dict(zip(headers, col_vals)))
     return jsonDump
+# Maps the citation for the viral infection data to a source_id
 def source_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     source_cmd = "SELECT * FROM data_source2;"
@@ -673,6 +686,7 @@ def source_id_mapper(data_df):
             return source_id_mapper()
     source_df = source_df.sort_index()
     return source_df
+# Maps the reference from the viral sequence data to a reference id
 def seq_ref_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     ref_cmd = "SELECT * FROM seq_reference;"
@@ -701,6 +715,7 @@ def seq_ref_id_mapper(data_df):
                 return seq_ref_id_mapper(data_df)
     reference_df = reference_df.sort_index()
     return reference_df
+# Maps a country id to a country name in the uploaded data set
 def country_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
@@ -721,6 +736,7 @@ def country_id_mapper(data_df):
     cursor.close()
     country_df = country_df.sort_index()
     return country_df, country_error
+# Checks the lat and lon of uploaded data to ensure that the points are within Africa
 def lat_lon_check(data_df):
     check_list = []
     latlonError = None
@@ -746,6 +762,7 @@ def lat_lon_check(data_df):
                     #check_list.append([country, country_gdf])
                     data_df[['Country']] = data_df[['Country']].replace([country], [country_gdf])
     return data_df, latlonError
+# Checks the datatypes of the uploaded viral infection data
 def check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
@@ -779,6 +796,7 @@ def check_data_types(data_df):
                         error = "{0} is incorrect datatype at line: {1}. Should be: {2}, instead of: {3}".format(col, index, dtype, error_data_t)
                         error_list.append(error)
     return error_list
+# Checks the datatypes of the viral sequence data
 def seq_check_data_types(data_df):
     error_list = []
     for index, row in data_df.iterrows():
