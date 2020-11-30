@@ -126,10 +126,15 @@ def admin():
                                     return render_template('admin.html', error=country_error)
                                 else:
                                     data_df2 = data_df2.drop(['Citation', 'Source', 'DOI', 'Bibtex', 'Country'], axis=1)
-                                    final_df = pd.concat([data_df2, country_df, source_df], axis=1)
+                                    final_df = pd.concat([data_df2, country_df, source_df], axis=1).reset_index(drop=True)
                                     db_uri = environ.get('SQLALCHEMY_DATABASE_URI')
                                     engine = create_engine(db_uri)
-                                    final_df.to_sql('lassa_data_test', con=engine, if_exists='append', index=False)
+                                    #final_df.to_sql('lassa_data_test', con=engine, if_exists='append', index=False)
+                                    for row in range(len(final_df)):
+                                        try:
+                                            final_df.iloc[row:row+1].to_sql(name='lassa_data_test',if_exists='append',con = Engine, index=False)
+                                        except Exception as e:
+                                            continue 
                                     message = "Successfully imported data"
                                     return render_template('admin.html', message=message)
                             else:
@@ -175,17 +180,23 @@ def admin():
                                     return render_template('admin.html', seq_error=seq_country_error)
                                 else:
                                     seq_data_df2 = seq_data_df2.drop(['Country', 'Reference'], axis=1)
-                                    seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1)
+                                    seq_final_df = pd.concat([seq_data_df2, seq_country_df, seq_ref_df], axis=1).reset_index(drop=True)
                                     for i in range(0, len(seq_final_df)):
-                                        entry = seq_final_df['gbCollectDate'][i]
-                                        if isinstance(entry, datetime.datetime):
-                                            continue
-                                        else:
-                                            seq_final_df.loc[i, 'gbCollectDate'] = np.nan
+                                        if pd.notnull(seq_final_df['gbCollectDate'][i]):
+                                            entry = seq_final_df['gbCollectDate'][i]
+                                            if isinstance(entry, datetime.datetime):
+                                                continue
+                                            else:
+                                                seq_final_df.loc[i, 'gbCollectDate'] = np.nan
                                     #print('Step 4')
                                     db_uri = environ.get('SQLALCHEMY_DATABASE_URI')
                                     engine = create_engine(db_uri)
-                                    seq_final_df.to_sql('seq_data_test', con=engine, if_exists='append', index=False)
+                                    #seq_final_df.to_sql('seq_data_test', con=engine, if_exists='append', index=False)
+                                    for row in range(len(seq_final_df)):
+                                        try:
+                                            seq_final_df.iloc[row:row+1].to_sql(name='seq_data_test',if_exists='append',con = engine, index=False)
+                                        except Exception as e:
+                                            continue 
                                     seq_message = "Successfully imported data"
                                     return render_template('admin.html', seq_message=seq_message)
                             else:
