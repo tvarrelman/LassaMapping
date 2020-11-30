@@ -107,12 +107,12 @@ def admin():
                     return render_template('admin.html', error=e)
                 data = StringIO(str_data)
                 data_df = pd.read_csv(data)
-                entry_columns = ["Town_Region", "Village", "Latitude", "Longitude", "Country", 
+                entry_columns = ["lassa_id", "Town_Region", "Village", "Latitude", "Longitude", "Country", 
                                  "NumPosVirus", "NumTestVirus", "PropVirus", "Virus_Diagnostic_Method", "NumPosAb", 
                                  "NumTestAb", "PropAb", "Ab_Diagnostic_Method", "Antibody_Target", "Genus", "Species", 
                                  "lat_lon_source", "Source", "Citation", "DOI", "Bibtex", "Survey_Notes", "Housing_Notes",
                                  "start_year", "end_year"]
-                if len(data_df.columns)==25 and sum(data_df.columns == entry_columns)==25:
+                if len(data_df.columns)==len(entry_columns) and sum(data_df.columns == entry_columns)==len(entry_columns):
                     if len(data_df) > 0:
                         dtype_errors = check_data_types(data_df)
                         if len(dtype_errors) > 0 :
@@ -152,7 +152,7 @@ def admin():
                     return render_template('admin.html', seq_error=e)
                 seq_data = StringIO(seq_str_data)
                 seq_data_df = pd.read_csv(seq_data)
-                seq_columns = ["gbAccession", "gbDefinition", "gbLength", "gbHost",
+                seq_columns = ["seq_id", "gbAccession", "gbDefinition", "gbLength", "gbHost",
                                "LocVillage", "LocState", "Country", "gbCollectDate", "CollectionMonth",
                                "gbCollectYear", "Latitude", "Longitude", "Hospital", "gbPubMedID", "gbJournal",
                                "PubYear", "GenomeCompleteness", "Tissue", "Strain", "gbProduct",
