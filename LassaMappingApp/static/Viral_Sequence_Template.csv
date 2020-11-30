@@ -1,1 +1,1 @@
-﻿gbAccession,gbDefinition,gbLength,gbHost,LocVillage,LocState,Country,gbCollectDate,CollectionMonth,gbCollectYear,Latitude,Longitude,Hospital,gbPubMedID,gbJournal,PubYear,GenomeCompleteness,Tissue,Strain,gbProduct,gbGene,S,L,GPC,NP,Pol,Z,Sequence,Reference,Notes
+﻿seq_id,gbAccession,gbDefinition,gbLength,gbHost,LocVillage,LocState,Country,gbCollectDate,CollectionMonth,gbCollectYear,Latitude,Longitude,Hospital,gbPubMedID,gbJournal,PubYear,GenomeCompleteness,Tissue,Strain,gbProduct,gbGene,S,L,GPC,NP,Pol,Z,Sequence,Reference,Notes
