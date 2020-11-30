@@ -761,7 +761,7 @@ def check_data_types(data_df):
             dtype = type_list[i]
             if col == 'start_year' or col == 'end_year' or col == 'NumPosAb' or \
                 col == 'NumPosVirus' or col == 'NumTestAb' or col == 'NumTestVirus' or \
-                col == 'PropAb' or col == 'PropVirus':
+                col == 'PropAb' or col == 'PropVirus' or col=='lassa_id':
                 if pd.notnull(row[col]):
                     # print(row[col])
                     if isinstance(row[col], int) or isinstance(row[col], float):
@@ -795,7 +795,7 @@ def seq_check_data_types(data_df):
             col = col_list[i]
             dtype = type_list[i]
             if col == 'PubYear' or col == 'gbCollectYear' or col == 'S' or col == 'L' or col == 'GPC' or col == 'NP'\
-            or col == 'Pol' or col == 'Z':
+            or col == 'Pol' or col == 'Z' or col=='seq_id':
                 if pd.notnull(row[col]):
                     # print(row[col])
                     if isinstance(row[col], int) or isinstance(row[col], float):
