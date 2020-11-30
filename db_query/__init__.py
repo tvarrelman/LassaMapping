@@ -272,32 +272,32 @@ def mapper(host, start_year, end_year):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     cursor = cnx.cursor()
     if host == 'human':
-        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, data_source2.Citation, data_source2.DOI, lassa_data2.source_id, data_source2.source_id FROM lassa_data2, data_source2 WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id;""".format(start_year, end_year)
+        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, lassa_data2.NumTestAb, data_source2.Citation, data_source2.DOI, lassa_data2.source_id, data_source2.source_id FROM lassa_data2, data_source2 WHERE start_year AND end_year BETWEEN {0} AND {1} AND Genus='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id;""".format(start_year, end_year)
         cursor.execute(cmd)
         human_data  = cursor.fetchall()
-        human_headers = [x[0] for x in cursor.description]
         json_human_data = []
         for row in human_data:
             lat = float(row[0])
             lon = float(row[1])
             AbPos = float(row[2])
-            if row[3]!=None:
-                Cite = row[3]
-            else:
-                Cite = 'NaN'
+            NumTestAb = float(row[3])
             if row[4]!=None:
-                DOI = row[4]
+                Cite = row[4]
             else:
-                DOI = 'NaN'
-            entry = (lat, lon, AbPos, Cite, DOI)
+                Cite = 'unspecified'
+            if row[5]!=None:
+                DOI = row[5]
+            else:
+                DOI = 'unspecified'
+            entry = (lat, lon, AbPos, NumTestAb, Cite, DOI)
+            human_headers = ("Latitude", "Longitude", "PropAb", "NumTestAb", "Citation", "DOI")
             json_human_data.append(dict(zip(human_headers, entry)))
         cursor.close()
         return json_human_data
     if host == 'rodent':
-        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, lassa_data2.PropVirus, data_source2.Citation, data_source2.DOI FROM lassa_data2, data_source2 WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropVirus IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id);""".format(start_year, end_year)
+        cmd = """SELECT lassa_data2.Latitude, lassa_data2.Longitude, lassa_data2.PropAb, lassa_data2.NumTestAb, lassa_data2.PropVirus, lassa_data2.NumTestVirus, data_source2.Citation, data_source2.DOI FROM lassa_data2, data_source2 WHERE (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropAb IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id) OR (start_year AND end_year BETWEEN {0} AND {1} AND Genus!='Homo'AND PropVirus IS NOT NULL AND Latitude IS NOT NULL AND Longitude IS NOT NULL AND data_source2.source_id=lassa_data2.source_id);""".format(start_year, end_year)
         cursor.execute(cmd)
         rodent_data = cursor.fetchall()
-        rodent_headers = [x[0] for x in cursor.description]
         json_rodent_data = []
         for row in rodent_data:
             lat = float(row[0])
@@ -307,18 +307,27 @@ def mapper(host, start_year, end_year):
             else:
                 PropAb = 'NaN'
             if row[3]!=None:
-                PropAg = float(row[3])
+                NumTestAb = float(row[3])
+            else:
+                NumTestAb = 'NaN'
+            if row[4]!=None:
+                PropAg = float(row[4])
             else:
                 PropAg = 'NaN'
-            if row[4]!=None:
-                Cite = row[4]
-            else:
-                Cite = 'NaN'
             if row[5]!=None:
-                DOI = row[5]
+                NumTestVirus = float(row[5])
             else:
-                DOI = 'NaN'
-            entry = (lat, lon, PropAb, PropAg, Cite, DOI)
+                NumTestVirus = 'NaN'
+            if row[6]!=None:
+                Cite = row[6]
+            else:
+                Cite = 'unspecified'
+            if row[7]!=None:
+                DOI = row[7]
+            else:
+                DOI = 'unspecified'
+            entry = (lat, lon, PropAb, NumTestAb, PropAg, NumTestVirus, Cite, DOI)
+            rodent_headers = ("Latitude", "Longitude", "PropAb", "NumTestAb", "PropVirus", "NumTestVirus", "Citation", "DOI")
             json_rodent_data.append(dict(zip(rodent_headers, entry)))
         cursor.close()
         return json_rodent_data
@@ -334,15 +343,15 @@ def mapper(host, start_year, end_year):
             if row[2]!=None:
                 gbDef = row[2]
             else:
-                gbDef = 'NaN'
+                gbDef = 'unspecified'
             if row[3]!=None:
                 pubMedID = row[3]
             else:
-                pubMedID = 'NaN'
+                pubMedID = 'unspecified'
             if row[4]!=None:
                 Ref = row[4]
             else:
-                Ref = 'NaN'
+                Ref = 'unspecified'
             entry = (lat, lon, gbDef, pubMedID, Ref)
             json_seq_data.append(dict(zip(seq_headers, entry)))
         cursor.close()
@@ -359,15 +368,15 @@ def mapper(host, start_year, end_year):
             if row[2]!=None:
                 gbDef = row[2]
             else:
-                gbDef = 'NaN'
+                gbDef = 'unspecified'
             if row[3]!=None:
                 pubMedID = row[3]
             else:
-                pubMedID = 'NaN'
+                pubMedID = 'unspecified'
             if row[4]!=None:
                 Ref = row[4]
             else:
-                Ref = 'NaN'
+                Ref = 'unspecified'
             entry = (lat, lon, gbDef, pubMedID, Ref)
             json_seq_data.append(dict(zip(seq_headers, entry)))
         cursor.close()
@@ -450,7 +459,11 @@ def human_year_data():
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
                 AbHeader = ("Ab_year", "propAbPos", "DiagnosticMethod")
-                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[3])
+                if entry[3] != None:
+                    diagMethod = entry[3]
+                else:
+                    diagMethod = 'unspecified'
+                AbRow = (entry[0], int(entry[1])/int(entry[2]), diagMethod)
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))                       
     return jsonAbPos
 def rodent_year_data():
@@ -463,15 +476,23 @@ def rodent_year_data():
     jsonAbPos = []
     jsonAgPos = []
     for entry in rodent_year_data:
+        if entry[5] != None:
+            seroDiagMethod = entry[5]
+        else:
+            seroDiagMethod = 'unspecified'
+        if entry[6] != None:
+            virDiagMethod = entry[6]
+        else:
+            virDiagMethod = 'unspecified'
         if entry[0]!= None and entry[1]!= None and entry[2]!=None:
             if entry[1]!=0 and entry[2]!=0:
                 AbHeader = ("Ab_year", "propAbPos", "AbDiagnosticMethod", "VirusDiagnosticMethod")
-                AbRow = (entry[0], int(entry[1])/int(entry[2]), entry[5], entry[6])
+                AbRow = (entry[0], int(entry[1])/int(entry[2]), seroDiagMethod, virDiagMethod)
                 jsonAbPos.append(dict(zip(AbHeader, AbRow)))
         if entry[0]!= None and entry[3]!=None and entry[4]!=None:
             if entry[3]!=0 and entry[4]!=0:
                 AgHeader = ("Ag_year", "propAgPos", "AbDiagnosticMethod", "VirusDiagnosticMethod")
-                AgRow = (entry[0], int(entry[3])/int(entry[4]), entry[5], entry[6])
+                AgRow = (entry[0], int(entry[3])/int(entry[4]), seroDiagMethod, virDiagMethod)
                 jsonAgPos.append(dict(zip(AgHeader, AgRow)))
     return jsonAbPos, jsonAgPos
 def sequence_rodent_year_data():
@@ -809,11 +830,4 @@ def seq_check_data_types(data_df):
     return error_list  
 # This bit is only used for testing the functions before implementation 
 #if __name__ == '__main__':
-    #print(filtered_download('sequence human', 2014, 2014, ['Benin']))
-    #print(rodent_year_data())
-    #print(filtered_year_list('sequence', ['Nigeria', 'Sierra Leone']))
-    #print(lat_lon_check())
-    #print(filtered_download('both', '1990', '2001', ['Nigeria']))
-    #print(filtered_end_year_list('both', '2003', ['Benin', 'Nigeria']))
-    #print(filtered_year_list('human', ['Benin']))
-    #print(country_list('human'))
+#    print(mapper('rodent', '1970', '2016'))
