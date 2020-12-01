@@ -18,10 +18,12 @@ from sqlalchemy import create_engine
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+# Main route for the dashboard
 @app.route('/')
 def main_page():
     data_summary = db_summary()
     return render_template('index.html', data_summary = data_summary)
+# This route is called when the viral infection: humans tab is selected
 @app.route('/LassaHumans')
 def human_mapping():
     visual = request.args.get('visual', 'default_if_none')
@@ -33,6 +35,7 @@ def human_mapping():
         return jsonify(jsonPropAb)
     if visual == 'map':
         return jsonify(jsonYears)
+# This route is called when the viral infection: rodents tab is selected
 @app.route('/LassaRodents')
 def rodent_mapping():
     visual = request.args.get('visual', 'default_if_none')
@@ -44,6 +47,7 @@ def rodent_mapping():
         return jsonify([jsonPropAb, jsonPropAg])
     if visual == 'map':
         return jsonify(jsonYears)
+# This route is called when the viral sequence: rodents tab is selected
 @app.route('/LassaSequenceRodents')
 def sequence_rodent_mapping():
     visual = request.args.get('visual', 'default_if_none')
@@ -56,6 +60,7 @@ def sequence_rodent_mapping():
         return jsonify(jsonSeq)
     if visual == 'map':
         return jsonify(jsonYears)
+# This route is called when the viral sequence: humans tab is selected
 @app.route('/LassaSequenceHumans')
 def sequence_human_mapping():
     visual = request.args.get('visual', 'default_if_none')
@@ -68,11 +73,13 @@ def sequence_human_mapping():
         return jsonify(jsonSeq)
     if visual == 'map':
         return jsonify(jsonYears)
+# Route for the download page
 @app.route('/Download')
 def download_page():
     message = "Download Data!"
     # Returns the rendered .html for the data download page
     return render_template('download.html', message=message)
+# Route for the admin login
 @app.route('/login', methods=['GET', 'POST'])
 def login(): 
     form = LoginForm() 
@@ -94,6 +101,7 @@ def login():
     return render_template('login.html', form=form)
 def allowed_file(filename):
     return filename.lower().endswith('.csv')
+# Route for the admin file upload page
 @app.route('/Admin', methods=['GET', 'POST'])
 @login_required
 def admin(): 
@@ -211,12 +219,14 @@ def admin():
                 seq_file_error = "No file selected/incorrect file type"
                 return render_template('admin.html', seq_error=seq_file_error)
     return render_template('admin.html')
+# This route is called to update the end year filter on the map
 @app.route('/_get_end_year', methods=['GET'])
 def get_end_year():
     start_year = request.args.get('start_year', 'default_if_none')
     host_mapped = request.args.get('host', 'default_if_none')
     end_year_json = end_year_list(start_year, host_mapped)
     return jsonify(end_year_json)
+# This route is called when map points are filtered by year
 @app.route('/_filter_points', methods=['GET']) 
 def filter_points():
     start_year = request.args.get('start_year', 'default_if_none')
@@ -224,11 +234,13 @@ def filter_points():
     host_species = request.args.get('host', 'default_if_none')
     mapping_json = mapper(host_species, start_year, end_year) 
     return jsonify(mapping_json)
+# This route is called to fetch the initial year filter
 @app.route('/_get_init_year_lists', methods=['GET'])  
 def get_init_year_lists():
     host = request.args.get('host', 'default_if_none')
     StartYearList, EndYearList = initial_year_lists(host)
     return jsonify(StartYearList, EndYearList)
+# This route is called when the data download button is selected
 @app.route('/_download_data', methods=['GET'])
 def download_data():
     host = request.args.get('host', 'default_if_none')
@@ -237,11 +249,13 @@ def download_data():
     country_list = request.args.getlist('country')
     jsonDump = filtered_download(host, start_year, end_year, country_list)
     return jsonify(jsonDump)
+# This route gets the country list for the download filter
 @app.route('/_get_countries', methods=['GET'])
 def get_country_list():
     host = request.args.get('host', 'default_if_none') 
     countryJson = country_list(host)
     return jsonify(countryJson)
+# Test route used when the filter system was constructed
 @app.route('/_test', methods=['GET'])
 def test():
     #print(request)
@@ -250,6 +264,7 @@ def test():
     #print(host, country_list)
     StartYearList, EndYearList = filtered_year_list(host, country_list)
     return jsonify(StartYearList, EndYearList)
+# Called to update the end year of the data download filter
 @app.route('/_get_filtered_end_year', methods=['GET'])
 def filtered_end_year():
     host = request.args.get('host', 'default_if_none')
