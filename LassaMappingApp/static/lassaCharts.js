@@ -53,6 +53,7 @@ function lassaBarChart(host){
 			},
 			xaxis:{title: {text: 'Year'}},
 			yaxis:{title: {text: 'Proportion of Individuals'}},
+			fixedrange: true, 
 			showlegend: true,
 			legend: {
 				bgcolor: 'rgba(0,0,0,0)',
@@ -105,6 +106,7 @@ function lassaBarChart(host){
 			},
 			xaxis:{title: {text: 'Year'}},
 			yaxis:{title: {text: 'Proportion of Individuals'}},
+			fixedrange: true,
 			legend: {
 				bgcolor: 'rgba(0,0,0,0)',
 				x: 0.45,
@@ -242,6 +244,7 @@ function lassaBarChart(host){
 			},
 			xaxis:{title: {text: 'Year'}},
 			yaxis:{title: {text: 'Number of Sequences'}},
+			fixedrange: true,
 			showlegend: true,
 			legend: {
 	 			bgcolor: 'rgba(0,0,0,0)',
@@ -285,6 +288,7 @@ function lassaBarChart(host){
                         },
                         xaxis:{title: {text: 'Year'}},
                         yaxis:{title: {text: 'Number of Sequences'}},
+			fixedrange: true,
                         showlegend: true,
                         legend: {
 				bgcolor: 'rgba(0,0,0,0)',
