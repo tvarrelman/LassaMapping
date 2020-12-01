@@ -138,9 +138,9 @@ def admin():
                                     db_uri = environ.get('SQLALCHEMY_DATABASE_URI')
                                     engine = create_engine(db_uri)
                                     #final_df.to_sql('lassa_data_test', con=engine, if_exists='append', index=False)
-                                    for row in range(len(final_df)):
+                                    for row in range(0, len(final_df)):
                                         try:
-                                            final_df.iloc[row:row+1].to_sql(name='lassa_data_test',if_exists='append',con = Engine, index=False)
+                                            final_df.iloc[row:row+1].to_sql(name='lassa_data_test',if_exists='append',con = engine, index=False)
                                         except Exception as e:
                                             continue 
                                     message = "Successfully imported data"
