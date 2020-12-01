@@ -665,25 +665,31 @@ def source_id_mapper(data_df):
     cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
     source_cmd = "SELECT * FROM data_source2;"
     source_result = pd.read_sql(source_cmd, cnx)
+    source_result = source_result.fillna('No Data')
     cnx.close()
+    null_source_id = source_result[source_result['Citation']=='No Data']['source_id'].iloc[0]
     source_df = pd.DataFrame(columns=['source_id'])
+    rows_with_nan = np.where(data_df.Citation.isnull())
+    for ind2 in rows_with_nan[0]:
+        source_df.loc[ind2] = null_source_id
     for i in range(0, len(data_df)):
         cite = data_df['Citation'][i]
         source = data_df['Source'][i]
         doi = data_df['DOI'][i]
         bibtex = data_df['Bibtex'][i]
-        if cite in list(source_result['Citation']):
-            source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
-            source_df.loc[i] = source_id
-        else:
-            cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
-            cursor = cnx.cursor()
-            insert_cmd = """INSERT INTO data_source2 (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
-            cursor.execute(insert_cmd)
-            cnx.commit()
-            cursor.close()
-            cnx.close()
-            return source_id_mapper()
+        if pd.notnull(cite):
+            if cite in list(source_result['Citation']):
+                source_id = source_result[source_result['Citation']==cite]['source_id'].iloc[0]
+                source_df.loc[i] = source_id
+            else:
+                cnx = mysql.connector.connect(user=db_user, password=db_pw, host=db_host, database=db_name)
+                cursor = cnx.cursor()
+                insert_cmd = """INSERT INTO data_source2 (Citation, Source, DOI, Bibtex) VALUES ('{0}', '{1}', '{2}', '{3}')""".format(cite, source, doi, bibtex)
+                cursor.execute(insert_cmd)
+                cnx.commit()
+                cursor.close()
+                cnx.close()
+                return source_id_mapper(data_df)
     source_df = source_df.sort_index()
     return source_df
 # Maps the reference from the viral sequence data to a reference id
@@ -722,12 +728,12 @@ def country_id_mapper(data_df):
     country_cmd = "SELECT * FROM countries;"
     country_result = pd.read_sql(country_cmd, cnx)
     country_df = pd.DataFrame(columns=['country_id'])
-    for country in data_df['Country']:
+    for i in range(0, len(data_df)):
+        country = data_df['Country'][i]
         if pd.notnull(country):
             if country in list(country_result['country_name']):
                 country_id = country_result[country_result['country_name']==country]['country_id'].iloc[0]
-                country_ind = country_result[country_result['country_name']==country]['country_id'].index[0]
-                country_df.loc[country_ind] = country_id
+                country_df.loc[i] = country_id
                 country_error = None
             else:
                 country_error = "Country: {0}, not recognized. See help for a full list of accepted countries".format(country)
