@@ -140,7 +140,7 @@ def admin():
                                     #final_df.to_sql('lassa_data_test', con=engine, if_exists='append', index=False)
                                     for row in range(0, len(final_df)):
                                         try:
-                                            final_df.iloc[row:row+1].to_sql(name='lassa_data_test',if_exists='append',con = engine, index=False)
+                                            final_df.iloc[row:row+1].to_sql(name='lassa_data2',if_exists='append',con = engine, index=False)
                                         except Exception as e:
                                             continue 
                                     message = "Successfully imported data"
@@ -202,7 +202,7 @@ def admin():
                                     #seq_final_df.to_sql('seq_data_test', con=engine, if_exists='append', index=False)
                                     for row in range(len(seq_final_df)):
                                         try:
-                                            seq_final_df.iloc[row:row+1].to_sql(name='seq_data_test',if_exists='append',con = engine, index=False)
+                                            seq_final_df.iloc[row:row+1].to_sql(name='seq_data',if_exists='append',con = engine, index=False)
                                         except Exception as e:
                                             continue 
                                     seq_message = "Successfully imported data"
