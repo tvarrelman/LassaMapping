@@ -35,6 +35,8 @@ def human_mapping():
         return jsonify(jsonPropAb)
     if visual == 'map':
         return jsonify(jsonYears)
+    if visual == 'default_if_none':
+        return ''
 # This route is called when the viral infection: rodents tab is selected
 @app.route('/LassaRodents')
 def rodent_mapping():
