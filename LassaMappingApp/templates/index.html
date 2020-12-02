@@ -201,14 +201,14 @@
 		var propAb = {};
 		var propAg = {};
 		function humanMap(){
-			//var chartPars = {visual: "chart"};
-			//var mapPars = {visual: "map"};
-			$.ajax({async:false, url:"/LassaHumans", data:{visual: "chart"}, dataType:"json",
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaHumans", data:chartPars, dataType:"json",
 				success: function(data){
 					propAb = data;
 				}
 			});
-			$.ajax({async:false, url:"/LassaHumans", data:{visual: "map"}, dataType:"json",
+			$.ajax({async:false, url:"/LassaHumans", data:mapPars, dataType:"json",
 				success: function(data){
 					mapYearData = data;
                                         end_year_select.empty();
@@ -225,15 +225,15 @@
 			propAb = propAb;
 		};
 		function rodentMap(){
-			//var chartPars = {visual: "chart"};
-			//var mapPars = {visual: "map"};
-			$.ajax({async:false, url:"/LassaRodents", data:{visual: "chart"}, dataType:"json",
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaRodents", data:chartPars, dataType:"json",
 				success: function(data){
 					propAb = data[0];
 					propAg = data[1];
 				}
 			});
-			$.ajax({async:false, url:"/LassaRodents", data:{visual: "map"}, dataType:"json",
+			$.ajax({async:false, url:"/LassaRodents", data:mapPars, dataType:"json",
 				success: function(data){
 					mapYearData = data;
                                         end_year_select.empty();
@@ -251,14 +251,14 @@
 			propAg = propAg;
 		};
 		function sequenceRodentMap(){
-			//var chartPars = {visual: "chart"};
-			//var mapPars = {visual: "map"};
-			$.ajax({async:false, url:"/LassaSequenceRodents", data:{visual: "chart"}, dataType:"json",
+			var chartPars = {visual: "chart"};
+			var mapPars = {visual: "map"};
+			$.ajax({async:false, url:"/LassaSequenceRodents", data:chartPars, dataType:"json",
 				success: function(data){
 					seqData = data;
 				}
 			});
-			$.ajax({async:false, url:"/LassaSequenceRodents", data:{visual: "map"}, dataType:"json",
+			$.ajax({async:false, url:"/LassaSequenceRodents", data:mapPars, dataType:"json",
 				success: function(data){
 					mapYearData = data;
 					end_year_select.empty();
@@ -275,14 +275,14 @@
 			host = mapYearData.host;
 		};
                 function sequenceHumanMap(){
-                        //var chartPars = {visual: "chart"};
-                        //var mapPars = {visual: "map"};
-                        $.ajax({async:false, url:"/LassaSequenceHumans", data:{visual: "chart"}, dataType:"json",
+                        var chartPars = {visual: "chart"};
+                        var mapPars = {visual: "map"};
+                        $.ajax({async:false, url:"/LassaSequenceHumans", data:chartPars, dataType:"json",
                                 success: function(data){
                                         seqData = data;
                                 }
                         });
-                        $.ajax({async:false, url:"/LassaSequenceHumans", data:{visual: "map"}, dataType:"json",
+                        $.ajax({async:false, url:"/LassaSequenceHumans", data:mapPars, dataType:"json",
                                 success: function(data){
                                         mapYearData = data;
                                         end_year_select.empty();
