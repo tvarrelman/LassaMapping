@@ -2,7 +2,7 @@
 wsgi.py imports and starts our entire app
 """
 # Path to the virtual env associated with this app
-python_home = '/nethome/tanner/TannersApp/LassaVirtualEnv/'
+python_home = ''
 
 import sys
 import site
